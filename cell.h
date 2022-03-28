@@ -4,8 +4,6 @@
 class Cell{
   public:
     Cell(int x, int y);
-    void setX(int x);
-    void setY(int y);
     int getCoordinates();
 
   private:

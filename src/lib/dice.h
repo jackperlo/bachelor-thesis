@@ -10,10 +10,12 @@ class Dice{
 
   public:
     Dice(Cell position, int nMoves);
-    void virtual move(Cell toCoordinate) = 0;
+    Dice();
     void setPosition(Cell position);
     int getPosition();
     void setNMoves(int nMoves);
+    void virtual move(Cell toCoordinate);
+    void printDice();
 };
 
 #endif

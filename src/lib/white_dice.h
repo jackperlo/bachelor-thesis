@@ -7,6 +7,7 @@
 class WhiteDice : public Dice{
   public:
     WhiteDice(Cell position, int nMoves);
+    WhiteDice(const WhiteDice &wd1); //copying constructor
     void move(Cell toCoordinate) override;
 };
 

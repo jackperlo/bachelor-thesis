@@ -7,6 +7,8 @@ class Cell{
     Cell();
     Cell(const Cell &c1); //copying constructor
     int getCoordinates();
+    int getX();
+    int getY();
 
   private:
     int x, y;

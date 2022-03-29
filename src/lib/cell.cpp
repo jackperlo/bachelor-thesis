@@ -5,6 +5,10 @@ Cell::Cell(int x, int y){
     this->y = y;
 }
 
+Cell::Cell(){}
+
+Cell::Cell(const Cell &c1){x = c1.x; y = c1.y;}
+
 int Cell::getCoordinates(){
     return x+y;
 }

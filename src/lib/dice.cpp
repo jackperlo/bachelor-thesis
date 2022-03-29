@@ -1,13 +1,16 @@
 #include "dice.h"
-#include "cell.h"
 
-Dice::Dice(Cell *position, int nMoves){
+Dice::Dice(Cell position, int nMoves){
   setPosition(position);
   setNMoves(nMoves);
 }
 
-void Dice::setPosition(Cell *position){
-  position = position;
+void Dice::setPosition(Cell position){
+  this->position = position;
+}
+
+int Dice::getPosition(){
+  return position.getCoordinates();
 }
 
 void Dice::setNMoves(int nMoves){

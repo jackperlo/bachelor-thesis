@@ -1,3 +1,7 @@
+CPPFLAGS= -I/src/lib
+
+make all: mad_dices
+
 mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o
 	cd src; \
 	g++ mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o

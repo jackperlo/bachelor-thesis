@@ -1,17 +1,21 @@
-mad_dices: cell.o dice.o white_dice.o
-	g++ mad_dices.cpp -o mad_dices cell.o dice.o white_dice.o
+mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o
+	cd src; \
+	g++ mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o
 
-cell.o: cell.cpp cell.h
-	g++ -c cell.cpp
+./build/cell.o: ./src/lib/cell.cpp ./src/lib/cell.h
+	cd src/lib; \
+	g++ -c cell.cpp -o ../../build/cell.o; 
 
-dice.o: dice.cpp dice.h
-	g++ -c dice.cpp
+./build/dice.o: ./src/lib/dice.cpp ./src/lib/dice.h
+	cd src/lib; \
+	g++ -c dice.cpp -o ../../build/dice.o;
 
-white_dice.o: white_dice.cpp white_dice.h
-	g++ -c white_dice.cpp
+./build/white_dice.o: ./src/lib/white_dice.cpp ./src/lib/white_dice.h
+	cd src/lib; \
+	g++ -c white_dice.cpp -o ../../build/white_dice.o;
 
 run:
-	./mad_dices
+	./src/mad_dices
 
 clean:
 	rm –f *.o mad_dices *~

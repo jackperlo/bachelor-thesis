@@ -1,2 +1,2 @@
-*.o
-mad_dices
+.build
+.src/mad_dices

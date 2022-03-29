@@ -1,3 +1,4 @@
 build/*
 src/mad_dices
+src/tests/tests
 .vscode

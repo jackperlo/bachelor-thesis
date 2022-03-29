@@ -8,24 +8,16 @@ using namespace std;
 #define MAP_WIDTH 5
 #define MAP_HEIGHT 7
 
-void printDices(list<Dice> dices);
 void generateDices(list<Dice> *dices);
+void printDices(list<Dice> dices);
 
 int main(){ 
   list<Dice> dices;
+
   generateDices(&dices);
   printDices(dices);
 
-  Cell c(1, 2);
-  WhiteDice wd(c, 3);
-  cout << "Test " << wd.getPosition() << endl;
-
   return 0;
-}
-
-void printDices(list<Dice> dices){
-  for (auto dice : dices)
-    dice.printDice();
 }
 
 void generateDices(list<Dice> *dices){
@@ -43,6 +35,10 @@ void generateDices(list<Dice> *dices){
   }
 }
 
+void printDices(list<Dice> dices){
+  for (auto dice : dices)
+    dice.printDice();
+}
 
 
 

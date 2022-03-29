@@ -13,15 +13,15 @@ void Dice::setPosition(Cell position){
   this->position = position;
 }
 
-int Dice::getPosition(){
-  return position.getCoordinates();
+Cell Dice::getPosition(){
+  return position;
 }
 
 void Dice::setNMoves(int nMoves){
   this->nMoves = nMoves;
 }
 
-void Dice::move(Cell toCoordinate){}
+void Dice::move(Cell toCoordinate){std::cout << "AAA";}
 
 void Dice::printDice(){
   std::cout << typeid(this).name() << ": (position: " << this->position.getX() << \

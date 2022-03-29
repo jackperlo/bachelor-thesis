@@ -8,11 +8,11 @@ using namespace std;
 #define MAP_WIDTH 5
 #define MAP_HEIGHT 7
 
-void generateDices(list<Dice> *dices);
-void printDices(list<Dice> dices);
+void generateDices(list<Dice *> *dices);
+void printDices(list<Dice *> dices);
 
 int main(){ 
-  list<Dice> dices;
+  list<Dice *> dices;
 
   generateDices(&dices);
   printDices(dices);
@@ -20,24 +20,35 @@ int main(){
   return 0;
 }
 
-void generateDices(list<Dice> *dices){
+void generateDices(list<Dice *> *dices){
   random_device rd;
   mt19937 rng(rd());
   uniform_int_distribution<int> distDice(1, 6); //distribution in range [1, 6]
   uniform_int_distribution<int> distWidth(0, MAP_WIDTH); 
   uniform_int_distribution<int> distHeight(0, MAP_HEIGHT);
 
-  for (int i = 0; i < N_DICES; i++){
+  bool alreadyExists = false;
+  int i = 0;
+  while(i < N_DICES){
+    alreadyExists = false;
     Cell c(distWidth(rng), distHeight(rng));
+    WhiteDice *d = new WhiteDice(c, distDice(rng));
+  
+    for(auto dice : *dices){
+      if(dice->getPosition().getX() == c.getX() && dice->getPosition().getY() == c.getY())
+        alreadyExists = true;
+    }
+    if(!alreadyExists){
+      (*dices).push_back(d);
+      i++;
+    }
 
-    WhiteDice d(c, distDice(rng));
-    (*dices).push_front(d);
   }
 }
 
-void printDices(list<Dice> dices){
+void printDices(list<Dice *> dices){
   for (auto dice : dices)
-    dice.printDice();
+    (*dice).printDice();
 }
 
 

@@ -12,7 +12,7 @@ class Dice{
     Dice(Cell position, int nMoves);
     Dice();
     void setPosition(Cell position);
-    int getPosition();
+    Cell getPosition();
     void setNMoves(int nMoves);
     void virtual move(Cell toCoordinate);
     void printDice();

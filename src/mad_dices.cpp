@@ -1,19 +1,28 @@
 #include "lib/common.h"
 #include "./lib/white_dice.h"
 
-void generateDices(list<Dice *> *dices);
+bool checkIfDiceAlreadyExists(list<Dice *> dices, Cell c);
+list <Dice *> generateDices();
 void printDices(list<Dice *> dices);
 
 int main(){ 
-  list<Dice *> dices;
-
-  generateDices(&dices);
+  list<Dice *> dices = generateDices();
+  
   printDices(dices);
 
+  list<Dice *>::iterator it = dices.begin(); //returns a pointer to a pointer of type Dice
+  (*it)->move("sx", dices);
+  (*it)->move("dx", dices);
+  (*it)->move("up", dices);
+  (*it)->move("down", dices);
+  
+  //auto it = std::next(players.begin(), index);
   return 0;
 }
 
-void generateDices(list<Dice *> *dices){
+list<Dice *> generateDices(){
+  list<Dice *> dices;
+
   random_device rd;
   mt19937 rng(rd());
   uniform_int_distribution<int> distDice(1, 6);
@@ -27,21 +36,27 @@ void generateDices(list<Dice *> *dices){
     Cell c(distWidth(rng), distHeight(rng));
     WhiteDice *d = new WhiteDice(c, distDice(rng));
   
-    for(auto dice : *dices){
-      if(dice->getPosition().getX() == c.getX() && dice->getPosition().getY() == c.getY())
-        alreadyExists = true;
-    }
+    alreadyExists = checkIfDiceAlreadyExists(dices, c);
     if(!alreadyExists){
-      (*dices).push_back(d);
+      dices.push_back(d);
       i++;
     }
-
   }
+
+  return dices;
+}
+
+bool checkIfDiceAlreadyExists(list<Dice *> dices, Cell c){
+  for(auto dice : dices)
+    if(dice->getPosition().getX() == c.getX() && dice->getPosition().getY() == c.getY())
+      return true;
+  
+  return false;
 }
 
 void printDices(list<Dice *> dices){
   for (auto dice : dices)
-    (*dice).printDice();
+    dice->printDice();
 }
 
 

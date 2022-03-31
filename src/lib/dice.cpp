@@ -20,7 +20,9 @@ void Dice::setNMoves(int nMoves){
   this->nMoves = nMoves;
 }
 
-void Dice::move(string direction){}
+int Dice::getNMoves(){
+  return nMoves;
+}
 
 void Dice::printDice(){
   cout << typeid(this).name() << ": (position: " << this->position.getX() << \

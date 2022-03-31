@@ -1,6 +1,8 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include "common.h"
+
 class Cell{
   public:
     Cell(int x, int y);

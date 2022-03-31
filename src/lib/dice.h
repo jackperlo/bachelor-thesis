@@ -1,6 +1,7 @@
 #ifndef DICE_H
 #define DICE_H
 
+#include "common.h"
 #include "cell.h"
 
 class Dice{
@@ -14,7 +15,7 @@ class Dice{
     void setPosition(Cell position);
     Cell getPosition();
     void setNMoves(int nMoves);
-    void virtual move(Cell toCoordinate);
+    void virtual move(string direction);
     void printDice();
 };
 

@@ -1,12 +1,5 @@
-#include <iostream>
-#include <random>
-#include <bits/stdc++.h>
+#include "lib/common.h"
 #include "./lib/white_dice.h"
-using namespace std;
-
-#define N_DICES 5
-#define MAP_WIDTH 5
-#define MAP_HEIGHT 7
 
 void generateDices(list<Dice *> *dices);
 void printDices(list<Dice *> dices);
@@ -23,7 +16,7 @@ int main(){
 void generateDices(list<Dice *> *dices){
   random_device rd;
   mt19937 rng(rd());
-  uniform_int_distribution<int> distDice(1, 6); //distribution in range [1, 6]
+  uniform_int_distribution<int> distDice(1, 6);
   uniform_int_distribution<int> distWidth(0, MAP_WIDTH); 
   uniform_int_distribution<int> distHeight(0, MAP_HEIGHT);
 

@@ -1,5 +1,4 @@
-#include <iostream>
-#include <typeinfo>
+#include "common.h"
 #include "dice.h"
 
 Dice::Dice(Cell position, int nMoves){
@@ -21,9 +20,9 @@ void Dice::setNMoves(int nMoves){
   this->nMoves = nMoves;
 }
 
-void Dice::move(Cell toCoordinate){std::cout << "AAA";}
+void Dice::move(string direction){}
 
 void Dice::printDice(){
-  std::cout << typeid(this).name() << ": (position: " << this->position.getX() << \
-            ", " << this->position.getY() << ", nMoves: " << this->nMoves << ")" << std::endl;
+  cout << typeid(this).name() << ": (position: " << this->position.getX() << \
+        ", " << this->position.getY() << ", nMoves: " << this->nMoves << ")" << std::endl;
 }

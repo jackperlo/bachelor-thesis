@@ -1,7 +1,6 @@
-#include <iostream>
-#include <assert.h>
+#include "../lib/common.h"
 
 int main(){
-    std::cout << "prova" << std::endl;
+    cout << "prova" << endl;
     return 0;
 }

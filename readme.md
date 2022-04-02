@@ -1,4 +1,4 @@
-# How do I run this program?
+# How to compile and exectue?
    There is a ***Makefile*** which automatically compiles and runs the project and tests:<br/>
      - ``` make all``` to compile the example application.<br/>
      - ``` make run``` to run the example application<br/>

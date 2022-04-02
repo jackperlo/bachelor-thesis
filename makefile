@@ -13,10 +13,6 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
 #---------------MAIN-------------
 
-mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o
-	cd src; \
-	$(CXX) -c -g mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o
-
 ./build/cell.o: ./src/lib/cell.cpp ./src/lib/cell.h
 	cd src/lib; \
 	$(CXX) -c -g cell.cpp -o ../../build/cell.o; 
@@ -28,6 +24,11 @@ mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o
 ./build/white_dice.o: ./src/lib/white_dice.cpp ./src/lib/white_dice.h
 	cd src/lib; \
 	$(CXX) -c -g white_dice.cpp -o ../../build/white_dice.o;
+
+mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o
+	cd src; \
+	$(CXX) -g mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o
+
 
 #---------------TESTS-------------
 

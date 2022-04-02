@@ -1,6 +1,6 @@
 build/*
 src/mad_dices
 !src/tests/tests
-src/tests//*
+src/tests/*
 !src/tests/tests.cpp
 .vscode

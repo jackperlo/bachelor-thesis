@@ -13,6 +13,14 @@ int Cell::getX(){
     return x;
 }
 
+void Cell::setX(int x){
+    this->x = x;
+}
+
 int Cell::getY(){
     return y;
+}
+
+void Cell::setY(int y){
+    this->y = y;
 }

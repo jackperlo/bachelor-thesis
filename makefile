@@ -15,19 +15,19 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
 mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o
 	cd src; \
-	$(CXX) mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o
+	$(CXX) -c -g mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o
 
 ./build/cell.o: ./src/lib/cell.cpp ./src/lib/cell.h
 	cd src/lib; \
-	$(CXX) -c cell.cpp -o ../../build/cell.o; 
+	$(CXX) -c -g cell.cpp -o ../../build/cell.o; 
 
 ./build/dice.o: ./src/lib/dice.cpp ./src/lib/dice.h
 	cd src/lib; \
-	$(CXX) -c dice.cpp -o ../../build/dice.o;
+	$(CXX) -c -g dice.cpp -o ../../build/dice.o;
 
 ./build/white_dice.o: ./src/lib/white_dice.cpp ./src/lib/white_dice.h
 	cd src/lib; \
-	$(CXX) -c white_dice.cpp -o ../../build/white_dice.o;
+	$(CXX) -c -g white_dice.cpp -o ../../build/white_dice.o;
 
 #---------------TESTS-------------
 
@@ -49,7 +49,7 @@ gtest_main.a : gtest-all.o gtest_main.o
 	$(CXX) -isystem ./googletest/googletest/include $(CXXFLAGS) -c tests.cpp
 
 tests: ./src/tests/tests.o gtest_main.a 
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@; \
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ./build/cell.o ./build/dice.o ./build/white_dice.o; \
 	mv gtest-all.o ./src/tests; \
 	mv gtest_main.o ./src/tests; \
 	mv gtest_main.a ./src/tests; \

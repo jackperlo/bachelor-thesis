@@ -25,9 +25,13 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 	cd src/lib; \
 	$(CXX) -c -g white_dice.cpp -o ../../build/white_dice.o;
 
-mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o
+./build/red_dice.o: ./src/lib/red_dice.cpp ./src/lib/red_dice.h
+	cd src/lib; \
+	$(CXX) -c -g red_dice.cpp -o ../../build/red_dice.o;
+
+mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o
 	cd src; \
-	$(CXX) -g mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o
+	$(CXX) -g mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o
 
 
 #---------------TESTS-------------
@@ -45,12 +49,12 @@ gtest.a : gtest-all.o
 gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^;
 	
-./src/tests/tests.o : ./src/tests/tests.cpp ./build/cell.o ./build/dice.o ./build/white_dice.o $(GTEST_HEADERS)
+./src/tests/tests.o : ./src/tests/tests.cpp ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o $(GTEST_HEADERS)
 	cd ./src/tests/; \
 	$(CXX) -isystem ./googletest/googletest/include $(CXXFLAGS) -c tests.cpp
 
 tests: ./src/tests/tests.o gtest_main.a 
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ./build/cell.o ./build/dice.o ./build/white_dice.o; \
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o; \
 	mv gtest-all.o ./src/tests; \
 	mv gtest_main.o ./src/tests; \
 	mv gtest_main.a ./src/tests; \

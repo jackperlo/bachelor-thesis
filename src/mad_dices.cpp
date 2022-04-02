@@ -1,5 +1,6 @@
 #include "lib/common.h"
 #include "./lib/white_dice.h"
+#include "./lib/red_dice.h"
 
 bool checkIfDiceAlreadyExists(list<Dice *> dices, Cell c);
 list <Dice *> generateDices();
@@ -10,13 +11,10 @@ int main(){
   
   printDices(dices);
 
-  list<Dice *>::iterator it = dices.begin(); //returns a pointer to a pointer of type Dice
-  (*it)->move("sx", dices);
-  (*it)->move("dx", dices);
-  (*it)->move("up", dices);
-  (*it)->move("down", dices);
+  //list<Dice *>::iterator it = dices.begin(); //returns a pointer to a pointer of type Dice
+  //(*it)->move("sx", dices);
+  //printDices(dices);
   
-  //auto it = std::next(players.begin(), index);
   return 0;
 }
 

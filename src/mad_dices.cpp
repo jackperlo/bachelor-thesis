@@ -1,6 +1,7 @@
 #include "lib/common.h"
 #include "./lib/white_dice.h"
 #include "./lib/red_dice.h"
+#include "./lib/yellow_dice.h"
 
 bool checkIfDiceAlreadyExists(list<Dice *> dices, Cell c);
 list <Dice *> generateDices();

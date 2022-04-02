@@ -30,6 +30,7 @@
 #include "../lib/common.h"
 #include "../lib/white_dice.h"
 #include "../lib/red_dice.h"
+#include "../lib/yellow_dice.h"
 #include "../lib/cell.h"
 
 TEST(oneWhiteDice, moveSx0Moves){

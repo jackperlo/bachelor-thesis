@@ -1,6 +1,7 @@
 #include "common.h"
 #include "white_dice.h"
 #include "red_dice.h"
+#include "yellow_dice.h"
 
 WhiteDice::WhiteDice(Cell position, int nMoves) : Dice(position, nMoves){}
 
@@ -12,12 +13,15 @@ string WhiteDice::getActualType(){
   type_index ti(typeid(*this));
   RedDice rd;
   WhiteDice wd;
+  YellowDice yd;
   if (ti == type_index(typeid(rd)))
-      return "RedDice";
+    return "RedDice";
   else if (ti == type_index(typeid(wd)))
-      return "WhiteDice";
+    return "WhiteDice";
+  else if (ti == type_index(typeid(yd)))
+    return "YellowDice";
   else
-      return "Dice";
+    return "Dice";
 }
 
 bool WhiteDice::move(string direction, list<Dice *> dices){

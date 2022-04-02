@@ -1,4 +1,3 @@
-#include "common.h"
 #include "dice.h"
 
 Dice::Dice(Cell position, int nMoves){

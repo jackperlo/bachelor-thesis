@@ -12,9 +12,9 @@ int main(){
   
   printDices(dices);
 
-  //list<Dice *>::iterator it = dices.begin(); //returns a pointer to a pointer of type Dice
-  //(*it)->move("sx", dices);
-  //printDices(dices);
+  list<Dice *>::iterator it = dices.begin(); //returns a pointer to a pointer of type Dice
+  (*it)->move("dx", dices, __func__);
+  printDices(dices);
   
   return 0;
 }

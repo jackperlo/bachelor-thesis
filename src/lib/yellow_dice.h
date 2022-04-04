@@ -10,7 +10,7 @@ class YellowDice : public Dice{
     YellowDice(Cell position, int nMoves);
     YellowDice();
     YellowDice(const YellowDice &yd1); //copying constructor, invoked in situation as: YellowDice yd1 = yd2.
-    bool move(string direction, list<Dice *> dices) override;
+    bool move(string direction, list<Dice *> dices, const char * callerName) override;
     string getActualType();
 
   private:

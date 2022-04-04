@@ -10,7 +10,7 @@ class WhiteDice : public Dice{
     WhiteDice(Cell position, int nMoves);
     WhiteDice();
     WhiteDice(const WhiteDice &wd1); //copying constructor, invoked in situation as: WhiteDice wd1 = wd2.
-    bool move(string direction, list<Dice *> dices) override;
+    bool move(string direction, list<Dice *> dices, char const * callerName) override;
     string getActualType();
 
   private:
@@ -19,5 +19,7 @@ class WhiteDice : public Dice{
     bool moveUp(int x, int y, list<Dice *> dices) override;
     bool moveDown(int x, int y, list<Dice *> dices) override;
 };
+
+//#define move(direction, dices) move(direction, dices, __func__)
 
 #endif

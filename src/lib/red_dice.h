@@ -10,7 +10,7 @@ class RedDice : public Dice{
     RedDice(Cell position, int nMoves);
     RedDice();
     RedDice(const RedDice &rd1); //copying constructor, invoked in situation as: RedDice rd1 = rd2.
-    bool move(string direction, list<Dice *> dices) override;
+    bool move(string direction, list<Dice *> dices, char const * callerName) override;
     string getActualType();
 
   private:

@@ -25,7 +25,7 @@ string YellowDice::getActualType(){
 }
 
 
-bool YellowDice::move(string direction, list<Dice *> dices){
+bool YellowDice::move(string direction, list<Dice *> dices, char const * callerName){
   if(this->getNMoves() > 0){
     direction = stringToLower(direction);
     int x = this->getPosition().getX();

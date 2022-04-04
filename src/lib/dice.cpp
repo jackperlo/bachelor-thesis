@@ -46,8 +46,15 @@ int Dice::checkArrivalCellIsEmpty(int x, int y, list<Dice *> dices){
   return ret;
 }
 
-void Dice::makeMove(int x, int y){
+bool Dice::makeActiveMove(int x, int y){
   Cell arrivalCell(x, y);
   this->setPosition(arrivalCell);
   this->setNMoves(this->getNMoves()-1);
+  return true;
+}
+
+bool Dice::makePassiveMove(int x, int y){
+  Cell arrivalCell(x, y);
+  this->setPosition(arrivalCell);
+  return true;
 }

@@ -2,6 +2,7 @@
 #include "red_dice.h"
 #include "white_dice.h"
 #include "yellow_dice.h"
+#include "green_dice.h"
 
 RedDice::RedDice(Cell position, int nMoves) : Dice(position, nMoves){}
 
@@ -14,51 +15,17 @@ string RedDice::getActualType(){
   RedDice rd;
   WhiteDice wd;
   YellowDice yd;
+  GreenDice gd;
   if (ti == type_index(typeid(rd)))
     return "RedDice";
   else if (ti == type_index(typeid(wd)))
     return "WhiteDice";
   else if (ti == type_index(typeid(yd)))
-    return "YellowDice"; 
+    return "YellowDice";
+  else if (ti == type_index(typeid(gd)))
+    return "GreenDice"; 
   else
     return "Dice";
-}
-
-bool RedDice::move(string direction, list<Dice *> dices, char const * callerName){
-  direction = stringToLower(direction);
-  int x = this->getPosition().getX();
-  int y = this->getPosition().getY();
-  if(this->getNMoves() > 0){
-    if(direction.compare("sx") == 0){
-      if(moveSx(x, y, dices))
-        return makeActiveMove(x-1, y);
-    }else if(direction.compare("dx") == 0){
-      if(moveDx(x, y, dices))
-        return makeActiveMove(x+1, y);
-    }else if(direction.compare("up") == 0){
-      if(moveUp(x, y, dices))
-        return makeActiveMove(x, y-1);
-    }else if(direction.compare("down") == 0){
-      if(moveDown(x, y, dices))
-        return makeActiveMove(x, y+1);
-    }
-  }else if(this->getNMoves() == 0 && (strcmp(callerName, "moveSx") == 0 || strcmp(callerName, "moveDx") == 0 || strcmp(callerName, "moveUp") == 0 || strcmp(callerName, "moveDown") == 0)){
-    //you come here if the dice has nMoves=0 and is pushed by another dice
-    if(direction.compare("sx") == 0){
-      if(moveSx(x, y, dices))
-        return makePassiveMove(x-1, y);
-    }else if(direction.compare("dx") == 0){
-      if(moveDx(x, y, dices))
-        return makePassiveMove(x+1, y);
-    }else if(direction.compare("up") == 0){
-      if(moveUp(x, y, dices))
-        return makePassiveMove(x, y-1);
-    }else if(direction.compare("down") == 0){
-      if(moveDown(x, y, dices))
-        return makePassiveMove(x, y+1);
-    }
-  }
-  return false;
 }
 
 bool RedDice::moveSx(int x, int y, list<Dice *> dices){

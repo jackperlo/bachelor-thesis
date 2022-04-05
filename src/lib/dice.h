@@ -25,7 +25,7 @@ class Dice{
     void setNMoves(int nMoves);
     int getNMoves();
     void printDice();
-    bool virtual move(string direction, list<Dice *> dices, char const * callerName) = 0;
+    bool move(string direction, list<Dice *> dices, char const * callerName);
     string virtual getActualType() = 0;
 };
 

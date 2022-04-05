@@ -33,9 +33,13 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 	cd src/lib; \
 	$(CXX) -c -g yellow_dice.cpp -o ../../build/yellow_dice.o;
 
-mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o
+./build/green_dice.o: ./src/lib/green_dice.cpp ./src/lib/green_dice.h
+	cd src/lib; \
+	$(CXX) -c -g green_dice.cpp -o ../../build/green_dice.o;
+
+mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o
 	cd src; \
-	$(CXX) -g mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o
+	$(CXX) -g mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o ../build/green_dice.o
 
 
 #---------------TESTS-------------
@@ -53,12 +57,12 @@ gtest.a : gtest-all.o
 gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^;
 	
-./src/tests/tests.o : ./src/tests/tests.cpp ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o $(GTEST_HEADERS)
+./src/tests/tests.o : ./src/tests/tests.cpp ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o $(GTEST_HEADERS)
 	cd ./src/tests/; \
 	$(CXX) -isystem ./googletest/googletest/include $(CXXFLAGS) -c tests.cpp
 
 tests: ./src/tests/tests.o gtest_main.a 
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o; \
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o; \
 	mv gtest-all.o ./src/tests; \
 	mv gtest_main.o ./src/tests; \
 	mv gtest_main.a ./src/tests; \

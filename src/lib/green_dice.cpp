@@ -4,13 +4,13 @@
 #include "yellow_dice.h"
 #include "green_dice.h"
 
-YellowDice::YellowDice(Cell position, int nMoves) : Dice(position, nMoves){}
+GreenDice::GreenDice(Cell position, int nMoves) : Dice(position, nMoves){}
 
-YellowDice::YellowDice() : Dice(){}
+GreenDice::GreenDice() : Dice(){}
 
-YellowDice::YellowDice(const YellowDice &yd1){position = yd1.position; nMoves = yd1.nMoves;}
+GreenDice::GreenDice(const GreenDice &gd1){position = gd1.position; nMoves = gd1.nMoves;}
 
-string YellowDice::getActualType(){
+string GreenDice::getActualType(){
   type_index ti(typeid(*this));
   RedDice rd;
   WhiteDice wd;
@@ -28,7 +28,7 @@ string YellowDice::getActualType(){
     return "Dice";
 }
 
-bool YellowDice::moveSx(int x, int y, list<Dice *> dices){
+bool GreenDice::moveSx(int x, int y, list<Dice *> dices){
   if(x-1 < 0) //out of map bound
     return false;
   if(checkArrivalCellIsEmpty(x-1, y, dices) == -1) //arrival cell is empty
@@ -36,21 +36,21 @@ bool YellowDice::moveSx(int x, int y, list<Dice *> dices){
   return false;
 }
 
-bool YellowDice::moveDx(int x, int y, list<Dice *> dices){
+bool GreenDice::moveDx(int x, int y, list<Dice *> dices){
   if(x+1 < 0) //out of map bound
     return false;
   if(checkArrivalCellIsEmpty(x+1, y, dices) == -1) //arrival cell is empty
     return true;
   return false;
 }
-bool YellowDice::moveUp(int x, int y, list<Dice *> dices){
+bool GreenDice::moveUp(int x, int y, list<Dice *> dices){
   if(y-1 < 0) //out of map bound
     return false;
   if(checkArrivalCellIsEmpty(x, y-1, dices) == -1) //arrival cell is empty
     return true;
   return false;
 }
-bool YellowDice::moveDown(int x, int y, list<Dice *> dices){
+bool GreenDice::moveDown(int x, int y, list<Dice *> dices){
   if(y+1 < 0) //out of map bound
     return false;
   if(checkArrivalCellIsEmpty(y+1, y, dices) == -1) //arrival cell is empty

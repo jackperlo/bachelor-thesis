@@ -1,15 +1,15 @@
-#ifndef WHITE_DICE_H
-#define WHITE_DICE_H
+#ifndef GREEN_DICE_H
+#define GREEN_DICE_H
 
 #include "common.h"
 #include "dice.h"
 #include "cell.h"
 
-class WhiteDice : public Dice{
+class GreenDice : public Dice{
   public:
-    WhiteDice(Cell position, int nMoves);
-    WhiteDice();
-    WhiteDice(const WhiteDice &wd1); //copying constructor, invoked in situation as: WhiteDice wd1 = wd2.
+    GreenDice(Cell position, int nMoves);
+    GreenDice();
+    GreenDice(const GreenDice &gd1); //copying constructor, invoked in situation as: GreenDice gd1 = gd2.
     string getActualType();
 
   protected:
@@ -18,7 +18,5 @@ class WhiteDice : public Dice{
     bool moveUp(int x, int y, list<Dice *> dices) override;
     bool moveDown(int x, int y, list<Dice *> dices) override;
 };
-
-//#define move(direction, dices) move(direction, dices, __func__)
 
 #endif

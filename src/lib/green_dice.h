@@ -13,10 +13,10 @@ class GreenDice : public Dice{
     string getActualType();
 
   protected:
-    bool moveSx(int x, int y, list<Dice *> dices) override;
-    bool moveDx(int x, int y, list<Dice *> dices) override;
-    bool moveUp(int x, int y, list<Dice *> dices) override;
-    bool moveDown(int x, int y, list<Dice *> dices) override;
+    pair<bool, int> moveSx(int x, int y, list<Dice *> dices) override;
+    pair<bool, int> moveDx(int x, int y, list<Dice *> dices) override;
+    pair<bool, int> moveUp(int x, int y, list<Dice *> dices) override;
+    pair<bool, int> moveDown(int x, int y, list<Dice *> dices) override;
 };
 
 #endif

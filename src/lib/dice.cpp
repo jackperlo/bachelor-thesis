@@ -32,34 +32,44 @@ bool Dice::move(string direction, list<Dice *> dices, char const * callerName){
   direction = stringToLower(direction);
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
+  pair<bool, int> res;
+
   if(this->getNMoves() > 0){
     if(direction.compare("sx") == 0){
-      if(moveSx(x, y, dices))
-        return makeActiveMove(x-1, y);
+      res = moveSx(x, y, dices);
+      if(res.first)
+        return makeActiveMove(x-res.second, y);
     }else if(direction.compare("dx") == 0){
-      if(moveDx(x, y, dices))
-        return makeActiveMove(x+1, y);
+      res = moveDx(x, y, dices);
+      if(res.first)
+        return makeActiveMove(x+res.second, y);
     }else if(direction.compare("up") == 0){
-      if(moveUp(x, y, dices))
-        return makeActiveMove(x, y-1);
+      res = moveUp(x, y, dices);
+      if(res.first)
+        return makeActiveMove(x, y-res.second);
     }else if(direction.compare("down") == 0){
-      if(moveDown(x, y, dices))
-        return makeActiveMove(x, y+1);
+      res = moveDown(x, y, dices);
+      if(res.first)
+        return makeActiveMove(x, y+res.second);
     }
   }else if(this->getNMoves() == 0 && (strcmp(callerName, "moveSx") == 0 || strcmp(callerName, "moveDx") == 0 || strcmp(callerName, "moveUp") == 0 || strcmp(callerName, "moveDown") == 0)){
     //you come here if the dice has nMoves=0 and is pushed by another dice
     if(direction.compare("sx") == 0){
-      if(moveSx(x, y, dices))
-        return makePassiveMove(x-1, y);
+      res = moveSx(x, y, dices);
+      if(res.first)
+        return makePassiveMove(x-res.second, y);
     }else if(direction.compare("dx") == 0){
-      if(moveDx(x, y, dices))
-        return makePassiveMove(x+1, y);
+      res = moveDx(x, y, dices);
+      if(res.first)
+        return makePassiveMove(x+res.second, y);
     }else if(direction.compare("up") == 0){
-      if(moveUp(x, y, dices))
-        return makePassiveMove(x, y-1);
+      res = moveUp(x, y, dices);
+      if(res.first)
+        return makePassiveMove(x, y-res.second);
     }else if(direction.compare("down") == 0){
-      if(moveDown(x, y, dices))
-        return makePassiveMove(x, y+1);
+      res = moveDown(x, y, dices);
+      if(res.first)
+        return makePassiveMove(x, y+res.second);
     }
   }
   return false;

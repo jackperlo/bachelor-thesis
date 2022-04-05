@@ -28,82 +28,94 @@ string WhiteDice::getActualType(){
     return "Dice";
 }
 
-bool WhiteDice::moveSx(int x, int y, list<Dice *> dices){
+pair<bool, int> WhiteDice::moveSx(int x, int y, list<Dice *> dices){
   if(x-1 < 0) //out of map bound
-    return false;
+    return NO_MOVE;
   
   int occupantDiceIndex = checkArrivalCellIsEmpty(x-1, y, dices);
   
   if(occupantDiceIndex == -1) //arrival cell is empty
-    return true;
+    return MOVE_BY_1;
   else{ //arrival cell is busy
     list<Dice *>::iterator it = dices.begin();
     advance(it, occupantDiceIndex);
     
     string actualType = (*it)->getActualType();
-    if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0) //redDices cannot be pushed  
-      return (*it)->move("sx", dices, __func__); //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
-    else
-      return false;
+    if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
+      if((*it)->move("sx", dices, __func__)) //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
+        return MOVE_BY_1;
+      else 
+        return NO_MOVE;
+    }else
+      return NO_MOVE;
   } 
 }
 
-bool WhiteDice::moveDx(int x, int y, list<Dice *> dices){
+pair<bool, int> WhiteDice::moveDx(int x, int y, list<Dice *> dices){
   if(x+1 >= MAP_WIDTH) //out of map bound
-    return false;
+    return NO_MOVE;
 
   int occupantDiceIndex = checkArrivalCellIsEmpty(x+1, y, dices);
   
   if(occupantDiceIndex == -1) //arrival cell is empty
-    return true;
+    return MOVE_BY_1;
   else{ //arrival cell is busy
     list<Dice *>::iterator it = dices.begin();
     advance(it, occupantDiceIndex);
     
     string actualType = (*it)->getActualType();
-    if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0) 
-      return (*it)->move("dx", dices, __func__);
-    else
-      return false;
+    if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){
+      if((*it)->move("dx", dices, __func__))
+        return MOVE_BY_1;
+      else
+        return NO_MOVE;
+    }else
+      return NO_MOVE;
   } 
 }
 
-bool WhiteDice::moveUp(int x, int y, list<Dice *> dices){
+pair<bool, int> WhiteDice::moveUp(int x, int y, list<Dice *> dices){
   if(y-1 < 0) //out of map bound
-    return false;
+    return NO_MOVE;
 
   int occupantDiceIndex = checkArrivalCellIsEmpty(x, y-1, dices);
   
   if(occupantDiceIndex == -1) //arrival cell is empty
-    return true;
+    return MOVE_BY_1;
   else{ //arrival cell is busy
     list<Dice *>::iterator it = dices.begin();
     advance(it, occupantDiceIndex);
     
     string actualType = (*it)->getActualType();
-    if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0)
-      return (*it)->move("up", dices, __func__);
-    else
-      return false;      
+    if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){
+      if((*it)->move("up", dices, __func__))
+        return MOVE_BY_1;
+      else
+        return NO_MOVE;
+    }else
+      return NO_MOVE;      
   } 
 }
 
-bool WhiteDice::moveDown(int x, int y, list<Dice *> dices){
+pair<bool, int> WhiteDice::moveDown(int x, int y, list<Dice *> dices){
   if(y+1 >= MAP_HEIGHT) //out of map bound{}
-    return false;
+    return NO_MOVE;
 
   int occupantDiceIndex = checkArrivalCellIsEmpty(x, y+1, dices);
   
   if(occupantDiceIndex == -1) //arrival cell is empty
-    return true;
+    return MOVE_BY_1;
   else{ //arrival cell is busy
     list<Dice *>::iterator it = dices.begin();
     advance(it, occupantDiceIndex);
     
     string actualType = (*it)->getActualType();
-    if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0)
-      return (*it)->move("down", dices, __func__);
-    else
-      return false;
+    if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){
+      if((*it)->move("down", dices, __func__))
+        return MOVE_BY_1;
+      else
+        return NO_MOVE;
+    }else
+      return NO_MOVE;
   } 
 }

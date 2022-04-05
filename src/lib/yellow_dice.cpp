@@ -10,6 +10,7 @@ YellowDice::YellowDice() : Dice(){}
 
 YellowDice::YellowDice(const YellowDice &yd1){position = yd1.position; nMoves = yd1.nMoves;}
 
+//!TODO: valutarne l'utilità e successiva rimozione da questa classe
 string YellowDice::getActualType(){
   type_index ti(typeid(*this));
   RedDice rd;
@@ -28,32 +29,34 @@ string YellowDice::getActualType(){
     return "Dice";
 }
 
-bool YellowDice::moveSx(int x, int y, list<Dice *> dices){
+pair<bool, int> YellowDice::moveSx(int x, int y, list<Dice *> dices){
   if(x-1 < 0) //out of map bound
-    return false;
+    return NO_MOVE;
   if(checkArrivalCellIsEmpty(x-1, y, dices) == -1) //arrival cell is empty
-    return true;
-  return false;
+    return MOVE_BY_1;
+  return NO_MOVE;
 }
 
-bool YellowDice::moveDx(int x, int y, list<Dice *> dices){
+pair<bool, int> YellowDice::moveDx(int x, int y, list<Dice *> dices){
   if(x+1 < 0) //out of map bound
-    return false;
+    return NO_MOVE;
   if(checkArrivalCellIsEmpty(x+1, y, dices) == -1) //arrival cell is empty
-    return true;
-  return false;
+    return MOVE_BY_1;
+  return NO_MOVE;
 }
-bool YellowDice::moveUp(int x, int y, list<Dice *> dices){
+
+pair<bool, int> YellowDice::moveUp(int x, int y, list<Dice *> dices){
   if(y-1 < 0) //out of map bound
-    return false;
+    return NO_MOVE;
   if(checkArrivalCellIsEmpty(x, y-1, dices) == -1) //arrival cell is empty
-    return true;
-  return false;
+    return MOVE_BY_1;
+  return NO_MOVE;
 }
-bool YellowDice::moveDown(int x, int y, list<Dice *> dices){
+
+pair<bool, int> YellowDice::moveDown(int x, int y, list<Dice *> dices){
   if(y+1 < 0) //out of map bound
-    return false;
+    return NO_MOVE;
   if(checkArrivalCellIsEmpty(y+1, y, dices) == -1) //arrival cell is empty
-    return true;
-  return false;
+    return MOVE_BY_1;
+  return NO_MOVE;
 }

@@ -29,9 +29,6 @@ string WhiteDice::getActualType(){
 }
 
 pair<bool, int> WhiteDice::moveSx(int x, int y, list<Dice *> dices){
-  if(x-1 < 0) //out of map bound
-    return NO_MOVE;
-  
   int occupantDiceIndex = checkArrivalCellIsEmpty(x-1, y, dices);
   
   if(occupantDiceIndex == -1) //arrival cell is empty
@@ -52,9 +49,6 @@ pair<bool, int> WhiteDice::moveSx(int x, int y, list<Dice *> dices){
 }
 
 pair<bool, int> WhiteDice::moveDx(int x, int y, list<Dice *> dices){
-  if(x+1 >= MAP_WIDTH) //out of map bound
-    return NO_MOVE;
-
   int occupantDiceIndex = checkArrivalCellIsEmpty(x+1, y, dices);
   
   if(occupantDiceIndex == -1) //arrival cell is empty
@@ -75,9 +69,6 @@ pair<bool, int> WhiteDice::moveDx(int x, int y, list<Dice *> dices){
 }
 
 pair<bool, int> WhiteDice::moveUp(int x, int y, list<Dice *> dices){
-  if(y-1 < 0) //out of map bound
-    return NO_MOVE;
-
   int occupantDiceIndex = checkArrivalCellIsEmpty(x, y-1, dices);
   
   if(occupantDiceIndex == -1) //arrival cell is empty
@@ -98,9 +89,6 @@ pair<bool, int> WhiteDice::moveUp(int x, int y, list<Dice *> dices){
 }
 
 pair<bool, int> WhiteDice::moveDown(int x, int y, list<Dice *> dices){
-  if(y+1 >= MAP_HEIGHT) //out of map bound{}
-    return NO_MOVE;
-
   int occupantDiceIndex = checkArrivalCellIsEmpty(x, y+1, dices);
   
   if(occupantDiceIndex == -1) //arrival cell is empty

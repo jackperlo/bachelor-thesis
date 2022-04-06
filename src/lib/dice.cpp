@@ -38,19 +38,19 @@ bool Dice::move(string direction, list<Dice *> dices, char const * callerName){
     if(direction.compare("sx") == 0){
       res = moveSx(x, y, dices);
       if(res.first)
-        return makeActiveMove(x-res.second, y);
+        return makeActiveMove(x-res.second, y, res.second);
     }else if(direction.compare("dx") == 0){
       res = moveDx(x, y, dices);
       if(res.first)
-        return makeActiveMove(x+res.second, y);
+        return makeActiveMove(x+res.second, y, res.second);
     }else if(direction.compare("up") == 0){
       res = moveUp(x, y, dices);
       if(res.first)
-        return makeActiveMove(x, y-res.second);
+        return makeActiveMove(x, y-res.second, res.second);
     }else if(direction.compare("down") == 0){
       res = moveDown(x, y, dices);
       if(res.first)
-        return makeActiveMove(x, y+res.second);
+        return makeActiveMove(x, y+res.second, res.second);
     }
   }else if(this->getNMoves() == 0 && (strcmp(callerName, "moveSx") == 0 || strcmp(callerName, "moveDx") == 0 || strcmp(callerName, "moveUp") == 0 || strcmp(callerName, "moveDown") == 0)){
     //you come here if the dice has nMoves=0 and is pushed by another dice
@@ -92,10 +92,10 @@ int Dice::checkArrivalCellIsEmpty(int x, int y, list<Dice *> dices){
   return ret;
 }
 
-bool Dice::makeActiveMove(int x, int y){
+bool Dice::makeActiveMove(int x, int y, int nMovesDone){
   Cell arrivalCell(x, y);
   this->setPosition(arrivalCell);
-  this->setNMoves(this->getNMoves()-1);
+  this->setNMoves(this->getNMoves()-nMovesDone);
   return true;
 }
 

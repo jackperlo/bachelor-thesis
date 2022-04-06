@@ -30,33 +30,45 @@ string YellowDice::getActualType(){
 }
 
 pair<bool, int> YellowDice::moveSx(int x, int y, list<Dice *> dices){
-  if(x-1 < 0) //out of map bound
-    return NO_MOVE;
-  if(checkArrivalCellIsEmpty(x-1, y, dices) == -1) //arrival cell is empty
+  pair<bool, int> res = NO_MOVE;
+  if(checkArrivalCellIsEmpty(x-1, y, dices) == -1)
     return MOVE_BY_1;
-  return NO_MOVE;
+  else if(checkArrivalCellIsEmpty(x-2, y, dices) == -1){
+    res.first = true;
+    res.second = 2;
+  }
+  return res;
 }
 
 pair<bool, int> YellowDice::moveDx(int x, int y, list<Dice *> dices){
-  if(x+1 < 0) //out of map bound
-    return NO_MOVE;
-  if(checkArrivalCellIsEmpty(x+1, y, dices) == -1) //arrival cell is empty
+  pair<bool, int> res = NO_MOVE;
+  if(checkArrivalCellIsEmpty(x+1, y, dices) == -1)
     return MOVE_BY_1;
-  return NO_MOVE;
+  else if(checkArrivalCellIsEmpty(x+2, y, dices) == -1){
+    res.first = true;
+    res.second = 2;
+  }
+  return res;
 }
 
 pair<bool, int> YellowDice::moveUp(int x, int y, list<Dice *> dices){
-  if(y-1 < 0) //out of map bound
-    return NO_MOVE;
-  if(checkArrivalCellIsEmpty(x, y-1, dices) == -1) //arrival cell is empty
+  pair<bool, int> res = NO_MOVE;
+  if(checkArrivalCellIsEmpty(x, y-1, dices) == -1)
     return MOVE_BY_1;
-  return NO_MOVE;
+  else if(checkArrivalCellIsEmpty(x, y-2, dices) == -1){
+    res.first = true;
+    res.second = 2;
+  }
+  return res;
 }
 
 pair<bool, int> YellowDice::moveDown(int x, int y, list<Dice *> dices){
-  if(y+1 < 0) //out of map bound
-    return NO_MOVE;
-  if(checkArrivalCellIsEmpty(y+1, y, dices) == -1) //arrival cell is empty
+  pair<bool, int> res = NO_MOVE;
+  if(checkArrivalCellIsEmpty(x, y+1, dices) == -1)
     return MOVE_BY_1;
-  return NO_MOVE;
+  else if(checkArrivalCellIsEmpty(x, y+2, dices) == -1){
+    res.first = true;
+    res.second = 2;
+  }
+  return res;
 }

@@ -33,43 +33,33 @@ bool Dice::move(string direction, list<Dice *> dices, char const * callerName){
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
   pair<bool, int> res;
+  bool pushedMove = this->getNMoves() == 0 && (strcmp(callerName, "moveSx") == 0 || strcmp(callerName, "moveDx") == 0 || strcmp(callerName, "moveUp") == 0 || strcmp(callerName, "moveDown") == 0);
 
-  if(this->getNMoves() > 0){
+  if(this->getNMoves() > 0 || pushedMove){
     if(direction.compare("sx") == 0){
       res = moveSx(x, y, dices);
-      if(res.first)
-        return makeActiveMove(x-res.second, y, res.second);
+      if(res.first && !pushedMove)
+        return makeMove(x-res.second, y, res.second);
+      else if(res.first && pushedMove)
+        return makeMove(x-res.second, y, 0);
     }else if(direction.compare("dx") == 0){
       res = moveDx(x, y, dices);
-      if(res.first)
-        return makeActiveMove(x+res.second, y, res.second);
+      if(res.first && !pushedMove)
+        return makeMove(x+res.second, y, res.second);
+      else if(res.first && pushedMove)
+        return makeMove(x+res.second, y, 0);
     }else if(direction.compare("up") == 0){
       res = moveUp(x, y, dices);
-      if(res.first)
-        return makeActiveMove(x, y-res.second, res.second);
+      if(res.first && !pushedMove)
+        return makeMove(x, y-res.second, res.second);
+      else if(res.first && pushedMove)
+        return makeMove(x, y-res.second, 0);
     }else if(direction.compare("down") == 0){
       res = moveDown(x, y, dices);
-      if(res.first)
-        return makeActiveMove(x, y+res.second, res.second);
-    }
-  }else if(this->getNMoves() == 0 && (strcmp(callerName, "moveSx") == 0 || strcmp(callerName, "moveDx") == 0 || strcmp(callerName, "moveUp") == 0 || strcmp(callerName, "moveDown") == 0)){
-    //you come here if the dice has nMoves=0 and is pushed by another dice
-    if(direction.compare("sx") == 0){
-      res = moveSx(x, y, dices);
-      if(res.first)
-        return makePassiveMove(x-res.second, y);
-    }else if(direction.compare("dx") == 0){
-      res = moveDx(x, y, dices);
-      if(res.first)
-        return makePassiveMove(x+res.second, y);
-    }else if(direction.compare("up") == 0){
-      res = moveUp(x, y, dices);
-      if(res.first)
-        return makePassiveMove(x, y-res.second);
-    }else if(direction.compare("down") == 0){
-      res = moveDown(x, y, dices);
-      if(res.first)
-        return makePassiveMove(x, y+res.second);
+      if(res.first && !pushedMove)
+        return makeMove(x, y+res.second, res.second);
+      else if(res.first && pushedMove)
+        return makeMove(x, y+res.second, res.second);
     }
   }
   return false;
@@ -92,15 +82,9 @@ int Dice::checkArrivalCellIsEmpty(int x, int y, list<Dice *> dices){
   return ret;
 }
 
-bool Dice::makeActiveMove(int x, int y, int nMovesDone){
+bool Dice::makeMove(int x, int y, int nMovesDone){
   Cell arrivalCell(x, y);
   this->setPosition(arrivalCell);
   this->setNMoves(this->getNMoves()-nMovesDone);
-  return true;
-}
-
-bool Dice::makePassiveMove(int x, int y){
-  Cell arrivalCell(x, y);
-  this->setPosition(arrivalCell);
   return true;
 }

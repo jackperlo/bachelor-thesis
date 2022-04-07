@@ -927,6 +927,52 @@ TEST(twoYellowDices_PushingEachOther, moveSx){
   }
 }
 
+TEST(WhiteDicePushingYellowDice, moveSx){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      YellowDice *yd = new YellowDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(wd);
+      dices.push_back(yd); 
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("sx", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getX(), i);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getX(), i-1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingWhiteDice, moveSx){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+2);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      YellowDice *yd = new YellowDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(yd); 
+      dices.push_back(wd);
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("sx", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getX(), i);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
 TEST(oneYellowDice, moveDx0Moves){
   list<Dice *> dices;
   Cell c;
@@ -973,6 +1019,52 @@ TEST(twoYellowDices_PushingEachOther, moveDx){
       YellowDice *rd2 = new YellowDice(c2, 1);
       dices.push_back(rd1);
       dices.push_back(rd2);
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("dx", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getX(), i+2);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingYellowDice, moveDx){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i-1);
+      c2.setY(j);
+      YellowDice *yd = new YellowDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(wd);
+      dices.push_back(yd); 
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("dx", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getX(), i);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingWhiteDice, moveDx){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      YellowDice *yd = new YellowDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(yd); 
+      dices.push_back(wd);
       list<Dice *>::iterator it = dices.begin();
       EXPECT_TRUE((*it)->move("dx", dices, __func__));
       ASSERT_EQ((*it)->getPosition().getX(), i+2);
@@ -1039,6 +1131,52 @@ TEST(twoYellowDices_PushingEachOther, moveDown){
   }
 }
 
+TEST(WhiteDicePushingYellowDice, moveDown){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      YellowDice *yd = new YellowDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(wd);
+      dices.push_back(yd); 
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("down", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getY(), j+2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingWhiteDice, moveDown){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      YellowDice *yd = new YellowDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(yd); 
+      dices.push_back(wd);
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("down", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getY(), j+2);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
 TEST(oneYellowDice, moveUp0Moves){
   list<Dice *> dices;
   Cell c;
@@ -1095,6 +1233,52 @@ TEST(twoYellowDices_PushingEachOther, moveUp){
   }
 }
 
+TEST(WhiteDicePushingYellowDice, moveUp){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      YellowDice *yd = new YellowDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(wd);
+      dices.push_back(yd); 
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("up", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getY(), j);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getY(), j-1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingWhiteDice, moveUp){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j+2);
+      YellowDice *yd = new YellowDice(c2, 1);
+      WhiteDice *wd = new WhiteDice(c1, 1);
+      dices.push_back(yd); 
+      dices.push_back(wd);
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("up", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getY(), j);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
 TEST(oneGreenDice, moveSx0Moves){
   list<Dice *> dices;
   Cell c;
@@ -1144,6 +1328,52 @@ TEST(twoGreenDices_PushingEachOther, moveSx){
       dices.push_back(rd1); 
       list<Dice *>::iterator it = dices.begin();
       EXPECT_TRUE((*it)->move("sx", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingGreenDice, moveSx){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      GreenDice *gd = new GreenDice(c1, 2);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(wd);
+      dices.push_back(gd); 
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("sx", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getX(), i);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getX(), i-2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, moveSx){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice *gd = new GreenDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(gd); 
+      dices.push_back(wd);
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_FALSE((*it)->move("sx", dices, __func__));
       ASSERT_EQ((*it)->getPosition().getX(), i+1);
       advance(it, 1);
       ASSERT_EQ((*it)->getPosition().getX(), i);
@@ -1209,6 +1439,52 @@ TEST(twoGreenwDices_PushingEachOther, moveDx){
   }
 }
 
+TEST(WhiteDicePushingGreenDice, moveDx){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i-1);
+      c2.setY(j);
+      GreenDice *gd = new GreenDice(c1, 2);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(wd);
+      dices.push_back(gd); 
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("dx", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getX(), i);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getX(), i+2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, moveDx){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      GreenDice *gd = new GreenDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(gd); 
+      dices.push_back(wd);
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_FALSE((*it)->move("dx", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getX(), i);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
 TEST(oneGreenDice, moveDown0Moves){
   list<Dice *> dices;
   Cell c;
@@ -1266,6 +1542,52 @@ TEST(twoGreenDices_PushingEachOther, moveDown){
   }
 }
 
+TEST(WhiteDicePushingGreenDice, moveDown){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice *gd = new GreenDice(c1, 2);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(wd);
+      dices.push_back(gd); 
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("down", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getY(), j+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, moveDown){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice *gd = new GreenDice(c1, 1);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(gd); 
+      dices.push_back(wd);
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_FALSE((*it)->move("down", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getY(), j);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
 TEST(oneGreenDice, moveUp0Moves){
   list<Dice *> dices;
   Cell c;
@@ -1315,6 +1637,52 @@ TEST(twoGreenDices_PushingEachOther, moveUp){
       dices.push_back(rd1); 
       list<Dice *>::iterator it = dices.begin();
       EXPECT_TRUE((*it)->move("up", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingGreenDice, moveUp){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice *gd = new GreenDice(c1, 2);
+      WhiteDice *wd = new WhiteDice(c2, 1);
+      dices.push_back(wd);
+      dices.push_back(gd); 
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_TRUE((*it)->move("up", dices, __func__));
+      ASSERT_EQ((*it)->getPosition().getY(), j);
+      advance(it, 1);
+      ASSERT_EQ((*it)->getPosition().getY(), j-2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, moveUp){
+  list<Dice *> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice *gd = new GreenDice(c2, 1);
+      WhiteDice *wd = new WhiteDice(c1, 1);
+      dices.push_back(gd); 
+      dices.push_back(wd);
+      list<Dice *>::iterator it = dices.begin();
+      EXPECT_FALSE((*it)->move("up", dices, __func__));
       ASSERT_EQ((*it)->getPosition().getY(), j+1);
       advance(it, 1);
       ASSERT_EQ((*it)->getPosition().getY(), j);

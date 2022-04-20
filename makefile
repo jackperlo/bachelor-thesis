@@ -37,9 +37,17 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 	cd src/lib; \
 	$(CXX) -c -g green_dice.cpp -o ../../build/green_dice.o;
 
-mad_dices: ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o
+./build/p2d.o: ./src/lib/p2d.cpp ./src/lib/p2d.h
+	cd src/lib; \
+	$(CXX) -c -g p2d.cpp -o ../../build/p2d.o;	
+
+./build/alea_game.o: ./src/alea_game.cpp ./src/alea_game.h
 	cd src; \
-	$(CXX) -g mad_dices.cpp -o mad_dices ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o ../build/green_dice.o
+	$(CXX) -c -g alea_game.cpp -o ../build/alea_game.o;
+
+level_solver: ./build/alea_game.o ./build/p2d.o ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o
+	cd src; \
+	$(CXX) -g level_solver.cpp -o level_solver ../build/p2d.o ../build/alea_game.o ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o ../build/green_dice.o
 
 
 #---------------TESTS-------------
@@ -57,12 +65,12 @@ gtest.a : gtest-all.o
 gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^;
 	
-./src/tests/tests.o : ./src/tests/tests.cpp ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o $(GTEST_HEADERS)
+./src/tests/tests.o : ./src/tests/tests.cpp ./build/p2d.o ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o $(GTEST_HEADERS)
 	cd ./src/tests/; \
 	$(CXX) -isystem ./googletest/googletest/include $(CXXFLAGS) -c tests.cpp
 
 tests: ./src/tests/tests.o gtest_main.a 
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o; \
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ./build/p2d.o ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o; \
 	mv gtest-all.o ./src/tests; \
 	mv gtest_main.o ./src/tests; \
 	mv gtest_main.a ./src/tests; \
@@ -70,13 +78,13 @@ tests: ./src/tests/tests.o gtest_main.a
 
 #---------------COMMANDS-------------
 
-make all: mad_dices
+make all: level_solver
 
 run:
-	./src/mad_dices
+	./src/level_solver
 
 run_tests:	
 	./src/tests/tests	
 
 clean:
-	rm -f ./build/*.o ./src/mad_dices ./src/tests/tests ./src/tests/*.a ./src/tests/*.o
+	rm -f ./build/*.o ./src/level_solver ./src/tests/tests ./src/tests/*.a ./src/tests/*.o

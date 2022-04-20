@@ -1,0 +1,38 @@
+{
+    "columns": 4,
+    "dice": [
+        {
+            "num": 3,
+            "pos": 1,
+            "type": 1
+        },
+        {
+            "num": 6,
+            "pos": 11,
+            "type": 1
+        },
+        {
+            "num": 3,
+            "pos": 4,
+            "type": 2
+        },
+        {
+            "num": 2,
+            "pos": 5,
+            "type": 2
+        },
+        {
+            "num": 1,
+            "pos": 3,
+            "type": 3
+        }
+    ],
+    "difficulty": 11,
+    "terminals": [
+        1,
+        11,
+        4,
+        5,
+        3
+    ]
+}

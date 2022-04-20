@@ -4,19 +4,27 @@
 #include "common.h"
 #include "dice.h"
 #include "cell.h"
+#include "p2d.h"
 
 class WhiteDice : public Dice{
   public:
     WhiteDice(Cell position, int nMoves);
     WhiteDice();
     WhiteDice(const WhiteDice &wd1); //copying constructor, invoked in situation as: WhiteDice wd1 = wd2.
+    operator string();
     string getActualType();
+    int getActualTypeInt();
+    pair<bool, int> reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> dices, char const * callerName, bool isJustForSimulation, bool isPushed = false) override;
 
   protected:
-    pair<bool, int> moveSx(int x, int y, list<Dice *> dices) override;
-    pair<bool, int> moveDx(int x, int y, list<Dice *> dices) override;
-    pair<bool, int> moveUp(int x, int y, list<Dice *> dices) override;
-    pair<bool, int> moveDown(int x, int y, list<Dice *> dices) override;
+    pair<bool, int> moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) override;
+    pair<bool, int> moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) override;
+    pair<bool, int> moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) override;
+    pair<bool, int> moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) override;
+    pair<bool, int> reverseMoveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) override;
+    pair<bool, int> reverseMoveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) override;
+    pair<bool, int> reverseMoveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) override;
+    pair<bool, int> reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) override;
 };
 
 //#define move(direction, dices) move(direction, dices, __func__)

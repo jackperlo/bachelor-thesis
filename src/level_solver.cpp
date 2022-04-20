@@ -1,14 +1,16 @@
-#include "lib/common.h"
-#include "./lib/white_dice.h"
-#include "./lib/red_dice.h"
-#include "./lib/yellow_dice.h"
-#include "./lib/green_dice.h"
+#include "alea_game.h"
 
+/*
 bool checkIfDiceAlreadyExists(list<Dice *> dices, Cell c);
 list <Dice *> generateDices();
-void printDices(list<Dice *> dices);
+void printDices(list<Dice *> dices);*/
 
-int main(){ 
+int main(int argc, char *argv[]){ 
+  AleaGame *game = new AleaGame("./generated_levels/TrialLevel.json");
+	game->print(true);
+
+  return 0;
+  /* 
   list<Dice *> dices = generateDices();
   
   printDices(dices);
@@ -17,9 +19,9 @@ int main(){
   (*it)->move("dx", dices, __func__);
   printDices(dices);
   
-  return 0;
+  return 0;*/
 }
-
+/*
 list<Dice *> generateDices(){
   list<Dice *> dices;
 
@@ -61,7 +63,7 @@ void printDices(list<Dice *> dices){
 
 
 
-
+*/
 
 
 

@@ -33,343 +33,317 @@
 #include "../lib/yellow_dice.h"
 #include "../lib/green_dice.h"
 #include "../lib/cell.h"
+#include "../lib/p2d.h"
 
 TEST(oneWhiteDice, moveSx0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice *wd = new WhiteDice(c, 0);
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
+      WhiteDice wd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("sx", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(twoWhiteDices_PushingEachOther0Moves, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
-      c1.setX(i);
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
       c1.setY(j);
-      c2.setX(i+1);
+      c2.setX(i+2);
       c2.setY(j);
-      WhiteDice *wd1 = new WhiteDice(c1, 0);
-      WhiteDice *wd2 = new WhiteDice(c2, 1);
-      dices.push_back(wd2);
-      dices.push_back(wd1); 
-      //dices = [wd2, wd1];
-      // wd2 pushes to the left wd1:
-      // map: |    | wd1 | wd2 |    |    |
-      list<Dice *>::iterator it = dices.begin(); //get wd2
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i-1);
+      WhiteDice wd1(c1, 0);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(oneWhiteDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
+    for (int i = 1; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice *wd = new WhiteDice(c, 1);
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
+      WhiteDice wd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getX(), i-1);
       dices.clear();
     }
   }
 }
 
 TEST(twoWhiteDices_PushingEachOther, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
-      c1.setX(i);
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
       c1.setY(j);
-      c2.setX(i+1);
+      c2.setX(i+2);
       c2.setY(j);
-      WhiteDice *wd1 = new WhiteDice(c1, 1);
-      WhiteDice *wd2 = new WhiteDice(c2, 1);
-      dices.push_back(wd2);
-      dices.push_back(wd1); 
-      //dices = [wd2, wd1];
-      // wd2 pushes to the left wd1:
-      // map: |    | wd1 | wd2 |    |    |
-      list<Dice *>::iterator it = dices.begin(); //get wd2
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i-1);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(oneWhiteDice, moveDx0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice *wd = new WhiteDice(c, 0);
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("dx", dices, __func__));
+      WhiteDice wd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("dx", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(twoWhiteDices_PushingEachOther0Moves, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice *wd1 = new WhiteDice(c1, 1);
-      WhiteDice *wd2 = new WhiteDice(c2, 0);
-      dices.push_back(wd1);
-      dices.push_back(wd2);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(oneWhiteDice, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice *wd = new WhiteDice(c, 1);
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
+      WhiteDice wd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(twoWhiteDices_PushingEachOther, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice *wd1 = new WhiteDice(c1, 1);
-      WhiteDice *wd2 = new WhiteDice(c2, 1);
-      dices.push_back(wd1);
-      dices.push_back(wd2);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(oneWhiteDice0Moves, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
+  for (int j = 1; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice *wd = new WhiteDice(c, 0);
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("up", dices, __func__));
+      WhiteDice wd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("up", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(twoWhiteDices_PushingEachOther0Moves, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
-      c1.setY(j);
+      c1.setY(j+1);
       c2.setX(i);
-      c2.setY(j+1);
-      WhiteDice *wd1 = new WhiteDice(c1, 0);
-      WhiteDice *wd2 = new WhiteDice(c2, 1);
-      dices.push_back(wd2);
-      dices.push_back(wd1);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j-1);
+      c2.setY(j+2);
+      WhiteDice wd1(c1, 0);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
 TEST(oneWhiteDice, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
+  for (int j = 1; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice *wd = new WhiteDice(c, 1);
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
+      WhiteDice wd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getY(), j-1);
       dices.clear();
     }
   }
 }
 
 TEST(twoWhiteDices_PushingEachOther, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
-      c1.setY(j);
+      c1.setY(j+1);
       c2.setX(i);
-      c2.setY(j+1);
-      WhiteDice *wd1 = new WhiteDice(c1, 1);
-      WhiteDice *wd2 = new WhiteDice(c2, 1);
-      dices.push_back(wd2);
-      dices.push_back(wd1);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j-1);
+      c2.setY(j+2);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
 TEST(oneWhiteDice0Moves, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice *wd = new WhiteDice(c, 0);
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("down", dices, __func__));
+      WhiteDice wd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("down", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(twoWhiteDices_PushingEachOther0Moves, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice *wd1 = new WhiteDice(c1, 1);
-      WhiteDice *wd2 = new WhiteDice(c2, 0);
-      dices.push_back(wd1);
-      dices.push_back(wd2);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(oneWhiteDice, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice *wd = new WhiteDice(c, 1);
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
+      WhiteDice wd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(twoWhiteDices_PushingEachOther, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice *wd1 = new WhiteDice(c1, 1);
-      WhiteDice *wd2 = new WhiteDice(c2, 1);
-      dices.push_back(wd1);
-      dices.push_back(wd2);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(oneRedDice, moveSx0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
+    for (int i = 1; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice *rd = new RedDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
+      RedDice rd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("sx", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(twoRedDices_PushingEachOther0Moves, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -377,38 +351,36 @@ TEST(twoRedDices_PushingEachOther0Moves, moveSx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice *rd1 = new RedDice(c1, 0);
-      RedDice *rd2 = new RedDice(c2, 1);
-      dices.push_back(rd2);
-      dices.push_back(rd1); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      RedDice rd1(c1, 0);
+      RedDice rd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(oneRedDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
+    for (int i = 1; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice *rd = new RedDice(c, 1);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
+      RedDice rd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getX(), i-1);
       dices.clear();
     }
   }
 }
 
 TEST(twoRedDices_PushingEachOther, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -416,22 +388,20 @@ TEST(twoRedDices_PushingEachOther, moveSx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice *rd1 = new RedDice(c1, 1);
-      RedDice *rd2 = new RedDice(c2, 1);
-      dices.push_back(rd2);
-      dices.push_back(rd1); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      RedDice rd1(c1, 1);
+      RedDice rd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(WhiteDicePushingRedDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -439,100 +409,93 @@ TEST(WhiteDicePushingRedDice, moveSx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(rd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingWhiteDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
-      c1.setX(i+1);
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+2);
       c1.setY(j);
-      c2.setX(i);
+      c2.setX(i+1);
       c2.setY(j);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(rd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i-1);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingWhiteDice0Moves, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
-      c1.setX(i+1);
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+2);
       c1.setY(j);
-      c2.setX(i);
+      c2.setX(i+1);
       c2.setY(j);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 0);
-      dices.push_back(rd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i-1);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(oneRedDice, moveDx0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice *rd = new RedDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("dx", dices, __func__));
+      RedDice rd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("dx", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(oneRedDice, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
       c.setX(i);
       c.setY(j);
-      RedDice *rd = new RedDice(c, 1);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
+      RedDice rd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(twoRedDices_PushingEachOther, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -540,22 +503,20 @@ TEST(twoRedDices_PushingEachOther, moveDx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice *rd1 = new RedDice(c1, 1);
-      RedDice *rd2 = new RedDice(c2, 1);
-      dices.push_back(rd1);
-      dices.push_back(rd2);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      RedDice rd1(c1, 1);
+      RedDice rd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(WhiteDicePushingRedDice, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -563,100 +524,94 @@ TEST(WhiteDicePushingRedDice, moveDx){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(rd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingWhiteDice, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(rd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingWhiteDice0Moves, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 0);
-      dices.push_back(rd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(oneRedDice, moveUp0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice *rd = new RedDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("up", dices, __func__));
+      RedDice rd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("down", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(oneRedDice, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
+  for (int j = 1; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice *rd = new RedDice(c, 1);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
+      RedDice rd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getY(), j-1);
+      dices.clear();
       dices.clear();
     }
   }
 }
 
 TEST(twoRedDices_PushingEachOther, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -664,22 +619,20 @@ TEST(twoRedDices_PushingEachOther, moveUp){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice *rd1 = new RedDice(c1, 1);
-      RedDice *rd2 = new RedDice(c2, 1);
-      dices.push_back(rd2);
-      dices.push_back(rd1); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j);
+      RedDice rd1(c1, 1);
+      RedDice rd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
 TEST(WhiteDicePushingRedDice, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-1; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -687,100 +640,93 @@ TEST(WhiteDicePushingRedDice, moveUp){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(rd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingWhiteDice, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
-      c1.setY(j);
+      c1.setY(j+1);
       c2.setX(i);
-      c2.setY(j+1);
-      RedDice *rd = new RedDice(c2, 1);
-      WhiteDice *wd = new WhiteDice(c1, 1);
-      dices.push_back(rd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j-1);
+      c2.setY(j+2);
+      RedDice rd(c2, 1);
+      WhiteDice wd(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingWhiteDice0Moves, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
-      c1.setY(j);
+      c1.setY(j+1);
       c2.setX(i);
-      c2.setY(j+1);
-      RedDice *rd = new RedDice(c2, 1);
-      WhiteDice *wd = new WhiteDice(c1, 0);
-      dices.push_back(rd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j-1);
+      c2.setY(j+2);
+      RedDice rd(c2, 1);
+      WhiteDice wd(c1, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
 TEST(oneRedDice, moveDown0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice *rd = new RedDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("down", dices, __func__));
+      RedDice rd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("down", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(oneRedDice, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice *rd = new RedDice(c, 1);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
+      RedDice rd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(twoRedDices_PushingEachOther, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -788,22 +734,20 @@ TEST(twoRedDices_PushingEachOther, moveDown){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice *rd1 = new RedDice(c1, 1);
-      RedDice *rd2 = new RedDice(c2, 1);
-      dices.push_back(rd1);
-      dices.push_back(rd2);
-      list<Dice *>::iterator it = dices.begin(); //get rd1
-      EXPECT_FALSE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      RedDice rd1(c1, 1);
+      RedDice rd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
 TEST(WhiteDicePushingRedDice, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-1; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -811,147 +755,135 @@ TEST(WhiteDicePushingRedDice, moveDown){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(rd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingWhiteDice, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(rd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingWhiteDice0Moves, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice *rd = new RedDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 0);
-      dices.push_back(rd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
+      RedDice rd(c1, 1);
+      WhiteDice wd(c2, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(oneYellowDice, moveSx0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice *rd = new YellowDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
+      YellowDice yd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("sx", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(oneYellowDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
+    for (int i = 1; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice *rd = new YellowDice(c, 1);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i-1);
+      YellowDice yd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getX(), i-1);
       dices.clear();
     }
   }
 }
 
 TEST(twoYellowDices_PushingEachOther, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
-      c1.setX(i);
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
       c1.setY(j);
-      c2.setX(i+1);
+      c2.setX(i+2);
       c2.setY(j);
-      YellowDice *rd1 = new YellowDice(c1, 1);
-      YellowDice *rd2 = new YellowDice(c2, 1);
-      dices.push_back(rd2);
-      dices.push_back(rd1); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i-1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      YellowDice yd1(c1, 1);
+      YellowDice yd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(WhiteDicePushingYellowDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
-      c1.setX(i);
+      c1.setX(i+1);
       c1.setY(j);
-      c2.setX(i+1);
+      c2.setX(i+2);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(yd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i-1);
+      YellowDice yd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(YellowDiceJumpingWhiteDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-2; i++){
@@ -959,45 +891,41 @@ TEST(YellowDiceJumpingWhiteDice, moveSx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(yd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      YellowDice yd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingYellowDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
-      c1.setX(i);
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
       c1.setY(j);
-      c2.setX(i+1);
+      c2.setX(i+2);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(rd);
-      dices.push_back(yd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i-1);
+      YellowDice yd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(YellowDiceJumpingRedDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-2; i++){
@@ -1005,101 +933,93 @@ TEST(YellowDiceJumpingRedDice, moveSx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(yd); 
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      YellowDice yd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(oneYellowDice, moveDx0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice *rd = new YellowDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("dx", dices, __func__));
+      YellowDice yd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("dx", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(oneYellowDice, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice *rd = new YellowDice(c, 1);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      YellowDice yd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(twoYellowDices_PushingEachOther, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice *rd1 = new YellowDice(c1, 1);
-      YellowDice *rd2 = new YellowDice(c2, 1);
-      dices.push_back(rd1);
-      dices.push_back(rd2);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      YellowDice yd1(c1, 1);
+      YellowDice yd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
       dices.clear();
     }
   }
 }
 
 TEST(WhiteDicePushingYellowDice, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
-      c1.setX(i);
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
       c1.setY(j);
-      c2.setX(i-1);
+      c2.setX(i);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(yd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      YellowDice yd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
       dices.clear();
     }
   }
 }
 
 TEST(YellowDiceJumpingWhiteDice, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-2; i++){
@@ -1107,45 +1027,41 @@ TEST(YellowDiceJumpingWhiteDice, moveDx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(yd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      YellowDice yd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingYellowDice, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
-      c1.setX(i);
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
       c1.setY(j);
-      c2.setX(i-1);
+      c2.setX(i);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(rd);
-      dices.push_back(yd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      YellowDice yd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
       dices.clear();
     }
   }
 }
 
 TEST(YellowDiceJumpingRedDice, moveDx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-2; i++){
@@ -1153,101 +1069,93 @@ TEST(YellowDiceJumpingRedDice, moveDx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(yd); 
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      YellowDice yd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
       dices.clear();
     }
   }
 }
 
 TEST(oneYellowDice, moveDown0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice *rd = new YellowDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("down", dices, __func__));
+      YellowDice yd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("down", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(oneYellowDice, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice *rd = new YellowDice(c, 1);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      YellowDice yd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(twoYellowDices_PushingEachOther, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice *rd1 = new YellowDice(c1, 1);
-      YellowDice *rd2 = new YellowDice(c2, 1);
-      dices.push_back(rd1);
-      dices.push_back(rd2);
-      list<Dice *>::iterator it = dices.begin(); 
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      YellowDice yd1(c1, 1);
+      YellowDice yd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
       dices.clear();
     }
   }
 }
 
 TEST(WhiteDicePushingYellowDice, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(yd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
+      YellowDice yd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
       dices.clear();
     }
   }
 }
 
 TEST(YellowDiceJumpingWhiteDice, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -1255,45 +1163,41 @@ TEST(YellowDiceJumpingWhiteDice, moveDown){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice *yd = new YellowDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(yd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      YellowDice yd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingYellowDice, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      YellowDice *yd = new YellowDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(rd);
-      dices.push_back(yd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
+      YellowDice yd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
       dices.clear();
     }
   }
 }
 
 TEST(YellowDiceJumpingRedDice, moveDown){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -1301,55 +1205,51 @@ TEST(YellowDiceJumpingRedDice, moveDown){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice *yd = new YellowDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(yd); 
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      YellowDice yd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
       dices.clear();
     }
   }
 }
 
 TEST(oneYellowDice, moveUp0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice *rd = new YellowDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("up", dices, __func__));
+      YellowDice yd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("up", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(oneYellowDice, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
+  for (int j = 1; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice *rd = new YellowDice(c, 1);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j-1);
+      YellowDice yd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getY(), j-1);
       dices.clear();
     }
   }
 }
 
 TEST(twoYellowDices_PushingEachOther, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -1357,45 +1257,41 @@ TEST(twoYellowDices_PushingEachOther, moveUp){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice *rd1 = new YellowDice(c1, 1);
-      YellowDice *rd2 = new YellowDice(c2, 1);
-      dices.push_back(rd2);
-      dices.push_back(rd1); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j-1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j);
+      YellowDice yd1(c1, 1);
+      YellowDice yd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
 TEST(WhiteDicePushingYellowDice, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice *yd = new YellowDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(yd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j-1);
+      YellowDice yd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j-1);
       dices.clear();
     }
   }
 }
 
 TEST(YellowDiceJumpingWhiteDice, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -1403,22 +1299,20 @@ TEST(YellowDiceJumpingWhiteDice, moveUp){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      YellowDice *yd = new YellowDice(c2, 1);
-      WhiteDice *wd = new WhiteDice(c1, 1);
-      dices.push_back(yd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      YellowDice yd(c2, 1);
+      WhiteDice wd(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingYellowDice, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-1; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -1426,22 +1320,20 @@ TEST(RedDicePushingYellowDice, moveUp){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice *yd = new YellowDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(rd);
-      dices.push_back(yd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j-1);
+      YellowDice yd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j-1);
       dices.clear();
     }
   }
 }
 
 TEST(YellowDiceJumpingRedDice, moveUp){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -1449,102 +1341,94 @@ TEST(YellowDiceJumpingRedDice, moveUp){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      YellowDice *yd = new YellowDice(c2, 1);
-      RedDice *rd = new RedDice(c1, 1);
-      dices.push_back(yd); 
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      YellowDice yd(c2, 1);
+      RedDice rd(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
 TEST(oneGreenDice, moveSx0Moves){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice *rd = new GreenDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
+      GreenDice gd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("sx", dices, __func__, 0));
       dices.clear();
     }
   }
 }
 
 TEST(oneGreenDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
+    for (int i = 3; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice *rd = new GreenDice(c, 3);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      int nMoves = (*it)->getNMoves();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i-nMoves);
+      GreenDice gd(c, 3);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
+      int nMoves = dices.at(P2D::cellToP2D(c))->getNMoves();
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getX(), i-nMoves);
       dices.clear();
     }
   }
 }
 
 TEST(twoGreenDices_PushingEachOther, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      GreenDice *rd1 = new GreenDice(c1, 3);
-      GreenDice *rd2 = new GreenDice(c2, 3);
-      dices.push_back(rd2);
-      dices.push_back(rd1); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      GreenDice gd1(c1, 3);
+      GreenDice gd2(c2, 3);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(WhiteDicePushingGreenDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 2; i < MAP_WIDTH-1; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 2);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i-2);
+      GreenDice gd(c1, 2);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i-2);
       dices.clear();
     }
   }
 }
 
 TEST(GreenDicePushingWhiteDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-2; i++){
@@ -1552,68 +1436,178 @@ TEST(GreenDicePushingWhiteDice, moveSx){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(gd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      GreenDice gd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
 TEST(RedDicePushingGreenDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 2; i < MAP_WIDTH-1; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 2);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(rd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i-2);
+      GreenDice gd(c1, 2);  
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i-2);
       dices.clear();
     }
   }
 }
 
 TEST(GreenDicePushingRedDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-2; i++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
       c1.setX(i+1);
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(gd); 
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      GreenDice gd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
 TEST(YellowDicePushingGreenDice, moveSx){
-  list<Dice *> dices;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      GreenDice gd(c1, 2);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingYellowDice, moveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("sx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, moveDx0Moves){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c.setX(i);
+      c.setY(j);
+      GreenDice gd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("dx", dices, __func__, 0));
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, moveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c.setX(i);
+      c.setY(j);
+      GreenDice gd(c, 3);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
+      int nMoves = dices.at(P2D::cellToP2D(c))->getNMoves();
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getX(), i+nMoves);
+      dices.clear();
+    }
+  }
+}
+
+TEST(twoGreenwDices_PushingEachOther, moveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+2);
+      c2.setY(j);
+      GreenDice gd1(c1, 3);
+      GreenDice gd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingGreenDice, moveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-3; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd(c1, 2);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, moveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -1621,22 +1615,487 @@ TEST(YellowDicePushingGreenDice, moveSx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 2);
-      YellowDice *yd = new YellowDice(c2, 1);
-      dices.push_back(yd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i-1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      GreenDice gd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
-TEST(GreenDicePushingYellowDice, moveSx){
-  list<Dice *> dices;
+TEST(RedDicePushingGreenDice, moveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-3 ; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      RedDice rd(c1, 1);
+      GreenDice gd(c2, 2);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingRedDice, moveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      GreenDice gd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingGreenDice, moveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      YellowDice yd(c1, 1);
+      GreenDice gd(c2, 2);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingYellowDice, moveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      GreenDice gd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("dx", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, moveDown0Moves){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c.setX(i);
+      c.setY(j);
+      GreenDice gd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("down", dices, __func__, 0));
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, moveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c.setX(i);
+      c.setY(j);
+      GreenDice gd(c, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
+      int nMoves = dices.at(P2D::cellToP2D(c))->getNMoves();
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getY(), j+nMoves);
+      dices.clear();
+    }
+  }
+}
+
+TEST(twoGreenDices_PushingEachOther, moveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-3; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+3);
+      GreenDice gd1(c1, 3);
+      GreenDice gd2(c2, 3);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingGreenDice, moveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-3; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd(c1, 2);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, moveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c1, 1);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(RedDicePushingGreenDice, moveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-3; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd(c1, 2);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingRedDice, moveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingGreenDice, moveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd(c1, 2);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingYellowDice, moveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c1))->move("down", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, moveUp0Moves){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c.setX(i);
+      c.setY(j);
+      GreenDice gd(c, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c))->move("up", dices, __func__, 0));
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, moveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c;
+  for (int j = 3; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c.setX(i);
+      c.setY(j);
+      GreenDice gd(c, 3);
+      dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
+      int nMoves = dices.at(P2D::cellToP2D(c))->getNMoves();
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c))->getPosition().getY(), j-nMoves);
+      dices.clear();
+    }
+  }
+}
+
+TEST(twoGreenDices_PushingEachOther, moveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+3);
+      GreenDice gd1(c1, 3);
+      GreenDice gd2(c2, 3);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingGreenDice, moveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 2; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c1, 2);
+      WhiteDice wd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j-2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, moveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c2, 1);
+      WhiteDice wd(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(RedDicePushingGreenDice, moveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 2; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c1, 2);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j-2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingRedDice, moveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c2, 1);
+      RedDice rd(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingGreenDice, moveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      EXPECT_TRUE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingYellowDice, moveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c2, 1);
+      YellowDice yd(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
+      EXPECT_FALSE(dices.at(P2D::cellToP2D(c2))->move("up", dices, __func__, 0));
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(RedDicePushingWhiteDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, 0);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(RedDicePushingWhiteDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-2; i++){
@@ -1644,102 +2103,1071 @@ TEST(GreenDicePushingYellowDice, moveSx){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 1);
-      YellowDice *yd = new YellowDice(c2, 1);
-      dices.push_back(gd); 
-      dices.push_back(yd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("sx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      WhiteDice wd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("dx", dices, __func__, 0);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
       dices.clear();
     }
   }
 }
 
-TEST(oneGreenDice, moveDx0Moves){
-  list<Dice *> dices;
-  Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
+TEST(RedDicePushingWhiteDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
-      c.setX(i);
-      c.setY(j);
-      GreenDice *rd = new GreenDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("dx", dices, __func__));
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      WhiteDice wd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, 0);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
-TEST(oneGreenDice, moveDx){
-  list<Dice *> dices;
-  Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
+TEST(RedDicePushingWhiteDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
-      c.setX(i);
-      c.setY(j);
-      GreenDice *rd = new GreenDice(c, 3);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      int nMoves = (*it)->getNMoves();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+nMoves);
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("down", dices, __func__, 0);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
       dices.clear();
     }
   }
 }
 
-TEST(twoGreenwDices_PushingEachOther, moveDx){
-  list<Dice *> dices;
+TEST(WhiteDicePushingRedDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingRedDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
       c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingRedDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingRedDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      WhiteDice wd(c1, 1);
+      RedDice rd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingWhiteDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-2; i++){
+      c0.setX(i);
+      c0.setY(j);
+      c1.setX(i+1);
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      GreenDice *rd1 = new GreenDice(c1, 3);
-      GreenDice *rd2 = new GreenDice(c2, 3);
-      dices.push_back(rd1);
-      dices.push_back(rd2);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
+      WhiteDice wd0(c0, 1);
+      WhiteDice wd1(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &wd0));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 3);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getX(), i-1);
       dices.clear();
     }
   }
 }
 
-TEST(WhiteDicePushingGreenDice, moveDx){
-  list<Dice *> dices;
+TEST(YellowDicePushingWhiteDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-3; i++){
+      c0.setX(i+2);
+      c0.setY(j);
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      WhiteDice wd0(c0, 1);
+      WhiteDice wd1(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &wd0));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 3);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getX(), i+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingWhiteDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c0.setX(i);
+      c0.setY(j);
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j+2);
+      WhiteDice wd0(c0, 1);
+      WhiteDice wd1(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &wd0));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 3);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getY(), j-1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingWhiteDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-3; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c0.setX(i);
+      c0.setY(j+2);
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      WhiteDice wd0(c0, 1);
+      WhiteDice wd1(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &wd0));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 3);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getY(), j+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingWhiteDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingWhiteDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingWhiteDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      WhiteDice wd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingWhiteDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingGreenDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingGreenDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingGreenDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      WhiteDice wd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingGreenDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+2);
+      c2.setX(i);
+      c2.setY(j+1);
+      WhiteDice wd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingRedDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-2; i++){
+      c0.setX(i);
+      c0.setY(j);
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i+2);
+      c2.setY(j);
+      RedDice rd(c0, 1);
+      WhiteDice wd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 3);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getX(), i-1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingRedDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-3; i++){
+      c0.setX(i+2);
+      c0.setY(j);
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      RedDice rd(c0, 1);
+      WhiteDice wd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 3);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getX(), i+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingRedDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c0.setX(i);
+      c0.setY(j);
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j+2);
+      RedDice rd(c0, 1);
+      WhiteDice wd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 3);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getY(), j-1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingRedDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-3; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c0.setX(i);
+      c0.setY(j+2);
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      RedDice rd(c0, 1);
+      WhiteDice wd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 3);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getY(), j+3);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingRedDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      RedDice rd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingRedDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      RedDice rd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingRedDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      RedDice rd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingRedDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      RedDice rd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(RedDicePushingGreenDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      RedDice rd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(RedDicePushingGreenDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      RedDice rd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(RedDicePushingGreenDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      RedDice rd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(RedDicePushingGreenDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+2);
+      c2.setX(i);
+      c2.setY(j+1);
+      RedDice rd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingGreenDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-2; i++){
+      c0.setX(i);
+      c0.setY(j);
+      c1.setX(i+2);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      WhiteDice wd(c0, 1);
+      YellowDice rd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingGreenDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-3; i++){
+      c0.setX(i+2);
+      c0.setY(j);
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      WhiteDice wd(c0, 1);
+      YellowDice rd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getX(), i+2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingGreenDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c0.setX(i);
+      c0.setY(j);
+      c1.setX(i);
+      c1.setY(j+2);
+      c2.setX(i);
+      c2.setY(j+1);
+      WhiteDice wd(c0, 1);
+      YellowDice rd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDicePushingGreenDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c0, c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-3; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c0.setX(i);
+      c0.setY(j+2);
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      WhiteDice wd(c0, 1);
+      YellowDice rd(c1, 1);
+      GreenDice gd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c0.getX(), c0.getY()), &wd));
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c0))->getPosition().getY(), j+2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingGreenDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      GreenDice gd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingGreenDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingGreenDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingGreenDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd(c1, 1);
+      YellowDice yd(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingGreenDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 1; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      c2.setX(i-1);
+      c2.setX(i+1);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 2);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
+      GreenDice gd1(c1, 1);
+      GreenDice gd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
-TEST(GreenDicePushingWhiteDice, moveDx){
-  list<Dice *> dices;
+TEST(GreenDicePushingGreenDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -1747,45 +3175,99 @@ TEST(GreenDicePushingWhiteDice, moveDx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(gd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      GreenDice gd1(c1, 1);
+      GreenDice gd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
-TEST(RedDicePushingGreenDice, moveDx){
-  list<Dice *> dices;
+TEST(GreenDicePushingGreenDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd1(c1, 1);
+      GreenDice gd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingGreenDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      GreenDice gd1(c1, 1);
+      GreenDice gd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(RedDicePushingRedDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 1; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      c2.setX(i-1);
+      c2.setX(i+1);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 2);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(rd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+2);
+      RedDice rd1(c1, 1);
+      RedDice rd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
-TEST(GreenDicePushingRedDice, moveDx){
-  list<Dice *> dices;
+TEST(RedDicePushingRedDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
@@ -1793,343 +3275,728 @@ TEST(GreenDicePushingRedDice, moveDx){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(gd); 
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      RedDice rd1(c1, 1);
+      RedDice rd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
-TEST(YellowDiceJumpingGreenDice, moveDx){
-  list<Dice *> dices;
+TEST(RedDicePushingRedDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 1; i < MAP_WIDTH; i++){
+  for (int j = 1; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      c2.setX(i-1);
-      c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 2);
-      YellowDice *yd = new YellowDice(c2, 1);
-      dices.push_back(yd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i);
+      c2.setX(i);
+      c2.setY(j+1);
+      RedDice rd1(c1, 1);
+      RedDice rd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
       dices.clear();
     }
   }
 }
 
-TEST(GreenDicePushingYellowDice, moveDx){
-  list<Dice *> dices;
+TEST(RedDicePushingRedDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      RedDice rd1(c1, 1);
+      RedDice rd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingWhiteDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH-1; i++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
       c1.setX(i);
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 1);
-      YellowDice *yd = new YellowDice(c2, 1);
-      dices.push_back(gd); 
-      dices.push_back(yd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("dx", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getX(), i);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getX(), i+1);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i-1);
       dices.clear();
     }
   }
 }
 
-TEST(oneGreenDice, moveDown0Moves){
-  list<Dice *> dices;
-  Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c.setX(i);
-      c.setY(j);
-      GreenDice *rd = new GreenDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("down", dices, __func__));
-      dices.clear();
-    }
-  }
-}
-
-TEST(oneGreenDice, moveDown){
-  list<Dice *> dices;
-  Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c.setX(i);
-      c.setY(j);
-      GreenDice *rd = new GreenDice(c, 1);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      int nMoves = (*it)->getNMoves();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+nMoves);
-      dices.clear();
-    }
-  }
-}
-
-TEST(twoGreenDices_PushingEachOther, moveDown){
-  list<Dice *> dices;
+TEST(WhiteDicePushingWhiteDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingWhiteDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j-1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(WhiteDicePushingWhiteDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      WhiteDice wd1(c1, 1);
+      WhiteDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingYellowDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      YellowDice yd1(c1, 1);
+      YellowDice yd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingYellowDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      YellowDice yd1(c1, 1);
+      YellowDice yd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingYellowDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      YellowDice yd1(c1, 1);
+      YellowDice wd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c2))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j-1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(YellowDiceJumpingYellowDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j+1);
+      YellowDice yd1(c1, 1);
+      YellowDice yd2(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneYellowDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      YellowDice yd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i-1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneYellowDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
       c1.setX(i);
       c1.setY(j);
-      c2.setX(i);
-      c2.setY(j+3);
-      GreenDice *rd1 = new GreenDice(c1, 3);
-      GreenDice *rd2 = new GreenDice(c2, 3);
-      dices.push_back(rd1);
-      dices.push_back(rd2);
-      list<Dice *>::iterator it = dices.begin(); 
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+3);
+      YellowDice yd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
       dices.clear();
     }
   }
 }
 
-TEST(WhiteDicePushingGreenDice, moveDown){
-  list<Dice *> dices;
-  Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
+TEST(oneYellowDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 1; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
-      c1.setY(j+1);
-      c2.setX(i);
-      c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 2);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+3);
+      c1.setY(j);
+      YellowDice yd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j-1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
       dices.clear();
     }
   }
 }
 
-TEST(GreenDicePushingWhiteDice, moveDown){
-  list<Dice *> dices;
-  Cell c1, c2;
+TEST(oneYellowDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
   for (int j = 0; j < MAP_HEIGHT-1; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      c2.setX(i);
-      c2.setY(j+1);
-      GreenDice *gd = new GreenDice(c1, 1);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(gd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
+      YellowDice yd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
       dices.clear();
     }
   }
 }
 
-TEST(RedDicePushingGreenDice, moveDown){
-  list<Dice *> dices;
-  Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c1.setX(i);
-      c1.setY(j+1);
-      c2.setX(i);
-      c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 2);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(rd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+3);
-      dices.clear();
-    }
-  }
-}
-
-TEST(GreenDicePushingRedDice, moveDown){
-  list<Dice *> dices;
-  Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c1.setX(i);
-      c1.setY(j);
-      c2.setX(i);
-      c2.setY(j+1);
-      GreenDice *gd = new GreenDice(c1, 1);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(gd); 
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      dices.clear();
-    }
-  }
-}
-
-TEST(YellowDiceJumpingGreenDice, moveDown){
-  list<Dice *> dices;
-  Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c1.setX(i);
-      c1.setY(j+1);
-      c2.setX(i);
-      c2.setY(j);
-      GreenDice *gd = new GreenDice(c1, 2);
-      YellowDice *yd = new YellowDice(c2, 1);
-      dices.push_back(yd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+2);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      dices.clear();
-    }
-  }
-}
-
-TEST(GreenDicePushingYellowDice, moveDown){
-  list<Dice *> dices;
-  Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c1.setX(i);
-      c1.setY(j);
-      c2.setX(i);
-      c2.setY(j+1);
-      GreenDice *gd = new GreenDice(c1, 1);
-      YellowDice *yd = new YellowDice(c2, 1);
-      dices.push_back(gd); 
-      dices.push_back(yd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("down", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      dices.clear();
-    }
-  }
-}
-
-TEST(oneGreenDice, moveUp0Moves){
-  list<Dice *> dices;
-  Cell c;
+TEST(oneWhiteDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
   for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c.setX(i);
-      c.setY(j);
-      GreenDice *rd = new GreenDice(c, 0);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("up", dices, __func__));
+    for (int i = 1; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      WhiteDice wd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i-1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
       dices.clear();
     }
   }
 }
 
-TEST(oneGreenDice, moveUp){
-  list<Dice *> dices;
-  Cell c;
-  for (int j = 0; j < MAP_HEIGHT; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c.setX(i);
-      c.setY(j);
-      GreenDice *rd = new GreenDice(c, 3);
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      int nMoves = (*it)->getNMoves();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j-nMoves);
-      dices.clear();
-    }
-  }
-}
-
-TEST(twoGreenDices_PushingEachOther, moveUp){
-  list<Dice *> dices;
-  Cell c1, c2;
+TEST(oneWhiteDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
   for (int j = 0; j < MAP_HEIGHT; j++){
     for (int i = 0; i < MAP_WIDTH-1; i++){
       c1.setX(i);
       c1.setY(j);
-      c2.setX(i);
-      c2.setY(j+3);
-      GreenDice *rd1 = new GreenDice(c1, 3);
-      GreenDice *rd2 = new GreenDice(c2, 3);
-      dices.push_back(rd2);
-      dices.push_back(rd1); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j);
+      WhiteDice wd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
       dices.clear();
     }
   }
 }
 
-TEST(WhiteDicePushingGreenDice, moveUp){
-  list<Dice *> dices;
-  Cell c1, c2;
+TEST(oneWhiteDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 1; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      WhiteDice wd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j-1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneWhiteDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
   for (int j = 0; j < MAP_HEIGHT-1; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      c2.setX(i);
-      c2.setY(j+1);
-      GreenDice *gd = new GreenDice(c1, 2);
-      WhiteDice *wd = new WhiteDice(c2, 1);
-      dices.push_back(wd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j-2);
+      WhiteDice wd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
       dices.clear();
     }
   }
 }
 
-TEST(GreenDicePushingWhiteDice, moveUp){
-  list<Dice *> dices;
+TEST(oneRedDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      RedDice rd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i-1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneRedDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-1; i++){
+      c1.setX(i);
+      c1.setY(j);
+      RedDice rd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneRedDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 1; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      RedDice rd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j-1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneRedDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 0; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      RedDice rd1(c1, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 2; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      GreenDice gd1(c1, 2);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i-2);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      GreenDice gd1(c1, 2);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+2);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 2; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      GreenDice gd1(c1, 2);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j-2);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(oneGreenDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1;
+  for (int j = 0; j < MAP_HEIGHT-2; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j);
+      GreenDice gd1(c1, 2);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_TRUE(res.first);
+      ASSERT_EQ(res.second, 2);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+2);
+      res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i+1);
+      c1.setY(j);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd1(c1, 0);
+      WhiteDice wd1(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false, true);
+      if(c1.getX() == MAP_WIDTH-1){
+        EXPECT_TRUE(res.first);
+        ASSERT_EQ(res.second, 1+c1.getX()-c2.getX());
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i-1);
+      }else{
+        EXPECT_FALSE(res.first);
+        ASSERT_EQ(res.second, 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      }
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      GreenDice gd1(c1, 0);
+      WhiteDice wd1(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false, true);
+      if(c1.getX() == 0){
+        EXPECT_TRUE(res.first);
+        ASSERT_EQ(res.second, 1+c2.getX()-c1.getX());
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      }else{
+        EXPECT_FALSE(res.first);
+        ASSERT_EQ(res.second, 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      }
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd1(c1, 0);
+      WhiteDice wd1(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false, true);
+      if(c1.getY() == MAP_HEIGHT-1){
+        EXPECT_TRUE(res.first);
+        ASSERT_EQ(res.second, 1+c1.getY()-c2.getY());
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j-1);
+      }else{
+        EXPECT_FALSE(res.first);
+        ASSERT_EQ(res.second, 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      }
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -2137,45 +4004,135 @@ TEST(GreenDicePushingWhiteDice, moveUp){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice *gd = new GreenDice(c2, 1);
-      WhiteDice *wd = new WhiteDice(c1, 1);
-      dices.push_back(gd); 
-      dices.push_back(wd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j);
+      GreenDice gd1(c1, 0);
+      WhiteDice wd1(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false, true);
+      if(c1.getY() == 0){
+        EXPECT_TRUE(res.first);
+        ASSERT_EQ(res.second, 1+c2.getY()-c1.getY());
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      }else{
+        EXPECT_FALSE(res.first);
+        ASSERT_EQ(res.second, 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      }
       dices.clear();
     }
   }
 }
 
-TEST(RedDicePushingGreenDice, moveUp){
-  list<Dice *> dices;
+TEST(GreenDicePushingRedDice, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c1.setX(i);
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i+1);
       c1.setY(j);
       c2.setX(i);
-      c2.setY(j+1);
-      GreenDice *gd = new GreenDice(c1, 2);
-      RedDice *rd = new RedDice(c2, 1);
-      dices.push_back(rd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j-2);
+      c2.setY(j);
+      GreenDice gd1(c1, 0);
+      RedDice rd1(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false, true);
+      if(c1.getX() == MAP_WIDTH-1){
+        EXPECT_TRUE(res.first);
+        ASSERT_EQ(res.second, 1+c1.getX()-c2.getX());
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i-1);
+      }else{
+        EXPECT_FALSE(res.first);
+        ASSERT_EQ(res.second, 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
+      }
       dices.clear();
     }
   }
 }
 
-TEST(GreenDicePushingRedDice, moveUp){
-  list<Dice *> dices;
+TEST(GreenDicePushingRedDice, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      GreenDice gd1(c1, 0);
+      RedDice rd1(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false, true);
+      if(c1.getX() == 0){
+        EXPECT_TRUE(res.first);
+        ASSERT_EQ(res.second, 1+c2.getX()-c1.getX());
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+2);
+      }else{
+        EXPECT_FALSE(res.first);
+        ASSERT_EQ(res.second, 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      }
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingRedDice, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd1(c1, 0);
+      RedDice rd1(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false, true);
+      if(c1.getY() == MAP_HEIGHT-1){
+        EXPECT_TRUE(res.first);
+        ASSERT_EQ(res.second, 1+c1.getY()-c2.getY());
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j-1);
+      }else{
+        EXPECT_FALSE(res.first);
+        ASSERT_EQ(res.second, 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      }
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingRedDice, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -2183,45 +4140,108 @@ TEST(GreenDicePushingRedDice, moveUp){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice *gd = new GreenDice(c2, 1);
-      RedDice *rd = new RedDice(c1, 1);
-      dices.push_back(gd); 
-      dices.push_back(rd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j);
+      GreenDice gd1(c1, 0);
+      RedDice rd1(c2, 1);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false, true);
+      if(c1.getY() == 0){
+        EXPECT_TRUE(res.first);
+        ASSERT_EQ(res.second, 1+c2.getY()-c1.getY());
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+2);
+      }else{
+        EXPECT_FALSE(res.first);
+        ASSERT_EQ(res.second, 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 1);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+        ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
+      }
       dices.clear();
     }
   }
 }
 
-TEST(YellowDiceJumpingGreenDice, moveUp){
-  list<Dice *> dices;
+TEST(GreenDicePushingWhiteDice0Moves, reverseMoveSx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
-  for (int j = 0; j < MAP_HEIGHT-1; j++){
-    for (int i = 0; i < MAP_WIDTH; i++){
-      c1.setX(i);
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 1; i < MAP_WIDTH-1; i++){
+      c1.setX(i+1);
       c1.setY(j);
       c2.setX(i);
-      c2.setY(j+1);
-      GreenDice *gd = new GreenDice(c1, 1);
-      YellowDice *yd = new YellowDice(c2, 1);
-      dices.push_back(yd);
-      dices.push_back(gd); 
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_TRUE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j-1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j);
+      c2.setY(j);
+      GreenDice gd1(c1, 0);
+      WhiteDice wd1(c2, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("sx", dices, __func__, false, true);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i);
       dices.clear();
     }
   }
 }
 
-TEST(GreenDicePushingYellowDice, moveUp){
-  list<Dice *> dices;
+TEST(GreenDicePushingWhiteDice0Moves, reverseMoveDx){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 0; j < MAP_HEIGHT; j++){
+    for (int i = 0; i < MAP_WIDTH-2; i++){
+      c1.setX(i);
+      c1.setY(j);
+      c2.setX(i+1);
+      c2.setY(j);
+      GreenDice gd1(c1, 0);
+      WhiteDice wd1(c2, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("dx", dices, __func__, false, true);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getX(), i);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getX(), i+1);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice0Moves, reverseMoveUp){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  Cell c1, c2;
+  for (int j = 1; j < MAP_HEIGHT-1; j++){
+    for (int i = 0; i < MAP_WIDTH; i++){
+      c1.setX(i);
+      c1.setY(j+1);
+      c2.setX(i);
+      c2.setY(j);
+      GreenDice gd1(c1, 0);
+      WhiteDice wd1(c2, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("up", dices, __func__, false, true);
+      EXPECT_FALSE(res.first);
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j+1);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j);
+      dices.clear();
+    }
+  }
+}
+
+TEST(GreenDicePushingWhiteDice0Moves, reverseMoveDown){
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -2229,15 +4249,17 @@ TEST(GreenDicePushingYellowDice, moveUp){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice *gd = new GreenDice(c2, 1);
-      YellowDice *yd = new YellowDice(c1, 1);
-      dices.push_back(gd); 
-      dices.push_back(yd);
-      list<Dice *>::iterator it = dices.begin();
-      EXPECT_FALSE((*it)->move("up", dices, __func__));
-      ASSERT_EQ((*it)->getPosition().getY(), j+1);
-      advance(it, 1);
-      ASSERT_EQ((*it)->getPosition().getY(), j);
+      GreenDice gd1(c1, 0);
+      WhiteDice wd1(c2, 0);
+      dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
+      dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd1));
+      pair<bool, int> res = dices.at(P2D::cellToP2D(c1))->reverseMove("down", dices, __func__, false, true);
+      EXPECT_FALSE(res.first);  
+      ASSERT_EQ(res.second, 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getNMoves(), 0);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c1))->getPosition().getY(), j);
+      ASSERT_EQ(dices.at(P2D::cellToP2D(c2))->getPosition().getY(), j+1);
       dices.clear();
     }
   }

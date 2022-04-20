@@ -4266,6 +4266,13 @@ TEST(GreenDicePushingWhiteDice0Moves, reverseMoveDown){
 }
 
 int main(int argc, char **argv){
+  MAP_WIDTH = 5;
+  MAP_HEIGHT = 6;
+  cout << "======== Alea Tester ========" << endl;
+	cout << "        MAP_WIDTH : " << MAP_WIDTH << endl;
+	cout << "        MAP_HEIGHT: " << MAP_HEIGHT << endl;
+	cout << "=============================" << endl;
+	cout << endl;
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

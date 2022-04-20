@@ -5,6 +5,10 @@
 #include "green_dice.h"
 #include "p2d.h"
 
+int MAP_WIDTH;
+int MAP_HEIGHT;
+int TOTAL_MOVES;
+
 GreenDice::GreenDice(Cell position, int nMoves) : Dice(position, nMoves){}
 
 GreenDice::GreenDice() : Dice(){}

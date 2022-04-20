@@ -29,9 +29,9 @@ AleaGame::AleaGame(json json_dict) {
     }
     dices.insert(pair<P2D, Dice *>(P2D(x + 1, y + 1), dice));
   }
-  int MAP_WIDTH = cols + 2;
-  int MAP_HEIGHT = max_row + 2;
-  int TOTAL_MOVES = remaining_moves();
+  MAP_WIDTH = cols + 2;
+  MAP_HEIGHT = max_row + 2;
+  TOTAL_MOVES = remaining_moves();
 
   if(!is_valid_ending_configuration()){
     cout << "\n\nPlease insert a valid Final Configuration of the Map.\nMismatches between Dices and Terminals positions.\n\n\n";

@@ -19,6 +19,7 @@ class AStarNode {
 
 		AStarNode(AleaGame game);
 		AStarNode(AleaGame game, Action action);
+		AStarNode(AleaGame game, int g);
 		AStarNode(AleaGame game, Action action, AStarNode* parent);
 		AStarNode(AleaGame game, Action action, AStarNode* parent, int g, int h);
 

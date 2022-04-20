@@ -41,7 +41,7 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 	cd src/lib; \
 	$(CXX) -c -g p2d.cpp -o ../../build/p2d.o;	
 
-./build/alea_game.o: ./src/alea_game.cpp ./src/alea_game.h
+./build/alea_game.o: ./src/alea_game.cpp ./src/alea_game.h 
 	cd src; \
 	$(CXX) -c -g alea_game.cpp -o ../build/alea_game.o;
 

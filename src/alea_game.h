@@ -30,13 +30,13 @@ class AleaGame{
 		int move(const P2D pos, const P2D dir, const bool isPushed);
     bool is_valid_starting_configuration();
     static Action revert_action(Action backward_action);
+    int heuristic_evaluation();
     
     struct HashFun {
 			size_t operator()(const AleaGame& game) const;
 		};
 
   private:
-    int width, height, total_moves;
     unordered_set<P2D, P2D::HashFun> terminals;
     unordered_map<P2D, Dice*, P2D::HashFun> dices;
     bool is_terminal(const P2D& pos) const;

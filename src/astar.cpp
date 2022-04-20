@@ -2,6 +2,7 @@
 
 AStarNode::AStarNode(AleaGame game) : game(game) { }
 AStarNode::AStarNode(AleaGame game, Action action) : game(game), action(action) { }
+AStarNode::AStarNode(AleaGame game, int g) : game(game), g(g) { }
 AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent) : game(game), action(action), parent(parent) { }
 AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent, int g, int h) : game(game), action(action), parent(parent), g(g), h(h) { 
   f = g + h;
@@ -27,7 +28,7 @@ vector<Action> astar_backward_search(AleaGame game, int limit) {
   priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFun> open;
   unordered_set<AStarNode*, AStarNode::HashFun> open_set;
   unordered_set<AleaGame, AleaGame::HashFun> closed;
-  AStarNode* start_node = new AStarNode(game);
+  AStarNode* start_node = new AStarNode(game, 0);
   open.push(start_node);
   open_set.insert(start_node);
   vector<Action> solution;
@@ -62,7 +63,8 @@ vector<Action> astar_backward_search(AleaGame game, int limit) {
         ++dead_positions;
         continue;
       }
-      AStarNode* neighbor = new AStarNode(new_game, action, current_node, 0, value);
+
+      AStarNode* neighbor = new AStarNode(new_game, action, current_node, -1*action.weight, value);
       if (open_set.find(neighbor) == open_set.end()) {
         open.push(neighbor);
         open_set.insert(neighbor);

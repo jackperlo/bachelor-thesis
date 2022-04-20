@@ -43,6 +43,7 @@ struct Action {
 	int weight;
 	bool movementType; //0->activeMove, 1->pushedMove, 2->jumpingMove
     
+	Action(P2D from, P2D dir);
 	Action(P2D from, P2D dir, int weight, int movementType = false, P2D head = P2D::null_p2d);
 	friend ostream& operator<<(ostream& out, Action act);
 };

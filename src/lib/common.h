@@ -17,10 +17,6 @@
 #define MAX(a, b) a > b ? a : b
 #define MIN(a, b) a < b ? a : b
 
-#define N_DICES 5
-#define MAP_WIDTH 5
-#define MAP_HEIGHT 7
-
 #define SIMPLE_MOVE 0.01
 #define JUMPING_MOVE 1
 #define PUSHED_MOVE 1
@@ -32,5 +28,9 @@
 using namespace std;
 
 using json = nlohmann::json;
+
+extern int TOTAL_MOVES;
+extern int MAP_WIDTH;
+extern int MAP_HEIGHT;
 
 #endif

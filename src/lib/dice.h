@@ -11,14 +11,14 @@ class Dice{
     int nMoves;
     int initialMoves;
     //bool: check map bound and limit cases, int: offest movement
-    pair<bool, int> virtual moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0; 
-    pair<bool, int> virtual moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0;
-    pair<bool, int> virtual moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0;
-    pair<bool, int> virtual moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0;
-    pair<bool, int> virtual reverseMoveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0;
-    pair<bool, int> virtual reverseMoveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0;
-    pair<bool, int> virtual reverseMoveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0;
-    pair<bool, int> virtual reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0;
+    pair<bool, int> virtual moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0; 
+    pair<bool, int> virtual moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
+    pair<bool, int> virtual moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
+    pair<bool, int> virtual moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
+    pair<bool, int> virtual reverseMoveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
+    pair<bool, int> virtual reverseMoveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
+    pair<bool, int> virtual reverseMoveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
+    pair<bool, int> virtual reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
     int checkArrivalCellIsEmpty(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices); //returns -1 if it's Empty
     bool makeMove(int x, int y, int nMovesDone, unordered_map<P2D, Dice *, P2D::HashFun> &dices);
     string stringToLower(string inputString);

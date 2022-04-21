@@ -92,7 +92,7 @@ pair<bool, int> WhiteDice::reverseMove(string direction, unordered_map<P2D, Dice
   return res;
 }
 
-pair<bool, int> WhiteDice::reverseMoveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation){
+pair<bool, int> WhiteDice::reverseMoveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
   if(x-1>=0){
     if(checkArrivalCellIsEmpty(x-1, y, dices))
@@ -107,7 +107,7 @@ pair<bool, int> WhiteDice::reverseMoveSx(int x, int y, unordered_map<P2D, Dice *
   return res;
 }
 
-pair<bool, int> WhiteDice::reverseMoveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation){
+pair<bool, int> WhiteDice::reverseMoveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
   if(x+1<MAP_WIDTH){
     if(checkArrivalCellIsEmpty(x+1, y, dices))
@@ -122,7 +122,7 @@ pair<bool, int> WhiteDice::reverseMoveDx(int x, int y, unordered_map<P2D, Dice *
   return res;
 }
 
-pair<bool, int> WhiteDice::reverseMoveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation){
+pair<bool, int> WhiteDice::reverseMoveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
   if(y-1>=0){
     if(checkArrivalCellIsEmpty(x, y-1, dices))
@@ -137,7 +137,7 @@ pair<bool, int> WhiteDice::reverseMoveUp(int x, int y, unordered_map<P2D, Dice *
   return res;
 }
 
-pair<bool, int> WhiteDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation){
+pair<bool, int> WhiteDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
   if(y+1<MAP_HEIGHT){
     if(checkArrivalCellIsEmpty(x, y+1, dices))
@@ -152,7 +152,7 @@ pair<bool, int> WhiteDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dice
   return res;
 }
 
-pair<bool, int> WhiteDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation){
+pair<bool, int> WhiteDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   if(checkArrivalCellIsEmpty(x-1, y, dices)) //arrival cell is empty
     return MOVE_BY_1;
   else{ //arrival cell is busy
@@ -167,7 +167,7 @@ pair<bool, int> WhiteDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::
   } 
 }
 
-pair<bool, int> WhiteDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation){
+pair<bool, int> WhiteDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   if(checkArrivalCellIsEmpty(x+1, y, dices)) //arrival cell is empty
     return MOVE_BY_1;
   else{ //arrival cell is busy
@@ -182,7 +182,7 @@ pair<bool, int> WhiteDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::
   } 
 }
 
-pair<bool, int> WhiteDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation){
+pair<bool, int> WhiteDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   if(checkArrivalCellIsEmpty(x, y-1, dices)) //arrival cell is empty
     return MOVE_BY_1;
   else{ //arrival cell is busy
@@ -197,7 +197,7 @@ pair<bool, int> WhiteDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::
   } 
 }
 
-pair<bool, int> WhiteDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation){
+pair<bool, int> WhiteDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   if(checkArrivalCellIsEmpty(x, y+1, dices)) //arrival cell is empty
     return MOVE_BY_1;
   else{ //arrival cell is busy

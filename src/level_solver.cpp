@@ -1,69 +1,22 @@
 #include "alea_game.h"
-
-/*
-bool checkIfDiceAlreadyExists(list<Dice *> dices, Cell c);
-list <Dice *> generateDices();
-void printDices(list<Dice *> dices);*/
+#include "astar.h"
 
 int main(int argc, char *argv[]){ 
-  AleaGame *game = new AleaGame("./generated_levels/TrialLevel.json");
-	game->print(true);
-
-  return 0;
-  /* 
-  list<Dice *> dices = generateDices();
+  AleaGame *backward_game = new AleaGame("./generated_levels/TrialLevel.json");
+	backward_game->print(true);
+  pair <string, vector<Action>> solution = astar_backward_search(*backward_game, 50000);
   
-  printDices(dices);
-
-  list<Dice *>::iterator it = dices.begin(); //returns a pointer to a pointer of type Dice
-  (*it)->move("dx", dices, __func__);
-  printDices(dices);
-  
-  return 0;*/
-}
-/*
-list<Dice *> generateDices(){
-  list<Dice *> dices;
-
-  random_device rd;
-  mt19937 rng(rd());
-  uniform_int_distribution<int> distDice(1, 6);
-  uniform_int_distribution<int> distWidth(0, MAP_WIDTH); 
-  uniform_int_distribution<int> distHeight(0, MAP_HEIGHT);
-
-  bool alreadyExists = false;
-  int i = 0;
-  while(i < N_DICES){
-    alreadyExists = false;
-    Cell c(distWidth(rng), distHeight(rng));
-    WhiteDice *d = new WhiteDice(c, distDice(rng));
-  
-    alreadyExists = checkIfDiceAlreadyExists(dices, c);
-    if(!alreadyExists){
-      dices.push_back(d);
-      i++;
+  if(solution.second.size() > 0 && solution.first.compare("") != 0){
+    AleaGame *forward_game = new AleaGame(solution.first);
+    forward_game->print(true);
+    for (Action action : solution.second) {
+      forward_game->move(action);
+      forward_game->print(true);
     }
   }
 
-  return dices;
+  return 0;
 }
-
-bool checkIfDiceAlreadyExists(list<Dice *> dices, Cell c){
-  for(auto dice : dices)
-    if(dice->getPosition().getX() == c.getX() && dice->getPosition().getY() == c.getY())
-      return true;
-  
-  return false;
-}
-
-void printDices(list<Dice *> dices){
-  for (auto dice : dices)
-    dice->printDice();
-}
-
-
-
-*/
 
 
 

@@ -9,6 +9,7 @@ class Dice{
   protected:
     Cell position;
     int nMoves;
+    int initialMoves;
     //bool: check map bound and limit cases, int: offest movement
     pair<bool, int> virtual moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0; 
     pair<bool, int> virtual moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices, bool isJustForSimulation) = 0;
@@ -23,13 +24,14 @@ class Dice{
     string stringToLower(string inputString);
 
   public:
-    Dice(Cell position, int nMoves);
+    Dice(Cell position, int nMoves, int initialMoves);
     Dice();
     virtual operator string () = 0;
     void setPosition(Cell position);
     Cell getPosition() const;
     void setNMoves(int nMoves);
     int getNMoves();
+    int getInitialMoves();
     void printDice();
     bool move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> dices, char const * callerName, bool isJustForSimulation);
     pair<bool, int> virtual reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> dices, char const * callerName, bool isJustForSimulation, bool isPushed = false) = 0;

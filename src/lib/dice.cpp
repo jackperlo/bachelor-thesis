@@ -1,9 +1,10 @@
 #include "dice.h"
 #include "common.h"
 
-Dice::Dice(Cell position, int nMoves){
+Dice::Dice(Cell position, int nMoves, int initialMoves){
   setPosition(position);
   setNMoves(nMoves);
+  this->initialMoves = initialMoves;
 }
 
 Dice::Dice(){}
@@ -22,6 +23,10 @@ void Dice::setNMoves(int nMoves){
 
 int Dice::getNMoves(){
   return nMoves;
+}
+
+int Dice::getInitialMoves(){
+  return initialMoves;
 }
 
 void Dice::printDice(){

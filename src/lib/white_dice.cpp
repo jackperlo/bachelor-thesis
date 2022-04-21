@@ -5,7 +5,7 @@
 #include "green_dice.h"
 #include "p2d.h"
 
-WhiteDice::WhiteDice(Cell position, int nMoves) : Dice(position, nMoves){}
+WhiteDice::WhiteDice(Cell position, int nMoves, int initialMoves) : Dice(position, nMoves, initialMoves){}
 
 WhiteDice::WhiteDice() : Dice(){}
 

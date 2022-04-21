@@ -45,9 +45,13 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 	cd src; \
 	$(CXX) -c -g alea_game.cpp -o ../build/alea_game.o;
 
-level_solver: ./build/alea_game.o ./build/p2d.o ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o
+./build/astar.o: ./src/astar.cpp ./src/astar.h 
 	cd src; \
-	$(CXX) -g level_solver.cpp -o level_solver ../build/p2d.o ../build/alea_game.o ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o ../build/green_dice.o
+	$(CXX) -c -g astar.cpp -o ../build/astar.o;
+
+level_solver: ./build/p2d.o ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o ./build/alea_game.o ./build/astar.o
+	cd src; \
+	$(CXX) -g level_solver.cpp -o level_solver ../build/p2d.o ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o ../build/green_dice.o ../build/alea_game.o ../build/astar.o
 
 
 #---------------TESTS-------------

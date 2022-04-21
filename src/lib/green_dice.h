@@ -7,7 +7,7 @@
 
 class GreenDice : public Dice{
   public:
-    GreenDice(Cell position, int nMoves);
+    GreenDice(Cell position, int nMoves, int initialMoves);
     GreenDice();
     operator string ();
     GreenDice(const GreenDice &gd1); //copying constructor, invoked in situation as: GreenDice gd1 = gd2.

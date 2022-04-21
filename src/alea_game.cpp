@@ -1,31 +1,58 @@
 #include "alea_game.h"
 #include "lib/common.h"
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <map>
+#include <unordered_set>
+#include <string>
+#include <queue>
+#include <stack>
 
 AleaGame::AleaGame(const char *filename) : AleaGame(json::parse(read_json(filename))) { }
 
 AleaGame::AleaGame(string filename) : AleaGame(json::parse(read_json(filename))) { }
+
+AleaGame::AleaGame(const AleaGame& game) {
+    for (const auto& elem: game.terminals) {
+        terminals.insert(P2D(elem));
+    }
+    for (auto const& elem : game.dices) {
+      Dice *dice;
+      Cell c(elem.first.x, elem.first.y);
+      switch (elem.second->getActualTypeInt()){
+        case 0: dice = new WhiteDice(c, elem.second->getNMoves(), elem.second->getInitialMoves()); break;
+        case 1: dice = new RedDice(c, elem.second->getNMoves(), elem.second->getInitialMoves()); break;
+        case 2: dice = new YellowDice(c, elem.second->getNMoves(), elem.second->getInitialMoves()); break;
+        case 3: dice = new GreenDice(c, elem.second->getNMoves(), elem.second->getInitialMoves()); break;
+      }
+      dices.insert(pair<P2D, Dice *>(P2D(elem.first), dice));
+    }
+}
 
 AleaGame::AleaGame(json json_dict) {
   int cols = json_dict["columns"];
   int max_row = 0;
 
   for (auto& e : json_dict["terminals"].items()) {
-    terminals.insert(P2D((int)e.value() % cols + 1, (int)e.value() / cols + 1));
-    max_row = MAX((int)e.value() / cols + 1, max_row);
+    json terminal_j = e.value();
+    terminals.insert(P2D((int)terminal_j["x"]+1, (int)terminal_j["y"]+1));
+    max_row = MAX((int)terminal_j["y"]+1, max_row);
   }
 
   for (auto& e : json_dict["dice"].items()) {
     json dice_j = e.value();
-    int pos = dice_j["pos"];
-    int y = pos / cols, x = pos % cols;
+    int x = dice_j["x"];
+    int y = dice_j["y"];
     max_row = MAX(y + 1, max_row);
     Dice *dice;
-    Cell c(x, y);
+    Cell c(x+1, y+1);
     switch ((int)dice_j["type"]){
-      case 0: dice = new WhiteDice(c, dice_j["num"]); break;
-      case 1: dice = new RedDice(c, dice_j["num"]); break;
-      case 2: dice = new YellowDice(c, dice_j["num"]); break;
-      case 3: dice = new GreenDice(c, dice_j["num"]); break;
+      case 0: dice = new WhiteDice(c, dice_j["num"], dice_j["num"]); break;
+      case 1: dice = new RedDice(c, dice_j["num"], dice_j["num"]); break;
+      case 2: dice = new YellowDice(c, dice_j["num"], dice_j["num"]); break;
+      case 3: dice = new GreenDice(c, dice_j["num"], dice_j["num"]); break;
     }
     dices.insert(pair<P2D, Dice *>(P2D(x + 1, y + 1), dice));
   }
@@ -56,6 +83,17 @@ AleaGame::operator string () {
     s += "\n" + string(3*MAP_WIDTH, ' ') + " \n";
   }
   return s;
+}
+
+size_t AleaGame::HashFun::operator()(const AleaGame& game) const {
+    int type_map[] = {17, 31, 47, 97};
+    size_t the_hash = 0;
+    for (const P2D& t : game.terminals) the_hash += P2D::HashFun()(t);
+    for (const auto &pair : game.dices) {
+        the_hash += P2D::HashFun()(pair.first) * type_map[pair.second->getActualTypeInt()] * pair.second->getNMoves()+1;
+        the_hash ^= (int) pow(type_map[pair.second->getActualTypeInt()], pair.second->getNMoves()+1);
+    }
+    return the_hash;
 }
 
 bool AleaGame::operator==(const AleaGame& other) const {
@@ -141,7 +179,7 @@ vector<Action> AleaGame::possible_moves() {
   return moves;
 }
 
-void AleaGame::yellow_dice_possible_moves(Dice *dice, vector<Action> moves){
+void AleaGame::yellow_dice_possible_moves(Dice *dice, vector<Action> &moves){
   int x = dice->getPosition().getX(), y = dice->getPosition().getY();
   vector<Cell> cells;
   if(x>0) cells.push_back(Cell(x-1, y));
@@ -197,7 +235,7 @@ void AleaGame::yellow_dice_possible_moves(Dice *dice, vector<Action> moves){
   }
 }
 
-void AleaGame::red_dice_possible_moves(Dice *dice, vector<Action> moves){
+void AleaGame::red_dice_possible_moves(Dice *dice, vector<Action> &moves){
   int x = dice->getPosition().getX(), y = dice->getPosition().getY();
   vector<Cell> cells;
   if(x>0) cells.push_back(Cell(x-1, y));
@@ -225,7 +263,7 @@ void AleaGame::red_dice_possible_moves(Dice *dice, vector<Action> moves){
   }
 }
 
-void AleaGame::white_dice_possible_moves(Dice *dice, vector<Action> moves){
+void AleaGame::white_dice_possible_moves(Dice *dice, vector<Action> &moves){
   int x = dice->getPosition().getX(), y = dice->getPosition().getY();
   vector<Cell> cells;
   if(x>0) cells.push_back(Cell(x-1, y));
@@ -273,7 +311,7 @@ void AleaGame::white_dice_possible_moves(Dice *dice, vector<Action> moves){
   }
 }
 
-void AleaGame::green_dice_possible_moves(Dice *dice, vector<Action> moves){
+void AleaGame::green_dice_possible_moves(Dice *dice, vector<Action> &moves){
   if(dice->getNMoves() > 0){
     green_dice_possible_moves_nMoves_gt_zero(dice, moves);
     green_dice_possible_moves_being_pushed(dice, moves);  
@@ -281,7 +319,7 @@ void AleaGame::green_dice_possible_moves(Dice *dice, vector<Action> moves){
     green_dice_possible_moves_being_pushed(dice, moves);  
 }
 
-void AleaGame::green_dice_possible_moves_nMoves_gt_zero(Dice *dice, vector<Action> moves){
+void AleaGame::green_dice_possible_moves_nMoves_gt_zero(Dice *dice, vector<Action> &moves){
   int x = dice->getPosition().getX(), y = dice->getPosition().getY();
   vector<Cell> cells;
   if(x>0) cells.push_back(Cell(x-1, y));
@@ -292,7 +330,7 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero(Dice *dice, vector<Actio
     if(dices.find(P2D::cellToP2D(c)) != dices.end() || x == 0 || y == 0 || x == MAP_WIDTH-1 || y == MAP_HEIGHT-1){ //busy cell or boundary cell
       pair<bool, int> res = NO_MOVE;
       if(c.getX() == x-1 || x == 0){ // left one occupied/boundary, then could move right
-        res = dice->reverseMove("dx", dices, __func__, 1);
+        res = dice->reverseMove("dx", dices, __func__, true);
         if(res.first){
           int i = 1;
           while(i <= res.second){
@@ -302,7 +340,7 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero(Dice *dice, vector<Actio
         }
       }
       if(c.getX() == x+1 || x == MAP_WIDTH-1){ //right one occupied/boundary, then could move left 
-        res = dice->reverseMove("sx", dices, __func__, 1);
+        res = dice->reverseMove("sx", dices, __func__, true);
         if(res.first){
           int i = 1;
           while(i <= res.second){
@@ -312,7 +350,7 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero(Dice *dice, vector<Actio
         }
       }
       if(c.getY() == y+1 || y == MAP_HEIGHT-1){ //down one occupied/boundary, then could move up 
-        res = dice->reverseMove("up", dices, __func__, 1);
+        res = dice->reverseMove("up", dices, __func__, true);
         if(res.first){
           int i = 1;
           while(i <= res.second){
@@ -322,7 +360,7 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero(Dice *dice, vector<Actio
         }
       }
       if(c.getY() == y-1 || y == 0){ //up one occupied, then could move down 
-        res = dice->reverseMove("down", dices, __func__, 1);
+        res = dice->reverseMove("down", dices, __func__, true);
         if(res.first){
           int i = 1;
           while(i <= res.second){
@@ -335,7 +373,7 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero(Dice *dice, vector<Actio
   }
 }
 
-void AleaGame::green_dice_possible_moves_being_pushed(Dice *dice, vector<Action> moves){
+void AleaGame::green_dice_possible_moves_being_pushed(Dice *dice, vector<Action> &moves){
   int x = dice->getPosition().getX(), y = dice->getPosition().getY();
   for(P2D move: {P2D::UP, P2D::DX, P2D::DOWN, P2D::SX}){
     if(x>0){ //check if can have been pushed from left
@@ -433,7 +471,6 @@ int AleaGame::heuristic_evaluation(){
             to_term = MIN(to_term, dist);
           }
         }
-        
       }
     } else {
       to_term = dice->getNMoves();
@@ -463,4 +500,12 @@ int AleaGame::heuristic_evaluation(){
   }
   if (2*saved > terminals.size()) return -1;
   return total_dist + 100*edge;
+}
+
+void AleaGame::show_map(){
+  cout << "\n";
+  for(auto d : dices){
+    cout << d.second->getActualType() << ": (" << d.second->getPosition().getX() << ", " << d.second->getPosition().getY() << ")\n";
+  }
+  cout << "\n";
 }

@@ -1,10 +1,11 @@
 #include "astar.h"
+#include <string>
 
 AStarNode::AStarNode(AleaGame game) : game(game) { }
 AStarNode::AStarNode(AleaGame game, Action action) : game(game), action(action) { }
-AStarNode::AStarNode(AleaGame game, int g) : game(game), g(g) { }
+AStarNode::AStarNode(AleaGame game, double g) : game(game), g(g) { }
 AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent) : game(game), action(action), parent(parent) { }
-AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent, int g, int h) : game(game), action(action), parent(parent), g(g), h(h) { 
+AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent, double g, double h) : game(game), action(action), parent(parent), g(g), h(h) { 
   f = g + h;
 }
 
@@ -16,22 +17,22 @@ bool AStarNode::operator<(const AStarNode& other) const {
   return f < other.f;
 }
 
-bool AStarNode::CompareFun::operator() (const AStarNode* n1, const AStarNode* n2) {
+bool AStarNode::CompareFun::operator() (AStarNode* n1, AStarNode* n2) {
   return n1->f > n2->f;
 }
 
-size_t AStarNode::HashFun::operator()(const AStarNode* n) const {
+size_t AStarNode::HashFun::operator()(AStarNode* const&n) const{
   return AleaGame::HashFun()(n->game);
 }
 
-vector<Action> astar_backward_search(AleaGame game, int limit) {
+pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit) {
+  pair<string, vector<Action>> res;
   priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFun> open;
   unordered_set<AStarNode*, AStarNode::HashFun> open_set;
   unordered_set<AleaGame, AleaGame::HashFun> closed;
   AStarNode* start_node = new AStarNode(game, 0);
   open.push(start_node);
   open_set.insert(start_node);
-  vector<Action> solution;
   int evaluated_moves = 0;
   int dead_positions = 0;
   int skipped_moves = 0;
@@ -44,14 +45,15 @@ vector<Action> astar_backward_search(AleaGame game, int limit) {
     closed.insert(current_node->game);
     if (current_node->game.is_valid_starting_configuration()) {
       while (current_node->parent != NULL) {
-        solution.push_back(AleaGame::revert_action(current_node->action));
+        res.second.push_back(AleaGame::revert_action(current_node->action));
         current_node = current_node->parent;
       }
+      res.first = printLevel(current_node->game, current_node->f);
       break;
     }
     vector<Action> actions = current_node->game.possible_moves();
     for (Action action : actions) {
-      AleaGame new_game = AleaGame(current_node->game);
+      AleaGame new_game(current_node->game);
       new_game.move(action);
       if (closed.find(new_game) != closed.end()) {
         ++skipped_moves;
@@ -63,20 +65,59 @@ vector<Action> astar_backward_search(AleaGame game, int limit) {
         ++dead_positions;
         continue;
       }
-
       AStarNode* neighbor = new AStarNode(new_game, action, current_node, -1*action.weight, value);
       if (open_set.find(neighbor) == open_set.end()) {
         open.push(neighbor);
         open_set.insert(neighbor);
       }
     }
-    if (branched_nodes > limit) break;
+    if (branched_nodes > limit){
+      cout << "\n\nBRANCHED_NODES LIMIT REACHED. EXIT\n\n";
+      break;
+    }
   }
-  // cout << "Evaluated:" << evaluated_moves << endl;
-  // cout << "Dead:"<< dead_positions << endl;
-  // cout << "Skipped:"<< skipped_moves << endl;
-  // cout << "Branched:"<< branched_nodes << endl;
-  return solution;
+  cout << "Evaluated:" << evaluated_moves << endl;
+  cout << "Dead:"<< dead_positions << endl;
+  cout << "Skipped:"<< skipped_moves << endl;
+  cout << "Branched:"<< branched_nodes << endl;
+  return res;
+}
+
+string printLevel(AleaGame map_configuration, double difficulty){
+  json level, dice, terminal;
+  int min_width = 0, max_width = 0, min_height = 0, max_height = 0;
+  for(auto t : map_configuration.terminals){
+    min_width = MIN(min_width, t.x);
+    max_width = MAX(max_width, t.x);
+    min_height = MIN(min_height, t.y);
+    max_height = MAX(max_height, t.y);
+  }
+  for(auto d : map_configuration.dices){
+    min_width = MIN(min_width, d.second->getPosition().getX());
+    max_width = MAX(max_width, d.second->getPosition().getX());
+    min_height = MIN(min_height, d.second->getPosition().getY());
+    max_height = MAX(max_height, d.second->getPosition().getY());
+  }
+  level["columns"] = max_width-min_width;
+
+  for(auto t : map_configuration.terminals){
+    terminal["x"] = t.x-min_width;
+    terminal["y"] = t.y-min_height;
+    level["terminals"].push_back(terminal);
+  }
+  for(auto d : map_configuration.dices){
+    dice["num"] = d.second->getInitialMoves();
+    dice["type"] = d.second->getActualTypeInt(); 
+    dice["x"] = d.second->getPosition().getX()-min_width;
+    dice["y"] = d.second->getPosition().getY()-min_height;
+    level["dices"].push_back(dice);
+  }
+  level["difficulty"] = difficulty;
+  char to_print[30];
+  sprintf(to_print, "%lf", difficulty);
+  ofstream o("generated_levels/level_" + string(to_print) + "_" + to_string(time(nullptr)) + ".json");
+	o << setw(4) << level << endl;
+  return "generated_levels/level_" + string(to_print) + "_" + to_string(time(nullptr)) + ".json";
 }
 
 /*

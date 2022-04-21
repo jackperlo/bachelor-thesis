@@ -25,8 +25,8 @@
 #define MIN(a, b) a < b ? a : b
 
 #define SIMPLE_MOVE 0.01
-#define JUMPING_MOVE 1
-#define PUSHED_MOVE 1
+#define JUMPING_MOVE 1.00
+#define PUSHED_MOVE 1.00
 
 #define NO_MOVE {false, 0}
 #define MOVE_BY_1 {true, 1}

@@ -4,15 +4,19 @@
         {
             "num": 1,
             "type": 1,
-            "x": 1,
+            "x": 3,
             "y": 1
         }
     ],
-    "difficulty": 0.0,
+    "difficulty": -1.0,
     "rows": 3,
     "terminals": [
         {
             "x": 2,
+            "y": 1
+        },
+        {
+            "x": 1,
             "y": 1
         }
     ]

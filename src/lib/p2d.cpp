@@ -8,8 +8,14 @@ const P2D P2D::UP(0, -1);
 const P2D P2D::DX(1, 0);
 const P2D P2D::DOWN(0, 1);
 const P2D P2D::SX(-1, 0);
+const P2D P2D::JUMPING_UP(0, -2);
+const P2D P2D::JUMPING_DX(2, 0);
+const P2D P2D::JUMPING_DOWN(0, 2);
+const P2D P2D::JUMPING_SX(-2, 0);
 const P2D P2D::null_p2d(0, 0);
+const Action Action::null_action(P2D::null_p2d, P2D::null_p2d, 0, 0, P2D::null_p2d);
 
+P2D::P2D(){}
 P2D::P2D(int x, int y) : x(x), y(y) { }
 P2D::P2D(const P2D& p2d) : x(p2d.x), y(p2d.y) { }
 
@@ -64,7 +70,17 @@ bool P2D::CompareFun::operator() (const P2D& lhs, const P2D& rhs) const {
   return lhs.y < rhs.y or (lhs.y == rhs.y and lhs.x < rhs.x);
 }
 
-Action::Action(P2D from, P2D dir, int weight, int movementType, P2D head) : from(from), dir(dir), weight(weight), movementType(movementType), head(head) { }
+Action::Action(){}
+
+Action::Action(const Action &act) {
+  this->from = act.from;
+  this->dir = act.dir;
+  this->weight = act.weight;
+  this->movementType = act.movementType;
+  this->head = act.head;
+}
+
+Action::Action(P2D from, P2D dir, double weight, int movementType, P2D head) : from(from), dir(dir), weight(weight), movementType(movementType), head(head) { }
 
 ostream& operator<<(ostream& out, Action act) {
   return out << "From " << act.from << " direction " << act.dir;

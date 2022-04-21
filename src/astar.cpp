@@ -53,13 +53,13 @@ pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit) {
       break;
     }
     vector<Action> actions = current_node->game.possible_moves();
-    //AleaGame::show_moves(actions);
     for (Action action : actions) {
       AleaGame new_game = AleaGame(current_node->game);
       if(!new_game.move(action, true)){
         cout<<"\nError while moving from: "<<action.from<<" | dir: "<<action.dir<<"Exiting.\n"; 
         exit(1);
       }
+      new_game.last_action_performed = action;
       if (closed.find(new_game) != closed.end()) {
         ++skipped_moves;
         continue;
@@ -70,7 +70,7 @@ pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit) {
         ++dead_positions;
         continue;
       }
-      AStarNode* neighbor = new AStarNode(new_game, action, current_node, -1*action.weight, value);
+      AStarNode* neighbor = new AStarNode(new_game, action, current_node, -1*action.weight, (double)value);
       if (open_set.find(neighbor) == open_set.end()) {
         open.push(neighbor);
         open_set.insert(neighbor);

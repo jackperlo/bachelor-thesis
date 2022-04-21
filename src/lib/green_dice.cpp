@@ -57,13 +57,13 @@ int GreenDice::getActualTypeInt(){
     return -1;
 }
 
-pair<bool, int> GreenDice::reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> dices, char const * callerName, bool isJustForSimulation, bool isPushed){
+pair<bool, int> GreenDice::reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType){
   direction = stringToLower(direction);
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
   pair<bool, int> res = NO_MOVE;
   int i = 1;
-  if(isPushed){
+  if(movementType == 1){
     if(direction.compare("sx") == 0){
       while(x-i>=0){
         if(dices.find(P2D::cellToP2D(Cell(x-i, y))) != dices.end() && (x == MAP_WIDTH-1 || dices.find(P2D::cellToP2D(Cell(x+1, y))) != dices.end())){ //if there's a right side or is a boundary cell 

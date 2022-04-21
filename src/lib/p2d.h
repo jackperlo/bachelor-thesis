@@ -13,6 +13,7 @@ class P2D {
 
 		P2D(int x, int y);
 		P2D(const P2D& p2d);
+		operator string ();
 		P2D operator+(const P2D& other) const;
 		P2D operator-() const;
 		P2D operator-(const P2D& other) const;
@@ -41,9 +42,9 @@ class P2D {
 struct Action {
 	P2D from, dir, head;
 	int weight;
-	bool movementType; //0->activeMove, 1->pushedMove, 2->jumpingMove
+	int movementType; //0->activeMove, 1->pushedMove, 2->jumpingMove
     
-	Action(P2D from, P2D dir, int weight = 0, int movementType = false, P2D head = P2D::null_p2d);
+	Action(P2D from, P2D dir, int weight = 0, int movementType = 0, P2D head = P2D::null_p2d);
 	friend ostream& operator<<(ostream& out, Action act);
 };
 

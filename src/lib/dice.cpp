@@ -34,7 +34,7 @@ void Dice::printDice(){
         ", " << this->position.getY() << ", nMoves: " << this->nMoves << ")" << std::endl;
 }
 
-bool Dice::move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> dices, char const * callerName, bool isJustForSimulation){
+bool Dice::move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation){
   direction = stringToLower(direction);
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
@@ -84,9 +84,17 @@ int Dice::checkArrivalCellIsEmpty(int x, int y, unordered_map<P2D, Dice *, P2D::
   return 0;
 }
 
-bool Dice::makeMove(int x, int y, int nMovesDone, unordered_map<P2D, Dice *, P2D::HashFun> dices){
-  dices.erase(P2D (this->getPosition().getX(), this->getPosition().getY()));
-  dices.insert(pair<P2D, Dice *>(P2D::cellToP2D(Cell(x, y)), this));
+bool Dice::makeMove(int x, int y, int nMovesDone, unordered_map<P2D, Dice *, P2D::HashFun> &dices){
+  dices.erase(P2D(this->getPosition().getX(), this->getPosition().getY()));
+  if(dices.find(P2D(this->getPosition().getX(), this->getPosition().getY())) != dices.end()){
+    cout<<"\nDice.cpp: Error while trying to erase old dice position.\n"; 
+    exit(1);
+  }
+  dices.insert(pair<P2D, Dice *>(P2D(x, y), this));
+  if(dices.find(P2D(x, y)) == dices.end()){
+    cout<<"\nDice.cpp: Error while trying to insert new dice position.\n"; 
+    exit(1);
+  }
   this->setPosition(Cell(x, y));
   this->setNMoves(this->getNMoves()-nMovesDone);
   return true;

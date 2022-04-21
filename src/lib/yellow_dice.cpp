@@ -53,7 +53,7 @@ int YellowDice::getActualTypeInt(){
     return -1;
 }
 
-pair<bool, int> YellowDice::reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> dices, char const * callerName, bool isJustForSimulation, bool isPushed){
+pair<bool, int> YellowDice::reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType){
   direction = stringToLower(direction);
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();

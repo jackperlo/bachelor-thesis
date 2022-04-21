@@ -10,9 +10,9 @@
 #include <queue>
 #include <stack>
 
-AleaGame::AleaGame(const char *filename) : AleaGame(json::parse(read_json(filename))) { }
+AleaGame::AleaGame(const char *filename, bool isBackward) : AleaGame(json::parse(read_json(filename)), isBackward) { }
 
-AleaGame::AleaGame(string filename) : AleaGame(json::parse(read_json(filename))) { }
+AleaGame::AleaGame(string filename, bool isBackward) : AleaGame(json::parse(read_json(filename)), isBackward) { }
 
 AleaGame::AleaGame(const AleaGame& game) {
     for (const auto& elem: game.terminals) {
@@ -20,7 +20,7 @@ AleaGame::AleaGame(const AleaGame& game) {
     }
     for (auto const& elem : game.dices) {
       Dice *dice;
-      Cell c(elem.first.x, elem.first.y);
+      Cell c(elem.second->getPosition().getX(), elem.second->getPosition().getY());
       switch (elem.second->getActualTypeInt()){
         case 0: dice = new WhiteDice(c, elem.second->getNMoves(), elem.second->getInitialMoves()); break;
         case 1: dice = new RedDice(c, elem.second->getNMoves(), elem.second->getInitialMoves()); break;
@@ -31,7 +31,14 @@ AleaGame::AleaGame(const AleaGame& game) {
     }
 }
 
-AleaGame::AleaGame(json json_dict) {
+AleaGame::AleaGame(json json_dict, bool isBackward) {
+  if(isBackward)
+    generateMapForBackwardMovements(json_dict);
+  else
+    generateMapForForwardMovements(json_dict);
+}
+
+void AleaGame::generateMapForBackwardMovements(json json_dict){
   int cols = json_dict["columns"];
   int max_row = 0;
 
@@ -64,11 +71,44 @@ AleaGame::AleaGame(json json_dict) {
     cout << "\n\nPlease insert a valid Final Configuration of the Map.\nMismatches between Dices and Terminals positions.\n\n\n";
     exit(1);
   }
-  cout << "===== Alea Level Solver =====" << endl;
-	cout << "        MAP_WIDTH : " << MAP_WIDTH << endl;
-	cout << "        MAP_HEIGHT: " << MAP_HEIGHT << endl;
-	cout << "        #dice : " << terminals.size() << endl;
-	cout << "=============================" << endl;
+  
+  cout << "\n===== Alea Level Solver Backward =====" << endl;
+	cout << "           MAP_WIDTH : " << MAP_WIDTH << endl;
+	cout << "           MAP_HEIGHT: " << MAP_HEIGHT << endl;
+	cout << "           #dice : " << terminals.size() << endl;
+	cout << "========================================" << endl;
+	cout << endl;
+}
+
+void AleaGame::generateMapForForwardMovements(json json_dict){
+  for (auto& e : json_dict["terminals"].items()) {
+    json terminal_j = e.value();
+    terminals.insert(P2D((int)terminal_j["x"], (int)terminal_j["y"]));
+  }
+
+  for (auto& e : json_dict["dice"].items()) {
+    json dice_j = e.value();
+    int x = dice_j["x"];
+    int y = dice_j["y"];
+    Dice *dice;
+    Cell c(x, y);
+    switch ((int)dice_j["type"]){
+      case 0: dice = new WhiteDice(c, dice_j["num"], dice_j["num"]); break;
+      case 1: dice = new RedDice(c, dice_j["num"], dice_j["num"]); break;
+      case 2: dice = new YellowDice(c, dice_j["num"], dice_j["num"]); break;
+      case 3: dice = new GreenDice(c, dice_j["num"], dice_j["num"]); break;
+    }
+    dices.insert(pair<P2D, Dice *>(P2D(x, y), dice));
+  }
+  MAP_WIDTH = json_dict["columns"];
+  MAP_HEIGHT = json_dict["rows"];
+  TOTAL_MOVES = remaining_moves();
+  
+  cout << "\n===== Alea Level Solver Forward =====" << endl;
+	cout << "            MAP_WIDTH : " << MAP_WIDTH << endl;
+	cout << "            MAP_HEIGHT: " << MAP_HEIGHT << endl;
+	cout << "            #dice : " << terminals.size() << endl;
+	cout << "=======================================" << endl;
 	cout << endl;
 }
 
@@ -134,8 +174,8 @@ void AleaGame::print(const bool& color) {
     return;
   }
   string s = "";
-  for (int i = 0; i < MAP_HEIGHT; ++i) {
-    for (int j = 0; j < MAP_WIDTH; ++j) {
+  for (int i = 0; i < MAP_HEIGHT; i++) {
+    for (int j = 0; j < MAP_WIDTH; j++) {
       P2D pos = P2D(j, i);
       string d = "    ";
       if (dices.find(pos) != dices.end()) {
@@ -399,24 +439,31 @@ void AleaGame::green_dice_possible_moves_being_pushed(Dice *dice, vector<Action>
   }
 }
 
-bool AleaGame::move(const Action& action) {
-  return move(action.from, action.dir, action.movementType);
+bool AleaGame::move(const Action& action, bool isMovingBackward) {
+  return move(action.from, action.dir, action.movementType, isMovingBackward);
 }
 
-int AleaGame::move(const P2D pos, const P2D dir, const bool isPushed) {
+bool AleaGame::move(const P2D pos, const P2D dir, const int movementType, bool isMovingBackward) {
   Dice *dice = dices[pos];
-  int from_x = dice->getPosition().getX();
-  int from_y = dice->getPosition().getY();
-  int to_x = dir.x;
-  int to_y = dir.y;
-  if(from_x > to_x && from_y == to_y)
-    return dice->reverseMove("sx", dices, __func__, false, isPushed).first;
-  else if(from_x < to_x && from_y == to_y)
-    return dice->reverseMove("dx", dices, __func__, false, isPushed).first;
-  else if(from_x == to_x && from_y < to_y)
-    return dice->reverseMove("down", dices, __func__, false, isPushed).first;
-  else if(from_x == to_x && from_y > to_y)
-    return dice->reverseMove("up", dices, __func__, false, isPushed).first;
+  if(isMovingBackward){
+    if(dir.x<0)
+      return dice->reverseMove("sx", dices, __func__, false, movementType).first;
+    else if(dir.x>0)
+      return dice->reverseMove("dx", dices, __func__, false, movementType).first;
+    else if(dir.y>0)
+      return dice->reverseMove("down", dices, __func__, false, movementType).first;
+    else if(dir.y<0)
+      return dice->reverseMove("up", dices, __func__, false, movementType).first;
+  }else{
+    if(dir.x<0)
+      return dice->move("sx", dices, __func__, false);
+    else if(dir.x>0)
+      return dice->move("dx", dices, __func__, false);
+    else if(dir.y>0)
+      return dice->move("down", dices, __func__, false);
+    else if(dir.y<0)
+      return dice->move("up", dices, __func__, false);
+  }
   return false;
 }
 
@@ -508,4 +555,9 @@ void AleaGame::show_map(){
     cout << d.second->getActualType() << ": (" << d.second->getPosition().getX() << ", " << d.second->getPosition().getY() << ")\n";
   }
   cout << "\n";
+}
+
+void AleaGame::show_moves(vector<Action> moves){
+  for(auto m : moves)
+    cout << "\nfrom: " << m.from << " | dir: " << m.dir << "\n";
 }

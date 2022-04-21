@@ -13,6 +13,12 @@ const P2D P2D::null_p2d(0, 0);
 P2D::P2D(int x, int y) : x(x), y(y) { }
 P2D::P2D(const P2D& p2d) : x(p2d.x), y(p2d.y) { }
 
+P2D::operator string (){
+  string t = "";
+  t = "(" + to_string(this->x) + ", " + to_string(this->y) + ")";
+  return t; 
+}
+
 P2D P2D::operator+(const P2D& other) const {
   return P2D(x + other.x, y + other.y);
 }

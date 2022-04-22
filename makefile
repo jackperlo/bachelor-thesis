@@ -84,8 +84,8 @@ tests: ./src/tests/tests.o gtest_main.a
 
 make all: level_solver
 
-run:
-	./src/level_solver
+run: ./src/level_solver
+	./src/level_solver $(name)
 
 run_tests:	
 	./src/tests/tests	

@@ -2,7 +2,13 @@
 #include "astar.h"
 
 int main(int argc, char *argv[]){ 
-  AleaGame *backward_game = new AleaGame("./generated_levels/CustomLevel.json", true);
+  if(argc != 2){
+    cout<<"\nlevel_solver.cpp: please insert level file name.\n\n"; 
+    exit(1);
+  }
+  string level_name = "./custom_level_config/";
+  level_name.append(argv[1]);
+  AleaGame *backward_game = new AleaGame(level_name, true);
 	backward_game->print(true);
   pair <string, vector<Action>> solution = astar_backward_search(*backward_game, 50000);
   

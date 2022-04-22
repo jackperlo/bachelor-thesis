@@ -34,7 +34,7 @@ class AleaGame{
 		bool move(const P2D pos, const P2D dir, const int isPushed, bool isMovingBackward);
     bool is_valid_starting_configuration();
     static Action revert_action(Action backward_action);
-    int heuristic_evaluation();
+    //int heuristic_evaluation();
     void show_map();
     static void show_moves(vector<Action> moves);
 

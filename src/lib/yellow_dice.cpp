@@ -127,9 +127,9 @@ pair<bool, int> YellowDice::reverseMove(string direction, unordered_map<P2D, Dic
 
 pair<bool, int> YellowDice::reverseMoveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
-  if(checkArrivalCellIsEmpty(x-1, y, dices))
+  if(x-1>= 0 && checkArrivalCellIsEmpty(x-1, y, dices))
     return MOVE_BY_1;
-  if(checkArrivalCellIsEmpty(x-2, y, dices))
+  if(x-2>= 0 && checkArrivalCellIsEmpty(x-2, y, dices))
     return JUMP_BY_1;
 
   if(dices.at(P2D::cellToP2D(Cell(x-1, y)))->getActualType().compare("RedDice") == 0 || dices.at(P2D::cellToP2D(Cell(x-1, y)))->getActualType().compare("WhiteDice") == 0){
@@ -142,9 +142,9 @@ pair<bool, int> YellowDice::reverseMoveSx(int x, int y, unordered_map<P2D, Dice 
 
 pair<bool, int> YellowDice::reverseMoveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
-  if(checkArrivalCellIsEmpty(x+1, y, dices))
+  if(x+1 < MAP_WIDTH && checkArrivalCellIsEmpty(x+1, y, dices))
     return MOVE_BY_1;
-  if(checkArrivalCellIsEmpty(x+2, y, dices))
+  if(x+2 < MAP_WIDTH && checkArrivalCellIsEmpty(x+2, y, dices))
     return JUMP_BY_1;
 
   if(dices.at(P2D::cellToP2D(Cell(x+1, y)))->getActualType().compare("RedDice") == 0  || dices.at(P2D::cellToP2D(Cell(x+1, y)))->getActualType().compare("WhiteDice") == 0){
@@ -157,9 +157,9 @@ pair<bool, int> YellowDice::reverseMoveDx(int x, int y, unordered_map<P2D, Dice 
 
 pair<bool, int> YellowDice::reverseMoveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
-  if(checkArrivalCellIsEmpty(x, y-1, dices))
+  if(y-1 >= 0 && checkArrivalCellIsEmpty(x, y-1, dices))
     return MOVE_BY_1;
-  if(checkArrivalCellIsEmpty(x, y-2, dices))
+  if(y-2 >= 0 && checkArrivalCellIsEmpty(x, y-2, dices))
     return JUMP_BY_1;
 
   if(dices.at(P2D::cellToP2D(Cell(x, y-1)))->getActualType().compare("RedDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y-1)))->getActualType().compare("WhiteDice") == 0){
@@ -172,9 +172,9 @@ pair<bool, int> YellowDice::reverseMoveUp(int x, int y, unordered_map<P2D, Dice 
 
 pair<bool, int> YellowDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
-  if(checkArrivalCellIsEmpty(x, y+1, dices))
+  if(y+1 < MAP_HEIGHT && checkArrivalCellIsEmpty(x, y+1, dices))
     return MOVE_BY_1;
-  if(checkArrivalCellIsEmpty(x, y+2, dices))
+  if(y+2 < MAP_HEIGHT && checkArrivalCellIsEmpty(x, y+2, dices))
     return JUMP_BY_1;
 
   if(dices.at(P2D::cellToP2D(Cell(x, y+1)))->getActualType().compare("RedDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y+1)))->getActualType().compare("WhiteDice") == 0){
@@ -187,36 +187,36 @@ pair<bool, int> YellowDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dic
 
 pair<bool, int> YellowDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
-  if(checkArrivalCellIsEmpty(x-1, y, dices))
+  if(x-1 >= 0 && checkArrivalCellIsEmpty(x-1, y, dices))
     return MOVE_BY_1;
-  else if(checkArrivalCellIsEmpty(x-2, y, dices))
+  else if(x-2 >= 0 && checkArrivalCellIsEmpty(x-2, y, dices))
     return JUMP_BY_1;
   return res;
 }
 
 pair<bool, int> YellowDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
-  if(checkArrivalCellIsEmpty(x+1, y, dices))
+  if(x+1 < MAP_WIDTH && checkArrivalCellIsEmpty(x+1, y, dices))
     return MOVE_BY_1;
-  else if(checkArrivalCellIsEmpty(x+2, y, dices))
+  else if(x+2 < MAP_WIDTH && checkArrivalCellIsEmpty(x+2, y, dices))
     return JUMP_BY_1;
   return res;
 }
 
 pair<bool, int> YellowDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
-  if(checkArrivalCellIsEmpty(x, y-1, dices))
+  if(y-1 >= 0 && checkArrivalCellIsEmpty(x, y-1, dices))
     return MOVE_BY_1;
-  else if(checkArrivalCellIsEmpty(x, y-2, dices))
+  else if(y-2 >= 0 && checkArrivalCellIsEmpty(x, y-2, dices))
     return JUMP_BY_1;
   return res;
 }
 
 pair<bool, int> YellowDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
   pair<bool, int> res = NO_MOVE;
-  if(checkArrivalCellIsEmpty(x, y+1, dices))
+  if(y+1 < MAP_HEIGHT && checkArrivalCellIsEmpty(x, y+1, dices))
     return MOVE_BY_1;
-  else if(checkArrivalCellIsEmpty(x, y+2, dices))
+  else if(y+2 < MAP_HEIGHT && checkArrivalCellIsEmpty(x, y+2, dices))
     return JUMP_BY_1;
   return res;
 }

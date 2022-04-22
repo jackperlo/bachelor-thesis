@@ -44,26 +44,42 @@ bool Dice::move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dice
   if(this->getNMoves() > 0 || pushedMove){
     if(direction.compare("sx") == 0){
       res = moveSx(x, y, dices, isJustForSimulation);
-      if(res.first && !pushedMove && !isJustForSimulation)
-        return makeMove(x-res.second, y, res.second, dices);
+      if(res.first && !pushedMove && !isJustForSimulation){
+        if(this->getActualType().compare("YellowDice") == 0)
+          return makeMove(x-res.second, y, 1, dices);
+        else
+          return makeMove(x-res.second, y, res.second, dices);
+      }
       else if(res.first && pushedMove && !isJustForSimulation)
         return makeMove(x-res.second, y, 0, dices);
     }else if(direction.compare("dx") == 0){
       res = moveDx(x, y, dices, isJustForSimulation);
-      if(res.first && !pushedMove && !isJustForSimulation)
-        return makeMove(x+res.second, y, res.second, dices);
+      if(res.first && !pushedMove && !isJustForSimulation){
+        if(this->getActualType().compare("YellowDice") == 0)
+          return makeMove(x+res.second, y, 1, dices);
+        else
+          return makeMove(x+res.second, y, res.second, dices);
+      }
       else if(res.first && pushedMove && !isJustForSimulation)
         return makeMove(x+res.second, y, 0, dices);
     }else if(direction.compare("up") == 0){
       res = moveUp(x, y, dices, isJustForSimulation);
-      if(res.first && !pushedMove && !isJustForSimulation)
-        return makeMove(x, y-res.second, res.second, dices);
+      if(res.first && !pushedMove && !isJustForSimulation){
+        if(this->getActualType().compare("YellowDice") == 0)
+          return makeMove(x, y-res.second, 1, dices);
+        else
+          return makeMove(x, y-res.second, res.second, dices);
+      }
       else if(res.first && pushedMove && !isJustForSimulation)
         return makeMove(x, y-res.second, 0, dices);
     }else if(direction.compare("down") == 0){
       res = moveDown(x, y, dices, isJustForSimulation);
-      if(res.first && !pushedMove && !isJustForSimulation)
-        return makeMove(x, y+res.second, res.second, dices);
+      if(res.first && !pushedMove && !isJustForSimulation){
+        if(this->getActualType().compare("YellowDice") == 0)
+          return makeMove(x, y+res.second, 1, dices);
+        else
+          return makeMove(x, y+res.second, res.second, dices);
+      }
       else if(res.first && pushedMove && !isJustForSimulation)
         return makeMove(x, y+res.second, res.second, dices);
     }
@@ -96,6 +112,11 @@ bool Dice::makeMove(int x, int y, int nMovesDone, unordered_map<P2D, Dice *, P2D
     exit(1);
   }
   this->setPosition(Cell(x, y));
+  if(this->getNMoves()-nMovesDone < 0){
+    cout<<"\nDice.cpp: Error while decreasing nMoves to this dice:.\n"; 
+    this->printDice();
+    exit(1);
+  }
   this->setNMoves(this->getNMoves()-nMovesDone);
   return true;
 }

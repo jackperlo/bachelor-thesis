@@ -420,37 +420,21 @@ void AleaGame::green_dice_possible_moves_being_pushed(Dice *dice, vector<Action>
   int x = dice->getPosition().getX(), y = dice->getPosition().getY();
   for(P2D move: {P2D::UP, P2D::DX, P2D::DOWN, P2D::SX}){
     if(x>0 && last_action_performed.dir != P2D::DX){ //check if can have been pushed from left
-      if(dices.find(P2D(x,y)) == dices.end()){
-        this->show_map();
-        cout<<"dices("<<x<<","<<y<<"not found.";
-      }
       pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("sx", dices, __func__, true, 1);
       if(res.first)
         moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::SX, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x-res.second, y))));
     }
     if(x+1<MAP_WIDTH && last_action_performed.dir != P2D::SX){ //check if can have been pushed from right
-      if(dices.find(P2D(x,y)) == dices.end()){
-        this->show_map();
-        cout<<"dices("<<x<<","<<y<<"not found.";
-      }
       pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("dx", dices, __func__, true, 1);
       if(res.first)
         moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::DX, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x+res.second, y)))); 
     }
     if(y>0 && last_action_performed.dir != P2D::DOWN){ //check if can have been pushed from up
-      if(dices.find(P2D(x,y)) == dices.end()){
-        this->show_map();
-        cout<<"dices("<<x<<","<<y<<"not found.";
-      }
       pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("up", dices, __func__, true, 1);
       if(res.first)
         moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::UP, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x, y-res.second))));
     }
     if(y+1<MAP_HEIGHT && last_action_performed.dir != P2D::UP){ //check if can have been pushed from down
-      if(dices.find(P2D(x,y)) == dices.end()){
-        this->show_map();
-        cout<<"dices("<<x<<","<<y<<"not found.";
-      }
       pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("down", dices, __func__, true, 1);
       if(res.first)
         moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::DOWN, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x, y+res.second))));
@@ -512,61 +496,6 @@ bool AleaGame::has_dice(const P2D& pos) const {
 Action AleaGame::revert_action(Action backward_action){
   return Action(backward_action.head, P2D(backward_action.dir.x*-1, backward_action.dir.y*-1), backward_action.weight);
 }
-
-/*int AleaGame::heuristic_evaluation(){
-  int rem = remaining_moves();
-  if (rem == 0) return is_valid_starting_configuration() ? 0 : -1;
-  int saved = 0;
-  int total_dist = 0;
-  int edge = 0;
-  int possible_savers = 0;
-  for (auto const& pair: dices) {
-    const P2D pos = pair.first;
-    Dice *dice = pair.second;
-    int to_term = 100;
-    int penalty = 0;
-    possible_savers += (dice->getActualType().compare("YellowDice") != 0 and dice->getActualType().compare("GreenDice") != 0 and dice->getNMoves() > 0);
-    if (!is_terminal(pos) or (dice->getActualType().compare("RedDice") == 0 and dice->getNMoves() % 2 == 1)) {
-      for (P2D t : terminals) {
-        if(dices.find(t) != dices.end()){
-          Dice *d = dices.at(t);
-          if (d->getNMoves() >= 0 and dice->getActualType().compare("GreenDice") == 0) continue;
-          if (d->getNMoves() < 0 or d->getActualType().compare("RedDice") != 0 or (d->getActualType().compare("RedDice") == 0 and d->getNMoves() > 0)) {
-            const int dist = pos.manatthan(t);
-            if (d->getActualType().compare("RedDice") == 0 and dist % 2 != dice->getNMoves() % 2) continue;
-            to_term = MIN(to_term, dist);
-          }
-        }
-      }
-    } else {
-      to_term = dice->getNMoves();
-      penalty = (dice->getNMoves() % 2 != 0);
-    }
-    total_dist += MAX(to_term, dice->getNMoves() + penalty);
-    if (dice->getActualType().compare("YellowDice") == 0) {
-      to_term = dice->getNMoves() == 0 ? to_term : 0;
-    }
-    if (to_term > dice->getNMoves()) {
-      if (dice->getActualType().compare("RedDice") == 0) return -1;
-      bool save = false;
-      for (auto const& pair2: dices) {
-        Dice *saver = pair2.second;
-        if (pair2.first != pos and 
-          saver->getActualType().compare("YellowDice") != 0 and 
-          saver->getActualType().compare("GreenDice") != 0 and 
-          saver->getNMoves() > pos.manatthan(pair2.first)) {
-          save = true;
-          break;
-        }
-      }
-      if (!save) return -1;
-      saved += 1;
-    }
-    edge += (pos.x == 0 or pos.x == MAP_WIDTH-1 or pos.y == 0 or pos.y == MAP_HEIGHT-1);
-  }
-  if (2*saved > terminals.size()) return -1;
-  return total_dist + 100*edge;
-}*/
 
 void AleaGame::show_map(){
   cout << "\n";

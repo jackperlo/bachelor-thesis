@@ -39,7 +39,7 @@ bool Dice::move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dice
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
   pair<bool, int> res;
-  bool pushedMove = this->getNMoves() == 0 && (strcmp(callerName, "moveSx") == 0 || strcmp(callerName, "moveDx") == 0 || strcmp(callerName, "moveUp") == 0 || strcmp(callerName, "moveDown") == 0);
+  bool pushedMove = (this->getNMoves() == 0 && (strcmp(callerName, "moveSx") == 0 || strcmp(callerName, "moveDx") == 0 || strcmp(callerName, "moveUp") == 0 || strcmp(callerName, "moveDown") == 0)) || (strcmp(callerName, "moveSx") == 0 || strcmp(callerName, "moveDx") == 0 || strcmp(callerName, "moveUp") == 0 || strcmp(callerName, "moveDown") == 0);
 
   if(this->getNMoves() > 0 || pushedMove){
     if(direction.compare("sx") == 0){
@@ -81,7 +81,7 @@ bool Dice::move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dice
           return makeMove(x, y+res.second, res.second, dices);
       }
       else if(res.first && pushedMove && !isJustForSimulation)
-        return makeMove(x, y+res.second, res.second, dices);
+        return makeMove(x, y+res.second, 0, dices);
     }
   }
   return false;
@@ -112,11 +112,11 @@ bool Dice::makeMove(int x, int y, int nMovesDone, unordered_map<P2D, Dice *, P2D
     exit(1);
   }
   this->setPosition(Cell(x, y));
-  if(this->getNMoves()-nMovesDone < 0){
+  /*if(this->getNMoves()-nMovesDone < 0){
     cout<<"\nDice.cpp: Error while decreasing nMoves to this dice:.\n"; 
     this->printDice();
     exit(1);
-  }
+  }*/
   this->setNMoves(this->getNMoves()-nMovesDone);
   return true;
 }

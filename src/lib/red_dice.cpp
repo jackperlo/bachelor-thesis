@@ -57,25 +57,35 @@ pair<bool, int> RedDice::reverseMove(string direction, unordered_map<P2D, Dice *
   direction = stringToLower(direction);
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
+  bool isGoingToCallThirdParty = !((direction.compare("sx") == 0 && checkArrivalCellIsEmpty(x-1, y, dices)) || (direction.compare("dx") == 0 && checkArrivalCellIsEmpty(x+1, y, dices)) || (direction.compare("up") == 0 && checkArrivalCellIsEmpty(x, y-1, dices)) || (direction.compare("down") == 0 && checkArrivalCellIsEmpty(x, y+1, dices)));
+  if(!isGoingToCallThirdParty){
+    if(this->getNMoves() > 0)
+      return call4reverseMove(direction, dices, callerName, isJustForSimulation, movementType);
+  }else
+    return call4reverseMove(direction, dices, callerName, isJustForSimulation, movementType);
+  return NO_MOVE;
+}
+
+pair<bool, int> RedDice::call4reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType){
+  direction = stringToLower(direction);
+  int x = this->getPosition().getX();
+  int y = this->getPosition().getY();
   pair<bool, int> res = NO_MOVE;
-  bool pushedReverseMove = this->getNMoves() == 0 && (strcmp(callerName, "reverseMoveSx") == 0 || strcmp(callerName, "reverseMoveDx") == 0 || strcmp(callerName, "reverseMoveUp") == 0 || strcmp(callerName, "reverseMoveDown") == 0);
-  if(this->getNMoves() > 0 || pushedReverseMove){
-    if(direction.compare("sx") == 0){
-      res = reverseMoveSx(x, y, dices, isJustForSimulation);
-      if(res.first && !isJustForSimulation) this->makeMove(x-1, y, 1, dices);
-    }
-    if(direction.compare("dx") == 0){
-      res = reverseMoveDx(x, y, dices, isJustForSimulation);
-      if(res.first && !isJustForSimulation) this->makeMove(x+1, y, 1, dices);
-    }
-    if(direction.compare("up") == 0){
-      res = reverseMoveUp(x, y, dices, isJustForSimulation);
-      if(res.first && !isJustForSimulation) this->makeMove(x, y-1, 1, dices);
-    }
-    if(direction.compare("down") == 0){
-      res = reverseMoveDown(x, y, dices, isJustForSimulation);
-      if(res.first && !isJustForSimulation) this->makeMove(x, y+1, 1, dices);
-    }
+  if(direction.compare("sx") == 0){
+    res = reverseMoveSx(x, y, dices, isJustForSimulation);
+    if(res.first && !isJustForSimulation) this->makeMove(x-1, y, 1, dices);
+  }
+  if(direction.compare("dx") == 0){
+    res = reverseMoveDx(x, y, dices, isJustForSimulation);
+    if(res.first && !isJustForSimulation) this->makeMove(x+1, y, 1, dices);
+  }
+  if(direction.compare("up") == 0){
+    res = reverseMoveUp(x, y, dices, isJustForSimulation);
+    if(res.first && !isJustForSimulation) this->makeMove(x, y-1, 1, dices);
+  }
+  if(direction.compare("down") == 0){
+    res = reverseMoveDown(x, y, dices, isJustForSimulation);
+    if(res.first && !isJustForSimulation) this->makeMove(x, y+1, 1, dices);
   }
   return res;
 }
@@ -155,7 +165,7 @@ pair<bool, int> RedDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::
   else{ //arrival cell is busy
     string actualType = dices.at(P2D (x, y+1))->getActualType();
     if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
-      if(dices.at(P2D (x, y+1))->move("down", dices, __func__, isJustForSimulation)) //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
+      if(dices.at(P2D (x, y+1))->move("down", dices, __func__, isJustForSimulation)) //calls recursevely the move down for the dice on his down (if it can be done moves in turn)
         return MOVE_BY_1;
       else 
         return NO_MOVE;

@@ -58,35 +58,46 @@ pair<bool, int> WhiteDice::reverseMove(string direction, unordered_map<P2D, Dice
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
   pair<bool, int> res = NO_MOVE;
-  bool pushedReverseMove = this->getNMoves() == 0 && (strcmp(callerName, "reverseMoveSx") == 0 || strcmp(callerName, "reverseMoveDx") == 0 || strcmp(callerName, "reverseMoveUp") == 0 || strcmp(callerName, "reverseMoveDown") == 0);
-  if(this->getNMoves() > 0 || pushedReverseMove){
-    if(direction.compare("sx") == 0){
-      res = reverseMoveSx(x, y, dices, isJustForSimulation);
-      if(res.first && !isJustForSimulation){
-        if(res.second == 1) this->makeMove(x-1, y, 1, dices);
-        else this->makeMove(x-1, y, 0, dices);
-      }
+  bool isGoingToCallThirdParty = !((direction.compare("sx") == 0 && checkArrivalCellIsEmpty(x-1, y, dices)) || (direction.compare("dx") == 0 && checkArrivalCellIsEmpty(x+1, y, dices)) || (direction.compare("up") == 0 && checkArrivalCellIsEmpty(x, y-1, dices)) || (direction.compare("down") == 0 && checkArrivalCellIsEmpty(x, y+1, dices)));
+  if(!isGoingToCallThirdParty){
+    if(this->getNMoves() > 0)
+      return call4reverseMove(direction, dices, callerName, isJustForSimulation, movementType);
+  }else
+    return call4reverseMove(direction, dices, callerName, isJustForSimulation, movementType);
+  return res;
+}
+
+pair<bool, int> WhiteDice::call4reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType){
+  direction = stringToLower(direction);
+  int x = this->getPosition().getX();
+  int y = this->getPosition().getY();
+  pair<bool, int> res = NO_MOVE;
+  if(direction.compare("sx") == 0){
+    res = reverseMoveSx(x, y, dices, isJustForSimulation);
+    if(res.first && !isJustForSimulation){
+      if(res.second == 1) this->makeMove(x-1, y, 1, dices);
+      else this->makeMove(x-1, y, 0, dices);
     }
-    else if(direction.compare("dx") == 0){
-      res = reverseMoveDx(x, y, dices, isJustForSimulation);
-      if(res.first && !isJustForSimulation){
-        if(res.second == 1) this->makeMove(x+1, y, 1, dices);
-        else this->makeMove(x+1, y, 0, dices);
-      }
+  }
+  else if(direction.compare("dx") == 0){
+    res = reverseMoveDx(x, y, dices, isJustForSimulation);
+    if(res.first && !isJustForSimulation){
+      if(res.second == 1) this->makeMove(x+1, y, 1, dices);
+      else this->makeMove(x+1, y, 0, dices);
     }
-    else if(direction.compare("up") == 0){
-      res = reverseMoveUp(x, y, dices, isJustForSimulation);
-      if(res.first && !isJustForSimulation){
-        if(res.second == 1) this->makeMove(x, y-1, 1, dices);
-        else this->makeMove(x, y-1, 0, dices);
-      }
+  }
+  else if(direction.compare("up") == 0){
+    res = reverseMoveUp(x, y, dices, isJustForSimulation);
+    if(res.first && !isJustForSimulation){
+      if(res.second == 1) this->makeMove(x, y-1, 1, dices);
+      else this->makeMove(x, y-1, 0, dices);
     }
-    else if(direction.compare("down") == 0){
-      res = reverseMoveDown(x, y, dices, isJustForSimulation);
-      if(res.first && !isJustForSimulation){
-        if(res.second == 1) this->makeMove(x, y+1, 1, dices);
-        else this->makeMove(x, y+1, 0, dices);
-      }
+  }
+  else if(direction.compare("down") == 0){
+    res = reverseMoveDown(x, y, dices, isJustForSimulation);
+    if(res.first && !isJustForSimulation){
+      if(res.second == 1) this->makeMove(x, y+1, 1, dices);
+      else this->makeMove(x, y+1, 0, dices);
     }
   }
   return res;

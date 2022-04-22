@@ -54,8 +54,6 @@ pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit) {
     }
     vector<Action> actions = current_node->game.possible_moves();
     for (Action action : actions) {
-      //cout<<"\nastar.cpp: Moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movementType<<", head:"<<action.head<<"\n"; 
-      //current_node->game.show_map();
       AleaGame new_game = AleaGame(current_node->game);
       if(!new_game.move(action, true)){
         cout<<"\nastar.cpp: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movementType<<", head:"<<action.head<<"\nExiting.\n"; 
@@ -66,14 +64,8 @@ pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit) {
         ++skipped_moves;
         continue;
       }
-      //int value = new_game.heuristic_evaluation();
       ++evaluated_moves;
-      //if (value < 0) {
-        //++dead_positions;
-        //continue;
-      //}
       AStarNode* neighbor = new AStarNode(new_game, action, current_node, current_node->f, action.weight); //(double)value
-      cout<<"difficolta di node: "<<neighbor->f<<"\n";
       if (open_set.find(neighbor) == open_set.end()) {
         open.push(neighbor);
         open_set.insert(neighbor);

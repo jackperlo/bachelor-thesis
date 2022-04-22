@@ -2,7 +2,7 @@
 #include "astar.h"
 
 int main(int argc, char *argv[]){ 
-  AleaGame *backward_game = new AleaGame("./generated_levels/TrialLevel.json", true);
+  AleaGame *backward_game = new AleaGame("./generated_levels/CustomLevel.json", true);
 	backward_game->print(true);
   pair <string, vector<Action>> solution = astar_backward_search(*backward_game, 50000);
   

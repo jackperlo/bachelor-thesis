@@ -4,6 +4,8 @@
 #include "yellow_dice.h"
 #include "green_dice.h"
 #include "p2d.h"
+#include <typeinfo>
+#include <typeindex>
 
 RedDice::RedDice(Cell position, int nMoves, int initialMoves) : Dice(position, nMoves, initialMoves){}
 

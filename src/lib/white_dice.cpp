@@ -4,6 +4,8 @@
 #include "yellow_dice.h"
 #include "green_dice.h"
 #include "p2d.h"
+#include <typeinfo>
+#include <typeindex>
 
 WhiteDice::WhiteDice(Cell position, int nMoves, int initialMoves) : Dice(position, nMoves, initialMoves){}
 

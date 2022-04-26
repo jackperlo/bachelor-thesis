@@ -34,6 +34,7 @@
 #include "../lib/green_dice.h"
 #include "../lib/cell.h"
 #include "../lib/p2d.h"
+#include <assert.h>
 
 TEST(oneWhiteDice, moveSx0Moves){
   unordered_map<P2D, Dice*, P2D::HashFun> dices;

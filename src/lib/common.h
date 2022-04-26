@@ -1,20 +1,14 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <iostream>
-#include <random>
-#include <bits/stdc++.h>
-#include <typeinfo>
 #include <string>
-#include <assert.h>
-#include "json.hpp"
-#include <fstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <map>
 #include <unordered_set>
 #include <queue>
 #include <stack>
+#include "json.hpp"
 
 #define BGGRAY "\x1b[48;2;50;50;50m \x1b[0m"
 #define BGWHT(n) "\x1b[48;2;255;255;255m\x1b[38;2;0;0;0m" + to_string(n) + "\x1b[0m\x1b[0m"

@@ -1,5 +1,7 @@
 #include "astar.h"
 #include <string>
+#include <iomanip>
+#include <fstream>
 
 AStarNode::AStarNode(AleaGame game) : game(game) { }
 AStarNode::AStarNode(AleaGame game, Action action) : game(game), action(action) { }

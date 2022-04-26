@@ -8,50 +8,50 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 # the compiler doesn't generate warnings in Google Test headers.
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 # Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra -pthread
+CXXFLAGS += -std=c++11 -g -Wall -Wextra -pthread
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
 #---------------MAIN-------------
 
 ./build/cell.o: ./src/lib/cell.cpp ./src/lib/cell.h
 	cd src/lib; \
-	$(CXX) -c -g cell.cpp -o ../../build/cell.o; 
+	$(CXX) -c $(CXXFLAGS) cell.cpp -o ../../build/cell.o; 
 
 ./build/dice.o: ./src/lib/dice.cpp ./src/lib/dice.h
 	cd src/lib; \
-	$(CXX) -c -g dice.cpp -o ../../build/dice.o;
+	$(CXX) -c $(CXXFLAGS) dice.cpp -o ../../build/dice.o;
 
 ./build/white_dice.o: ./src/lib/white_dice.cpp ./src/lib/white_dice.h
 	cd src/lib; \
-	$(CXX) -c -g white_dice.cpp -o ../../build/white_dice.o;
+	$(CXX) -c $(CXXFLAGS) white_dice.cpp -o ../../build/white_dice.o;
 
 ./build/red_dice.o: ./src/lib/red_dice.cpp ./src/lib/red_dice.h
 	cd src/lib; \
-	$(CXX) -c -g red_dice.cpp -o ../../build/red_dice.o;
+	$(CXX) -c $(CXXFLAGS) red_dice.cpp -o ../../build/red_dice.o;
 
 ./build/yellow_dice.o: ./src/lib/yellow_dice.cpp ./src/lib/yellow_dice.h
 	cd src/lib; \
-	$(CXX) -c -g yellow_dice.cpp -o ../../build/yellow_dice.o;
+	$(CXX) -c $(CXXFLAGS) yellow_dice.cpp -o ../../build/yellow_dice.o;
 
 ./build/green_dice.o: ./src/lib/green_dice.cpp ./src/lib/green_dice.h
 	cd src/lib; \
-	$(CXX) -c -g green_dice.cpp -o ../../build/green_dice.o;
+	$(CXX) -c $(CXXFLAGS) green_dice.cpp -o ../../build/green_dice.o;
 
 ./build/p2d.o: ./src/lib/p2d.cpp ./src/lib/p2d.h
 	cd src/lib; \
-	$(CXX) -c -g p2d.cpp -o ../../build/p2d.o;	
+	$(CXX) -c $(CXXFLAGS) p2d.cpp -o ../../build/p2d.o;	
 
 ./build/alea_game.o: ./src/alea_game.cpp ./src/alea_game.h 
 	cd src; \
-	$(CXX) -c -g alea_game.cpp -o ../build/alea_game.o;
+	$(CXX) -c $(CXXFLAGS) alea_game.cpp -o ../build/alea_game.o;
 
 ./build/astar.o: ./src/astar.cpp ./src/astar.h 
 	cd src; \
-	$(CXX) -c -g astar.cpp -o ../build/astar.o;
+	$(CXX) -c $(CXXFLAGS) astar.cpp -o ../build/astar.o;
 
 level_solver: ./build/p2d.o ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o ./build/alea_game.o ./build/astar.o
 	cd src; \
-	$(CXX) -g level_solver.cpp -o level_solver ../build/p2d.o ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o ../build/green_dice.o ../build/alea_game.o ../build/astar.o
+	$(CXX) $(CXXFLAGS) level_solver.cpp -o level_solver ../build/p2d.o ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o ../build/green_dice.o ../build/alea_game.o ../build/astar.o
 
 
 #---------------TESTS-------------

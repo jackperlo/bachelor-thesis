@@ -13,7 +13,7 @@ class P2D {
 
 		P2D();
 		P2D(int x, int y);
-		P2D(const P2D& p2d);
+		// P2D(const P2D& p2d); // this matches the default copy constructor
 		operator string ();
 		P2D operator+(const P2D& other) const;
 		P2D operator-() const;
@@ -23,7 +23,7 @@ class P2D {
 		bool operator==(const P2D& other) const;
 		bool operator!=(const P2D& other) const;
 		friend ostream& operator<<(ostream& out, P2D p);
-    static P2D cellToP2D(Cell c);
+    	static P2D cellToP2D(Cell c);
 
 		struct HashFun {
 			size_t operator()(const P2D& p) const;
@@ -50,7 +50,7 @@ struct Action {
 	int movementType; //0->activeMove, 1->pushedMove, 2->jumpingMove
     
 	Action();
-	Action(const Action &act);
+	// Action(const Action &act); // this matches the default copy constructor
 	Action(P2D from, P2D dir, double weight = 0.00, int movementType = 0, P2D head = P2D::null_p2d);
 	friend ostream& operator<<(ostream& out, Action act);
 

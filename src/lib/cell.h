@@ -7,7 +7,7 @@ class Cell{
   public:
     Cell(int x, int y);
     Cell();
-    Cell(const Cell &c1); //copying constructor
+    // Cell(const Cell &c1); //copying constructor
     int getX();
     void setX(int x);
     int getY();

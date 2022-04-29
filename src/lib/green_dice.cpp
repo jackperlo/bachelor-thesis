@@ -15,7 +15,7 @@ GreenDice::GreenDice(Cell position, int nMoves, int initialMoves) : Dice(positio
 
 GreenDice::GreenDice() : Dice(){}
 
-GreenDice::GreenDice(const GreenDice &gd1){position = gd1.position; nMoves = gd1.nMoves;}
+GreenDice::GreenDice(const GreenDice &gd1) : Dice(gd1){position = gd1.position; nMoves = gd1.nMoves;}
 
 GreenDice::operator string () {
   string t = "";

@@ -11,7 +11,7 @@ WhiteDice::WhiteDice(Cell position, int nMoves, int initialMoves) : Dice(positio
 
 WhiteDice::WhiteDice() : Dice(){}
 
-WhiteDice::WhiteDice(const WhiteDice &wd1){position = wd1.position; nMoves = wd1.nMoves;}
+WhiteDice::WhiteDice(const WhiteDice &wd1) : Dice(wd1){position = wd1.position; nMoves = wd1.nMoves;}
 
 WhiteDice::operator string () {
   string t = "";
@@ -69,8 +69,6 @@ pair<bool, int> WhiteDice::reverseMove(string direction, unordered_map<P2D, Dice
   return res;
 }
 
-// @Perlo: callerName is not used, I removed the name of the parameter from the list to make this
-// fact evident and to suppress the related warning.
 pair<bool, int> WhiteDice::call4reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const *, bool isJustForSimulation, int /* movementType unused */){
   direction = stringToLower(direction);
   int x = this->getPosition().getX();

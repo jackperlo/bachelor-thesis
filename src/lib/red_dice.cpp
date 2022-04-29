@@ -11,7 +11,7 @@ RedDice::RedDice(Cell position, int nMoves, int initialMoves) : Dice(position, n
 
 RedDice::RedDice() : Dice(){}
 
-RedDice::RedDice(const RedDice &rd1){position = rd1.position; nMoves = rd1.nMoves;}
+RedDice::RedDice(const RedDice &rd1) : Dice(rd1){position = rd1.position; nMoves = rd1.nMoves;}
 
 RedDice::operator string () {
   string t = "";

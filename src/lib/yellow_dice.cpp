@@ -11,7 +11,7 @@ YellowDice::YellowDice(Cell position, int nMoves, int initialMoves) : Dice(posit
 
 YellowDice::YellowDice() : Dice(){}
 
-YellowDice::YellowDice(const YellowDice &yd1){position = yd1.position; nMoves = yd1.nMoves;}
+YellowDice::YellowDice(const YellowDice &yd1) : Dice(yd1){position = yd1.position; nMoves = yd1.nMoves;}
 
 YellowDice::operator string () {
   string t = "";
@@ -59,7 +59,6 @@ pair<bool, int> YellowDice::reverseMove(string direction, unordered_map<P2D, Dic
   direction = stringToLower(direction);
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
-  pair<bool, int> res = NO_MOVE;
   bool isGoingToCallThirdParty = !((direction.compare("sx") == 0 && checkArrivalCellIsEmpty(x-1, y, dices)) || (direction.compare("dx") == 0 && checkArrivalCellIsEmpty(x+1, y, dices)) || (direction.compare("up") == 0 && checkArrivalCellIsEmpty(x, y-1, dices)) || (direction.compare("down") == 0 && checkArrivalCellIsEmpty(x, y+1, dices)));
   if(!isGoingToCallThirdParty){
     if(this->getNMoves() > 0)

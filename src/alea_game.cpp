@@ -206,7 +206,6 @@ int AleaGame::remaining_moves() const {
 vector<Action> AleaGame::possible_moves() {
   vector<Action> moves;
   for (auto const& pair: dices) {
-    // P2D pos = pair.first; unused
     Dice *dice = pair.second;
     if(dice->getNMoves() > 0){
       if(dice->getActualType().compare("GreenDice") == 0)
@@ -419,28 +418,25 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero(Dice *dice, vector<Actio
 void AleaGame::green_dice_possible_moves_being_pushed(Dice *dice, vector<Action> &moves){
   int x = dice->getPosition().getX(), y = dice->getPosition().getY();
 
-  // @perlo: here there is something strange, the move variable is never used making the whole loop useless
-  for(P2D move: {P2D::UP, P2D::DX, P2D::DOWN, P2D::SX}){
-    if(x>0 && last_action_performed.dir != P2D::DX){ //check if can have been pushed from left
-      pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("sx", dices, __func__, true, 1);
-      if(res.first)
-        moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::SX, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x-res.second, y))));
-    }
-    if(x+1<MAP_WIDTH && last_action_performed.dir != P2D::SX){ //check if can have been pushed from right
-      pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("dx", dices, __func__, true, 1);
-      if(res.first)
-        moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::DX, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x+res.second, y)))); 
-    }
-    if(y>0 && last_action_performed.dir != P2D::DOWN){ //check if can have been pushed from up
-      pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("up", dices, __func__, true, 1);
-      if(res.first)
-        moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::UP, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x, y-res.second))));
-    }
-    if(y+1<MAP_HEIGHT && last_action_performed.dir != P2D::UP){ //check if can have been pushed from down
-      pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("down", dices, __func__, true, 1);
-      if(res.first)
-        moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::DOWN, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x, y+res.second))));
-    }
+  if(x>0 && last_action_performed.dir != P2D::DX){ //check if can have been pushed from left
+    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("sx", dices, __func__, true, 1);
+    if(res.first)
+      moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::SX, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x-res.second, y))));
+  }
+  if(x+1<MAP_WIDTH && last_action_performed.dir != P2D::SX){ //check if can have been pushed from right
+    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("dx", dices, __func__, true, 1);
+    if(res.first)
+      moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::DX, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x+res.second, y)))); 
+  }
+  if(y>0 && last_action_performed.dir != P2D::DOWN){ //check if can have been pushed from up
+    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("up", dices, __func__, true, 1);
+    if(res.first)
+      moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::UP, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x, y-res.second))));
+  }
+  if(y+1<MAP_HEIGHT && last_action_performed.dir != P2D::UP){ //check if can have been pushed from down
+    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("down", dices, __func__, true, 1);
+    if(res.first)
+      moves.push_back(Action(P2D::cellToP2D(Cell(x, y)), P2D::DOWN, PUSHED_MOVE*res.second, 1, P2D::cellToP2D(Cell(x, y+res.second))));
   }
 }
 

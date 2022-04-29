@@ -17,7 +17,6 @@ const Action Action::null_action(P2D::null_p2d, P2D::null_p2d, 0, 0, P2D::null_p
 
 P2D::P2D(){}
 P2D::P2D(int x, int y) : x(x), y(y) { }
-// P2D::P2D(const P2D& p2d) : x(p2d.x), y(p2d.y) { } // this matches the default copy constructor
 
 P2D::operator string (){
   string t = "";
@@ -71,14 +70,6 @@ bool P2D::CompareFun::operator() (const P2D& lhs, const P2D& rhs) const {
 }
 
 Action::Action(){}
-
-// Action::Action(const Action &act) {
-//   this->from = act.from;
-//   this->dir = act.dir;
-//   this->weight = act.weight;
-//   this->movementType = act.movementType;
-//   this->head = act.head;
-// }
 
 Action::Action(P2D from, P2D dir, double weight, int movementType, P2D head)
     : from(from), dir(dir), head(head), weight(weight), movementType(movementType) {}

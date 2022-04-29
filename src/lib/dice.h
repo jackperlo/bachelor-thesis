@@ -10,7 +10,6 @@ class Dice{
     Cell position;
     int nMoves;
     int initialMoves;
-    //bool: check map bound and limit cases, int: offest movement
     pair<bool, int> virtual moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0; 
     pair<bool, int> virtual moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
     pair<bool, int> virtual moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;

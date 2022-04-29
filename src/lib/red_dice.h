@@ -10,9 +10,9 @@ class RedDice : public Dice{
     RedDice(Cell position, int nMoves, int initialMoves);
     RedDice();
     RedDice(const RedDice &rd1); //copying constructor, invoked in situation as: RedDice rd1 = rd2.
-    operator string ();
-    string getActualType();
-    int getActualTypeInt();
+    operator string () override;
+    string getActualType() override;
+    int getActualTypeInt() override;
     pair<bool, int> reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType = 0) override;
 
   protected:

@@ -69,7 +69,9 @@ pair<bool, int> WhiteDice::reverseMove(string direction, unordered_map<P2D, Dice
   return res;
 }
 
-pair<bool, int> WhiteDice::call4reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType){
+// @Perlo: callerName is not used, I removed the name of the parameter from the list to make this
+// fact evident and to suppress the related warning.
+pair<bool, int> WhiteDice::call4reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const *, bool isJustForSimulation, int /* movementType unused */){
   direction = stringToLower(direction);
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();

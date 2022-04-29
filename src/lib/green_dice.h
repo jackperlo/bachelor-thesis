@@ -9,10 +9,10 @@ class GreenDice : public Dice{
   public:
     GreenDice(Cell position, int nMoves, int initialMoves);
     GreenDice();
-    operator string ();
+    operator string () override;
     GreenDice(const GreenDice &gd1); //copying constructor, invoked in situation as: GreenDice gd1 = gd2.
-    string getActualType();
-    int getActualTypeInt();
+    string getActualType() override;
+    int getActualTypeInt() override;
     pair<bool, int> reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType = 0) override;
 
   protected:

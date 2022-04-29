@@ -59,7 +59,7 @@ int GreenDice::getActualTypeInt(){
     return -1;
 }
 
-pair<bool, int> GreenDice::reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType){
+pair<bool, int> GreenDice::reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * /* callerName unused */, bool isJustForSimulation, int movementType){
   direction = stringToLower(direction);
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
@@ -155,7 +155,7 @@ pair<bool, int> GreenDice::reverseMove(string direction, unordered_map<P2D, Dice
   return res;
 }
 
-pair<bool, int> GreenDice::reverseMoveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
+pair<bool, int> GreenDice::reverseMoveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   while(x-i >= 0 && this->getNMoves()-res.second > 0 && checkArrivalCellIsEmpty(x-i, y, dices)){ 
@@ -167,7 +167,7 @@ pair<bool, int> GreenDice::reverseMoveSx(int x, int y, unordered_map<P2D, Dice *
   return res;
 }
 
-pair<bool, int> GreenDice::reverseMoveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
+pair<bool, int> GreenDice::reverseMoveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   while(x+i < MAP_WIDTH && this->getNMoves()-res.second > 0 && checkArrivalCellIsEmpty(x+i, y, dices)){ 
@@ -179,7 +179,7 @@ pair<bool, int> GreenDice::reverseMoveDx(int x, int y, unordered_map<P2D, Dice *
   return res;
 }
 
-pair<bool, int> GreenDice::reverseMoveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
+pair<bool, int> GreenDice::reverseMoveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   while(y-i >= 0 && this->getNMoves()-res.second > 0 && checkArrivalCellIsEmpty(x, y-i, dices)){ 
@@ -191,7 +191,7 @@ pair<bool, int> GreenDice::reverseMoveUp(int x, int y, unordered_map<P2D, Dice *
   return res;
 }
 
-pair<bool, int> GreenDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
+pair<bool, int> GreenDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   while(y+i < MAP_HEIGHT && this->getNMoves()-res.second > 0 && checkArrivalCellIsEmpty(x, y+i, dices)){ 
@@ -203,7 +203,7 @@ pair<bool, int> GreenDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dice
   return res;
 }
 
-pair<bool, int> GreenDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
+pair<bool, int> GreenDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(this->getNMoves() == 0){ //moving when pushed
@@ -222,7 +222,7 @@ pair<bool, int> GreenDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::
   return res;
 }
 
-pair<bool, int> GreenDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
+pair<bool, int> GreenDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(this->getNMoves() == 0){ //moving when pushed
@@ -241,7 +241,7 @@ pair<bool, int> GreenDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::
   return res;
 }
 
-pair<bool, int> GreenDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
+pair<bool, int> GreenDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(this->getNMoves() == 0){ //moving when pushed
@@ -260,7 +260,7 @@ pair<bool, int> GreenDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::
   return res;
 }
 
-pair<bool, int> GreenDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation){
+pair<bool, int> GreenDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(this->getNMoves() == 0){ //moving when pushed

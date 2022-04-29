@@ -8,7 +8,7 @@ Cell::Cell(int x, int y){
 
 Cell::Cell(){}
 
-Cell::Cell(const Cell &c1){x = c1.x; y = c1.y;}
+// Cell::Cell(const Cell &c1){x = c1.x; y = c1.y;}
 
 int Cell::getX(){
   return x;

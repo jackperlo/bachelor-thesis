@@ -32,7 +32,7 @@ class Dice{
     int getNMoves();
     int getInitialMoves();
     void printDice();
-    bool move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation);
+    pair<bool, int> move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation);
     pair<bool, int> virtual reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType = 0) = 0;
     string virtual getActualType() = 0;
     int virtual getActualTypeInt() = 0;

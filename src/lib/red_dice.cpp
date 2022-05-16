@@ -122,7 +122,7 @@ pair<bool, int> RedDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::Ha
   else{ //arrival cell is busy
     string actualType = dices.at(P2D (x-1, y))->getActualType();
     if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
-      if(dices.at(P2D (x-1, y))->move("sx", dices, __func__, isJustForSimulation)) //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
+      if(dices.at(P2D (x-1, y))->move("sx", dices, __func__, isJustForSimulation).first) //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
         return MOVE_BY_1;
       else 
         return NO_MOVE;
@@ -137,7 +137,7 @@ pair<bool, int> RedDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::Ha
   else{ //arrival cell is busy
     string actualType = dices.at(P2D (x+1, y))->getActualType();
     if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
-      if(dices.at(P2D (x+1, y))->move("dx", dices, __func__, isJustForSimulation)) //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
+      if(dices.at(P2D (x+1, y))->move("dx", dices, __func__, isJustForSimulation).first) //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
         return MOVE_BY_1;
       else 
         return NO_MOVE;
@@ -152,7 +152,7 @@ pair<bool, int> RedDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::Ha
   else{ //arrival cell is busy
     string actualType = dices.at(P2D (x, y-1))->getActualType();
     if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
-      if(dices.at(P2D (x, y-1))->move("up", dices, __func__, isJustForSimulation)) //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
+      if(dices.at(P2D (x, y-1))->move("up", dices, __func__, isJustForSimulation).first) //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
         return MOVE_BY_1;
       else 
         return NO_MOVE;
@@ -167,7 +167,7 @@ pair<bool, int> RedDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::
   else{ //arrival cell is busy
     string actualType = dices.at(P2D (x, y+1))->getActualType();
     if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
-      if(dices.at(P2D (x, y+1))->move("down", dices, __func__, isJustForSimulation)) //calls recursevely the move down for the dice on his down (if it can be done moves in turn)
+      if(dices.at(P2D (x, y+1))->move("down", dices, __func__, isJustForSimulation).first) //calls recursevely the move down for the dice on his down (if it can be done moves in turn)
         return MOVE_BY_1;
       else 
         return NO_MOVE;

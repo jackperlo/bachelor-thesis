@@ -45,7 +45,7 @@ TEST(oneWhiteDice, moveSx0Moves){
       c.setY(j);
       WhiteDice wd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -64,7 +64,7 @@ TEST(twoWhiteDices_PushingEachOther0Moves, moveSx){
       WhiteDice wd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -81,7 +81,7 @@ TEST(oneWhiteDice, moveSx){
       c.setY(j);
       WhiteDice wd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i-1, j))->getPosition().getX(), i-1);
       dices.clear();
     }
@@ -101,7 +101,7 @@ TEST(twoWhiteDices_PushingEachOther, moveSx){
       WhiteDice wd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -118,7 +118,7 @@ TEST(oneWhiteDice, moveDx0Moves){
       c.setY(j);
       WhiteDice wd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -137,7 +137,7 @@ TEST(twoWhiteDices_PushingEachOther0Moves, moveDx){
       WhiteDice wd2(c2, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -154,7 +154,7 @@ TEST(oneWhiteDice, moveDx){
       c.setY(j);
       WhiteDice wd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
     }
@@ -174,7 +174,7 @@ TEST(twoWhiteDices_PushingEachOther, moveDx){
       WhiteDice wd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -191,7 +191,7 @@ TEST(oneWhiteDice0Moves, moveUp){
       c.setY(j);
       WhiteDice wd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("up", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -210,7 +210,7 @@ TEST(twoWhiteDices_PushingEachOther0Moves, moveUp){
       WhiteDice wd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
-      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -227,7 +227,7 @@ TEST(oneWhiteDice, moveUp){
       c.setY(j);
       WhiteDice wd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j-1))->getPosition().getY(), j-1);
       dices.clear();
     }
@@ -247,7 +247,7 @@ TEST(twoWhiteDices_PushingEachOther, moveUp){
       WhiteDice wd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
-      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -264,7 +264,7 @@ TEST(oneWhiteDice0Moves, moveDown){
       c.setY(j);
       WhiteDice wd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -283,7 +283,7 @@ TEST(twoWhiteDices_PushingEachOther0Moves, moveDown){
       WhiteDice wd2(c2, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -300,7 +300,7 @@ TEST(oneWhiteDice, moveDown){
       c.setY(j);
       WhiteDice wd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &wd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
     }
@@ -320,7 +320,7 @@ TEST(twoWhiteDices_PushingEachOther, moveDown){
       WhiteDice wd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd1));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -337,7 +337,7 @@ TEST(oneRedDice, moveSx0Moves){
       c.setY(j);
       RedDice rd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -356,7 +356,7 @@ TEST(twoRedDices_PushingEachOther0Moves, moveSx){
       RedDice rd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
-      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -373,7 +373,7 @@ TEST(oneRedDice, moveSx){
       c.setY(j);
       RedDice rd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i-1, j))->getPosition().getX(), i-1);
       dices.clear();
     }
@@ -393,7 +393,7 @@ TEST(twoRedDices_PushingEachOther, moveSx){
       RedDice rd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
-      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -414,7 +414,7 @@ TEST(WhiteDicePushingRedDice, moveSx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -435,7 +435,7 @@ TEST(RedDicePushingWhiteDice, moveSx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getNMoves(), 1);
@@ -458,7 +458,7 @@ TEST(RedDicePushingWhiteDice0Moves, moveSx){
       WhiteDice wd(c2, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -475,7 +475,7 @@ TEST(oneRedDice, moveDx0Moves){
       c.setY(j);
       RedDice rd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -490,7 +490,7 @@ TEST(oneRedDice, moveDx){
       c.setY(j);
       RedDice rd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
     }
@@ -510,7 +510,7 @@ TEST(twoRedDices_PushingEachOther, moveDx){
       RedDice rd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -531,7 +531,7 @@ TEST(WhiteDicePushingRedDice, moveDx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -552,7 +552,7 @@ TEST(RedDicePushingWhiteDice, moveDx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -573,7 +573,7 @@ TEST(RedDicePushingWhiteDice0Moves, moveDx){
       WhiteDice wd(c2, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -590,7 +590,7 @@ TEST(oneRedDice, moveUp0Moves){
       c.setY(j);
       RedDice rd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -605,7 +605,7 @@ TEST(oneRedDice, moveUp){
       c.setY(j);
       RedDice rd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j-1))->getPosition().getY(), j-1);
       dices.clear();
       dices.clear();
@@ -626,7 +626,7 @@ TEST(twoRedDices_PushingEachOther, moveUp){
       RedDice rd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
-      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -647,7 +647,7 @@ TEST(WhiteDicePushingRedDice, moveUp){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -668,7 +668,7 @@ TEST(RedDicePushingWhiteDice, moveUp){
       WhiteDice wd(c1, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
-      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -689,7 +689,7 @@ TEST(RedDicePushingWhiteDice0Moves, moveUp){
       WhiteDice wd(c1, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
-      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -706,7 +706,7 @@ TEST(oneRedDice, moveDown0Moves){
       c.setY(j);
       RedDice rd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -721,7 +721,7 @@ TEST(oneRedDice, moveDown){
       c.setY(j);
       RedDice rd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
     }
@@ -741,7 +741,7 @@ TEST(twoRedDices_PushingEachOther, moveDown){
       RedDice rd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd1));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -762,7 +762,7 @@ TEST(WhiteDicePushingRedDice, moveDown){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -783,7 +783,7 @@ TEST(RedDicePushingWhiteDice, moveDown){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getNMoves(), 1);
@@ -806,7 +806,7 @@ TEST(RedDicePushingWhiteDice0Moves, moveDown){
       WhiteDice wd(c2, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -823,7 +823,7 @@ TEST(oneYellowDice, moveSx0Moves){
       c.setY(j);
       YellowDice yd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -838,7 +838,7 @@ TEST(oneYellowDice, moveSx){
       c.setY(j);
       YellowDice yd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i-1, j))->getPosition().getX(), i-1);
       dices.clear();
     }
@@ -858,7 +858,7 @@ TEST(twoYellowDices_PushingEachOther, moveSx){
       YellowDice yd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -879,7 +879,7 @@ TEST(WhiteDicePushingYellowDice, moveSx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -900,7 +900,7 @@ TEST(YellowDiceJumpingWhiteDice, moveSx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -921,7 +921,7 @@ TEST(RedDicePushingYellowDice, moveSx){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -942,7 +942,7 @@ TEST(YellowDiceJumpingRedDice, moveSx){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -959,7 +959,7 @@ TEST(oneYellowDice, moveDx0Moves){
       c.setY(j);
       YellowDice yd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -974,7 +974,7 @@ TEST(oneYellowDice, moveDx){
       c.setY(j);
       YellowDice yd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
     }
@@ -994,7 +994,7 @@ TEST(twoYellowDices_PushingEachOther, moveDx){
       YellowDice yd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       dices.clear();
@@ -1015,7 +1015,7 @@ TEST(WhiteDicePushingYellowDice, moveDx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       dices.clear();
@@ -1036,7 +1036,7 @@ TEST(YellowDiceJumpingWhiteDice, moveDx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       dices.clear();
@@ -1057,7 +1057,7 @@ TEST(RedDicePushingYellowDice, moveDx){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       dices.clear();
@@ -1078,7 +1078,7 @@ TEST(YellowDiceJumpingRedDice, moveDx){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       dices.clear();
@@ -1095,7 +1095,7 @@ TEST(oneYellowDice, moveDown0Moves){
       c.setY(j);
       YellowDice yd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -1110,7 +1110,7 @@ TEST(oneYellowDice, moveDown){
       c.setY(j);
       YellowDice yd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
     }
@@ -1130,7 +1130,7 @@ TEST(twoYellowDices_PushingEachOther, moveDown){
       YellowDice yd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       dices.clear();
@@ -1151,7 +1151,7 @@ TEST(WhiteDicePushingYellowDice, moveDown){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       dices.clear();
@@ -1172,7 +1172,7 @@ TEST(YellowDiceJumpingWhiteDice, moveDown){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       dices.clear();
@@ -1193,7 +1193,7 @@ TEST(RedDicePushingYellowDice, moveDown){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       dices.clear();
@@ -1214,7 +1214,7 @@ TEST(YellowDiceJumpingRedDice, moveDown){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       dices.clear();
@@ -1231,7 +1231,7 @@ TEST(oneYellowDice, moveUp0Moves){
       c.setY(j);
       YellowDice yd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("up", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -1246,7 +1246,7 @@ TEST(oneYellowDice, moveUp){
       c.setY(j);
       YellowDice yd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j-1))->getPosition().getY(), j-1);
       dices.clear();
     }
@@ -1266,7 +1266,7 @@ TEST(twoYellowDices_PushingEachOther, moveUp){
       YellowDice yd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd1));
-      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j-1))->getPosition().getY(), j-1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -1287,7 +1287,7 @@ TEST(WhiteDicePushingYellowDice, moveUp){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j-1))->getPosition().getY(), j-1);
       dices.clear();
@@ -1308,7 +1308,7 @@ TEST(YellowDiceJumpingWhiteDice, moveUp){
       WhiteDice wd(c1, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
-      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -1329,7 +1329,7 @@ TEST(RedDicePushingYellowDice, moveUp){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j-1))->getPosition().getY(), j-1);
       dices.clear();
@@ -1350,7 +1350,7 @@ TEST(YellowDiceJumpingRedDice, moveUp){
       RedDice rd(c1, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -1367,7 +1367,7 @@ TEST(oneGreenDice, moveSx0Moves){
       c.setY(j);
       GreenDice gd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -1383,7 +1383,7 @@ TEST(oneGreenDice, moveSx){
       GreenDice gd(c, 3, 3);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
       int nMoves = dices.at(P2D(i, j))->getNMoves();
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i-nMoves, j))->getPosition().getX(), i-nMoves);
       dices.clear();
     }
@@ -1403,7 +1403,7 @@ TEST(twoGreenDices_PushingEachOther, moveSx){
       GreenDice gd2(c2, 3, 3);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
-      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+2, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -1424,7 +1424,7 @@ TEST(WhiteDicePushingGreenDice, moveSx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i-2, j))->getPosition().getX(), i-2);
       dices.clear();
@@ -1445,7 +1445,7 @@ TEST(GreenDicePushingWhiteDice, moveSx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
-      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -1466,7 +1466,7 @@ TEST(RedDicePushingGreenDice, moveSx){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i-2, j))->getPosition().getX(), i-2);
       dices.clear();
@@ -1487,7 +1487,7 @@ TEST(GreenDicePushingRedDice, moveSx){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -1508,7 +1508,7 @@ TEST(YellowDicePushingGreenDice, moveSx){
       YellowDice yd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i-1, j))->getPosition().getX(), i-1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -1529,7 +1529,7 @@ TEST(GreenDicePushingYellowDice, moveSx){
       YellowDice yd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
-      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i+1, j))->move("sx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       dices.clear();
@@ -1546,7 +1546,7 @@ TEST(oneGreenDice, moveDx0Moves){
       c.setY(j);
       GreenDice gd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -1562,7 +1562,7 @@ TEST(oneGreenDice, moveDx){
       GreenDice gd(c, 3, 3);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
       int nMoves = dices.at(P2D(i, j))->getNMoves();
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+nMoves, j))->getPosition().getX(), i+nMoves);
       dices.clear();
     }
@@ -1582,7 +1582,7 @@ TEST(twoGreenwDices_PushingEachOther, moveDx){
       GreenDice gd2(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       dices.clear();
@@ -1603,7 +1603,7 @@ TEST(WhiteDicePushingGreenDice, moveDx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i+3, j))->getPosition().getX(), i+3);
       dices.clear();
@@ -1624,7 +1624,7 @@ TEST(GreenDicePushingWhiteDice, moveDx){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -1645,7 +1645,7 @@ TEST(RedDicePushingGreenDice, moveDx){
       GreenDice gd(c2, 2, 2);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       ASSERT_EQ(dices.at(P2D(i+3, j))->getPosition().getX(), i+3);
       dices.clear();
@@ -1666,7 +1666,7 @@ TEST(GreenDicePushingRedDice, moveDx){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -1687,7 +1687,7 @@ TEST(YellowDiceJumpingGreenDice, moveDx){
       GreenDice gd(c2, 2, 2);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+2, j))->getPosition().getX(), i+2);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -1708,7 +1708,7 @@ TEST(GreenDicePushingYellowDice, moveDx){
       YellowDice yd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("dx", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getX(), i);
       ASSERT_EQ(dices.at(P2D(i+1, j))->getPosition().getX(), i+1);
       dices.clear();
@@ -1725,7 +1725,7 @@ TEST(oneGreenDice, moveDown0Moves){
       c.setY(j);
       GreenDice gd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -1741,7 +1741,7 @@ TEST(oneGreenDice, moveDown){
       GreenDice gd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
       int nMoves = dices.at(P2D(i, j))->getNMoves();
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+nMoves))->getPosition().getY(), j+nMoves);
       dices.clear();
     }
@@ -1761,7 +1761,7 @@ TEST(twoGreenDices_PushingEachOther, moveDown){
       GreenDice gd2(c2, 3, 3);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       ASSERT_EQ(dices.at(P2D(i, j+3))->getPosition().getY(), j+3);
       dices.clear();
@@ -1782,7 +1782,7 @@ TEST(WhiteDicePushingGreenDice, moveDown){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j+3))->getPosition().getY(), j+3);
       dices.clear();
@@ -1803,7 +1803,7 @@ TEST(GreenDicePushingWhiteDice, moveDown){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -1824,7 +1824,7 @@ TEST(RedDicePushingGreenDice, moveDown){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j+3))->getPosition().getY(), j+3);
       dices.clear();
@@ -1845,7 +1845,7 @@ TEST(GreenDicePushingRedDice, moveDown){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -1866,7 +1866,7 @@ TEST(YellowDiceJumpingGreenDice, moveDown){
       YellowDice yd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+2))->getPosition().getY(), j+2);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -1887,7 +1887,7 @@ TEST(GreenDicePushingYellowDice, moveDown){
       YellowDice yd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       dices.clear();
@@ -1904,7 +1904,7 @@ TEST(oneGreenDice, moveUp0Moves){
       c.setY(j);
       GreenDice gd(c, 0, 0);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
-      EXPECT_FALSE(dices.at(P2D(i, j))->move("up", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       dices.clear();
     }
   }
@@ -1920,7 +1920,7 @@ TEST(oneGreenDice, moveUp){
       GreenDice gd(c, 3, 3);
       dices.insert(pair<P2D, Dice *>(P2D(c.getX(), c.getY()), &gd));
       int nMoves = dices.at(P2D(i, j))->getNMoves();
-      EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j-nMoves))->getPosition().getY(), j-nMoves);
       dices.clear();
     }
@@ -1940,7 +1940,7 @@ TEST(twoGreenDices_PushingEachOther, moveUp){
       GreenDice gd2(c2, 3, 3);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd1));
-      EXPECT_TRUE(dices.at(P2D(i, j+3))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+3))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -1961,7 +1961,7 @@ TEST(WhiteDicePushingGreenDice, moveUp){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j-2))->getPosition().getY(), j-2);
       dices.clear();
@@ -1982,7 +1982,7 @@ TEST(GreenDicePushingWhiteDice, moveUp){
       WhiteDice wd(c1, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &wd));
-      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -2003,7 +2003,7 @@ TEST(RedDicePushingGreenDice, moveUp){
       RedDice rd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       ASSERT_EQ(dices.at(P2D(i, j-2))->getPosition().getY(), j-2);
       dices.clear();
@@ -2024,7 +2024,7 @@ TEST(GreenDicePushingRedDice, moveUp){
       RedDice rd(c1, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &rd));
-      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -2045,7 +2045,7 @@ TEST(YellowDiceJumpingGreenDice, moveUp){
       YellowDice yd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &yd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j-1))->getPosition().getY(), j-1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();
@@ -2066,7 +2066,7 @@ TEST(GreenDicePushingYellowDice, moveUp){
       YellowDice yd(c1, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.getX(), c2.getY()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.getX(), c1.getY()), &yd));
-      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0));
+      EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->getPosition().getY(), j+1);
       ASSERT_EQ(dices.at(P2D(i, j))->getPosition().getY(), j);
       dices.clear();

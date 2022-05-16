@@ -34,7 +34,7 @@ void Dice::printDice(){
         ", " << this->position.getY() << ", nMoves: " << this->nMoves << ")" << std::endl;
 }
 
-bool Dice::move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation){
+pair<bool, int> Dice::move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation){
   direction = stringToLower(direction);
   int x = this->getPosition().getX();
   int y = this->getPosition().getY();
@@ -46,45 +46,53 @@ bool Dice::move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dice
       res = moveSx(x, y, dices, isJustForSimulation);
       if(res.first && !pushedMove && !isJustForSimulation){
         if(this->getActualType().compare("YellowDice") == 0)
-          return makeMove(x-res.second, y, 1, dices);
+          return make_pair(makeMove(x-res.second, y, 1, dices), res.second);
         else
-          return makeMove(x-res.second, y, res.second, dices);
+          return make_pair(makeMove(x-res.second, y, res.second, dices), res.second);
       }
       else if(res.first && pushedMove && !isJustForSimulation)
-        return makeMove(x-res.second, y, 0, dices);
+        return make_pair(makeMove(x-res.second, y, 0, dices), res.second);
+      else if(isJustForSimulation)
+        return res;
     }else if(direction.compare("dx") == 0){
       res = moveDx(x, y, dices, isJustForSimulation);
       if(res.first && !pushedMove && !isJustForSimulation){
         if(this->getActualType().compare("YellowDice") == 0)
-          return makeMove(x+res.second, y, 1, dices);
+          return make_pair(makeMove(x+res.second, y, 1, dices), res.second);
         else
-          return makeMove(x+res.second, y, res.second, dices);
+          return make_pair(makeMove(x+res.second, y, res.second, dices), res.second);
       }
       else if(res.first && pushedMove && !isJustForSimulation)
-        return makeMove(x+res.second, y, 0, dices);
+        return make_pair(makeMove(x+res.second, y, 0, dices), res.second);
+      else if(isJustForSimulation)
+        return res;
     }else if(direction.compare("up") == 0){
       res = moveUp(x, y, dices, isJustForSimulation);
       if(res.first && !pushedMove && !isJustForSimulation){
         if(this->getActualType().compare("YellowDice") == 0)
-          return makeMove(x, y-res.second, 1, dices);
+          return make_pair(makeMove(x, y-res.second, 1, dices), res.second);
         else
-          return makeMove(x, y-res.second, res.second, dices);
+          return make_pair(makeMove(x, y-res.second, res.second, dices), res.second);
       }
       else if(res.first && pushedMove && !isJustForSimulation)
-        return makeMove(x, y-res.second, 0, dices);
+        return make_pair(makeMove(x, y-res.second, 0, dices), res.second);
+      else if(isJustForSimulation)
+        return res;
     }else if(direction.compare("down") == 0){
       res = moveDown(x, y, dices, isJustForSimulation);
       if(res.first && !pushedMove && !isJustForSimulation){
         if(this->getActualType().compare("YellowDice") == 0)
-          return makeMove(x, y+res.second, 1, dices);
+          return make_pair(makeMove(x, y+res.second, 1, dices), res.second);
         else
-          return makeMove(x, y+res.second, res.second, dices);
+          return make_pair(makeMove(x, y+res.second, res.second, dices), res.second);
       }
       else if(res.first && pushedMove && !isJustForSimulation)
-        return makeMove(x, y+res.second, 0, dices);
+        return make_pair(makeMove(x, y+res.second, 0, dices), res.second);
+      else if(isJustForSimulation)
+        return res;
     }
   }
-  return false;
+  return NO_MOVE;
 }
 
 string Dice::stringToLower(string inputString){
@@ -112,11 +120,11 @@ bool Dice::makeMove(int x, int y, int nMovesDone, unordered_map<P2D, Dice *, P2D
     exit(1);
   }
   this->setPosition(Cell(x, y));
-  /*if(this->getNMoves()-nMovesDone < 0){
+  if(this->getNMoves()-nMovesDone < 0){
     cout<<"\nDice.cpp: Error while decreasing nMoves to this dice:.\n"; 
     this->printDice();
     exit(1);
-  }*/
+  }
   this->setNMoves(this->getNMoves()-nMovesDone);
   return true;
 }

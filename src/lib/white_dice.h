@@ -28,6 +28,4 @@ class WhiteDice : public Dice{
     pair<bool, int> reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) override;
 };
 
-//#define move(direction, dices) move(direction, dices, __func__)
-
 #endif

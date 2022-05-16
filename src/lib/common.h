@@ -18,9 +18,18 @@
 #define MAX(a, b) a > b ? a : b
 #define MIN(a, b) a < b ? a : b
 
-#define SIMPLE_MOVE 0.01
-#define JUMPING_MOVE 1.00
-#define PUSHED_MOVE 1.00
+#define SIMPLE_MOVE_BACKWARD 0.01
+#define JUMPING_MOVE_BACKWARD 1.00
+#define PUSHED_MOVE_BACKWARD 1.00
+
+#define SIMPLE_MOVE_FORWARD 0.01
+#define JUMPING_MOVE_FORWARD 1.00
+#define PUSHED_MOVE_FORWARD 1.00
+
+#define WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(nMoves) ((nMoves-1)*2)+1
+#define RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(nMoves) nMoves-1
+
+#define BRANCHED_NODES_LIMIT 50000
 
 #define NO_MOVE {false, 0}
 #define MOVE_BY_1 {true, 1}

@@ -86,10 +86,9 @@ pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int
       break;
     }
   }
-  /*cout << "Evaluated:" << evaluated_moves << endl;
-  cout << "Dead:"<< dead_positions << endl;
+  cout << "Evaluated:" << evaluated_moves << endl;
   cout << "Skipped:"<< skipped_moves << endl;
-  cout << "Branched:"<< branched_nodes << endl;*/
+  cout << "Branched:"<< branched_nodes << endl;
   return res;
 }
 
@@ -140,7 +139,7 @@ bool AStarNode::find_banal_start_calculate_route(vector<Action> &moves, P2D dice
   if(dice_position.x < terminal_position.x){//moving dx
     if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
       int i = 1;
-      while(dice_moves > 0 && (dices.find(dice_position+P2D(i, 0)) == dices.end() && dice_position.x+i < MAP_WIDTH))
+      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(i, 0)) == dices.end() && dice_position.x+i < MAP_WIDTH))
         i++;
       moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD+(dice_position+P2D(i-1, 0)).manatthan(terminal_position)/100, 0));
       return find_banal_start_calculate_route(moves, dice_position+P2D(i-1, 0), dice_moves-(i-1), terminal_position, dices);
@@ -163,7 +162,7 @@ bool AStarNode::find_banal_start_calculate_route(vector<Action> &moves, P2D dice
   else if(dice_position.x > terminal_position.x){//moving sx
     if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
       int i = 1;
-      while(dice_moves > 0 && (dices.find(dice_position+P2D(-i, 0)) == dices.end() && dice_position.x-i >= 0))
+      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(-i, 0)) == dices.end() && dice_position.x-i >= 0))
         i++;
       moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD+(dice_position+P2D(-(i-1), 0)).manatthan(terminal_position)/100, 0));
       return find_banal_start_calculate_route(moves, dice_position+P2D(-(i-1), 0), dice_moves-(i-1), terminal_position, dices);
@@ -186,7 +185,7 @@ bool AStarNode::find_banal_start_calculate_route(vector<Action> &moves, P2D dice
   else if(dice_position.y > terminal_position.y){//moving up
     if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
       int i = 1;
-      while(dice_moves > 0 && (dices.find(dice_position+P2D(0, -i)) == dices.end() && dice_position.y-i >= 0))
+      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, -i)) == dices.end() && dice_position.y-i >= 0))
         i++;
       moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD+(dice_position+P2D(0, -(i-1))).manatthan(terminal_position)/100, 0));
       return find_banal_start_calculate_route(moves, dice_position+P2D(0, -(i-1)), dice_moves-(i-1), terminal_position, dices);
@@ -209,7 +208,7 @@ bool AStarNode::find_banal_start_calculate_route(vector<Action> &moves, P2D dice
   else if(dice_position.y < terminal_position.y){//moving down
     if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
       int i = 1;
-      while(dice_moves > 0 && (dices.find(dice_position+P2D(0, i)) == dices.end() && dice_position.y+i < MAP_HEIGHT))
+      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, i)) == dices.end() && dice_position.y+i < MAP_HEIGHT))
         i++;
       moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD+(dice_position+P2D(0, i-1)).manatthan(terminal_position)/100, 0));
       return find_banal_start_calculate_route(moves, dice_position+P2D(0, i-1), dice_moves-(i-1), terminal_position, dices);
@@ -328,12 +327,18 @@ string AStarNode::printLevel(AleaGame map_configuration, double difficulty){
   level["columns"] = MAP_WIDTH;
   level["rows"] = MAP_HEIGHT;
 
-  for(auto t : map_configuration.terminals){
+  if(map_configuration.terminals.size() == 0 || map_configuration.dices.size() == 0){
+    cout << "\n\nError while generating level. #terminals or #dices equals to zero.\n\n\n";
+    exit(1);
+  }
+
+  for(P2D t : map_configuration.terminals){
     terminal["x"] = t.x;
     terminal["y"] = t.y;
     level["terminals"].push_back(terminal);
   }
-  for(auto d : map_configuration.dices){
+
+  for(pair<P2D, Dice *> d : map_configuration.dices){
     dice["num"] = d.second->getInitialMoves();
     dice["type"] = d.second->getActualTypeInt(); 
     dice["x"] = d.second->getPosition().getX();

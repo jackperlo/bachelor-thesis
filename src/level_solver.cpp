@@ -13,11 +13,15 @@ int main(int argc, char *argv[]){
     exit(1);
   }
   
+ 
   solution = start_backward_analysis(argv[1]);
   
-  get_solution_number_and_related_difficulty(solution.first);
-
-  print_expected_forward_solution(solution);
+  if(solution.first.compare("") != 0){
+    get_solution_number_and_related_difficulty(solution.first);
+  
+    print_expected_forward_solution(solution);  
+  }else
+    cout << "\nlevel_solver:main: level_generated file has not been created. astar_backward_search failed.\n";  
 
   return 0;
 }
@@ -31,6 +35,7 @@ pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_na
 }
 
 void get_solution_number_and_related_difficulty(string starting_config_file_name){
+  cout<<starting_config_file_name<<endl;
   AleaGame *starting_config_analyzed_game = new AleaGame(starting_config_file_name, false, "ANALYZED");
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> solutions_queue = AStarNode::astar_forward_search(*starting_config_analyzed_game, 50000);
   

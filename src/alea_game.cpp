@@ -13,8 +13,6 @@
 
 AleaGame::AleaGame(){}
 
-AleaGame::AleaGame(const char *filename, bool isBackward) : AleaGame(json::parse(read_json(filename)), isBackward) { }
-
 AleaGame::AleaGame(string filename, bool isBackward, string type) : AleaGame(json::parse(read_json(filename)), isBackward, type) { }
 
 AleaGame::AleaGame(const AleaGame& game) {
@@ -190,7 +188,7 @@ string AleaGame::read_json(string filename) {
 		file_lvl.close();
 	}
 	else {
-		cout << "ERROR: Unable to open file '" << filename << "'." << endl;
+		cout << "alea_game.cpp:read_json: ERROR: Unable to open file '" << filename << "'." << endl;
 		exit(1);
 	}
 	return json_text;
@@ -394,9 +392,9 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
   if(y>0) cells.push_back(Cell(x, y-1));
   if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
   for(Cell c : cells){
-    if(dices.find(P2D::cellToP2D(c)) != dices.end() || x == 0 || y == 0 || x == MAP_WIDTH-1 || y == MAP_HEIGHT-1){ //busy cell or boundary cell
-      pair<bool, int> res = NO_MOVE;
-      if((c.getX() == x-1 || x == 0) && last_action_performed.dir != P2D::SX){ // left one occupied/boundary, then could move right
+    pair<bool, int> res = NO_MOVE;
+    if((c.getX() == x-1 || x == 0) && last_action_performed.dir != P2D::SX){ // left one occupied/boundary, then could move right
+      if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
         res = dice->reverseMove("dx", dices, __func__, true, 0);
         if(res.first){
           int i = 1;
@@ -405,8 +403,14 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
             i++;
           }
         }
+      }else{
+        res = dice->reverseMove("sx", dices, __func__, true, 0);
+        if(res.first)
+          moves.push_back(Action(P2D(x, y), P2D(-res.second, 0), SIMPLE_MOVE_BACKWARD*res.second, 0, P2D(x-res.second, y)));
       }
-      if((c.getX() == x+1 || x == MAP_WIDTH-1) && last_action_performed.dir != P2D::DX){ //right one occupied/boundary, then could move left 
+    }
+    if((c.getX() == x+1 || x == MAP_WIDTH-1) && last_action_performed.dir != P2D::DX){ //right one occupied/boundary, then could move left 
+      if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
         res = dice->reverseMove("sx", dices, __func__, true, 0);
         if(res.first){
           int i = 1;
@@ -415,8 +419,14 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
             i++;
           }
         }
+      }else{
+        res = dice->reverseMove("dx", dices, __func__, true, 0);
+        if(res.first)
+          moves.push_back(Action(P2D(x, y), P2D(res.second, 0), SIMPLE_MOVE_BACKWARD*res.second, 0, P2D(x+res.second, y)));
       }
-      if((c.getY() == y+1 || y == MAP_HEIGHT-1) && last_action_performed.dir != P2D::DOWN){ //down one occupied/boundary, then could move up 
+    }
+    if((c.getY() == y+1 || y == MAP_HEIGHT-1) && last_action_performed.dir != P2D::DOWN){ //down one occupied/boundary, then could move up 
+      if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
         res = dice->reverseMove("up", dices, __func__, true, 0);
         if(res.first){
           int i = 1;
@@ -425,8 +435,14 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
             i++;
           }
         }
+      }else{
+        res = dice->reverseMove("down", dices, __func__, true, 0);
+        if(res.first)
+          moves.push_back(Action(P2D(x, y), P2D(0, res.second), SIMPLE_MOVE_BACKWARD*res.second, 0, P2D(x, y+res.second)));
       }
-      if((c.getY() == y-1 || y == 0) && last_action_performed.dir != P2D::UP){ //up one occupied, then could move down 
+    }
+    if((c.getY() == y-1 || y == 0) && last_action_performed.dir != P2D::UP){ //up one occupied, then could move down 
+      if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
         res = dice->reverseMove("down", dices, __func__, true, 0);
         if(res.first){
           int i = 1;
@@ -435,6 +451,10 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
             i++;
           }
         }
+      }else{
+        res = dice->reverseMove("up", dices, __func__, true, 0);
+        if(res.first)
+          moves.push_back(Action(P2D(x, y), P2D(0, -res.second), SIMPLE_MOVE_BACKWARD*res.second, 0, P2D(x, y-res.second)));
       }
     }
   }

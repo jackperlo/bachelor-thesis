@@ -16,7 +16,6 @@ class AleaGame{
 
     AleaGame();
     AleaGame(json json_dict, bool isBackward, string type);
-    AleaGame(const char *filename, bool isBackward);
     AleaGame(string filename, bool isBackward, string type = "");
     AleaGame(const AleaGame& game);
 

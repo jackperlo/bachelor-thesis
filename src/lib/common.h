@@ -15,6 +15,9 @@
 #define BGRED(n) "\x1b[48;2;255;0;0m\x1b[38;2;0;0;0m" + to_string(n) + "\x1b[0m\x1b[0m"
 #define BGYEL(n) "\x1b[48;2;255;255;0m\x1b[38;2;0;0;0m" + to_string(n) + "\x1b[0m\x1b[0m"
 #define BGGRE(n) "\x1b[48;2;0;255;0m\x1b[38;2;0;0;0m" + to_string(n) + "\x1b[0m\x1b[0m"
+#define FGREDSTART "\033[31m"
+#define FGRESET "\033[0m"
+
 #define MAX(a, b) a > b ? a : b
 #define MIN(a, b) a < b ? a : b
 

@@ -75,11 +75,11 @@ void AleaGame::generateMapForBackwardMovements(json json_dict){
     exit(1);
   }
   
-  cout << "\n===== Alea Level Solver Backward =====" << endl;
+  cout << "\n"<< FGREDSTART <<"===== Alea Level Solver Backward =====" << endl;
 	cout << "           MAP_WIDTH : " << MAP_WIDTH << endl;
 	cout << "           MAP_HEIGHT: " << MAP_HEIGHT << endl;
 	cout << "           #dice : " << terminals.size() << endl;
-	cout << "========================================" << endl;
+	cout << "========================================"<< FGRESET << endl;
 	cout << endl;
 }
 
@@ -108,13 +108,12 @@ void AleaGame::generateMapForExpectedForwardMovements(json json_dict, string typ
   MAP_HEIGHT = json_dict["rows"];
   TOTAL_MOVES = remaining_moves();
   
-  cout << "\n===== Alea Level Solver "<<type<<" Forward =====" << endl;
+  cout << "\n" << FGREDSTART << "===== Alea Level Solver "<<type<<" Forward =====" << endl;
 	cout << "                MAP_WIDTH : " << MAP_WIDTH << endl;
 	cout << "                MAP_HEIGHT: " << MAP_HEIGHT << endl;
 	cout << "                #dice : " << terminals.size() << endl;
   cout << "                #total_moves : " << TOTAL_MOVES << endl;
-	cout << "================================================" << endl;
-	cout << endl;
+	cout << "================================================" << FGRESET << endl;
 }
 
 AleaGame::operator string () {
@@ -795,4 +794,144 @@ void AleaGame::show_map(){
 void AleaGame::show_moves(vector<Action> moves){
   for(auto m : moves)
     cout << "\nfrom: " << m.from << " | dir: " << m.dir << "\n";
+}
+
+//BANAL: means the terminal-dice distance is equal to nMoves and the terminal is not disputed between 2 or more dices
+pair<bool, pair<AleaGame, vector<Action>>> AleaGame::find_banal_start_forward_search(){
+  pair<bool, pair<AleaGame, vector<Action>>> res;
+  res.first = false;
+  res.second.first = *this;
+  for(pair<P2D, Dice*> pair : this->dices){
+    vector<Action> dice_moves;
+    Dice *dice = pair.second;
+    P2D dice_position = pair.first;
+    for(P2D terminal : this->terminals){
+      if(dice_position.manatthan(terminal) == dice->getNMoves() && !terminal_is_disputed(terminal, this->dices)){
+        if(find_banal_start_calculate_route(dice_moves, dice_position, dice->getNMoves(), terminal, res.second.first.dices)){
+          for(Action action : dice_moves){
+            res.second.first.move(action, false);
+            res.second.second.push_back(action);
+          }
+          res.first = true;
+          continue;
+        }
+      } 
+    }
+  }
+  return res;
+}
+
+bool AleaGame::terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
+  int counter = 0;
+  for(pair<P2D, Dice*> pair : dices){
+    if(pair.first.manatthan(terminal_position) == pair.second->getNMoves())
+      counter++;
+  }
+  if(counter>1) 
+    return true;
+  return false;
+}
+
+bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_position, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
+  if(dice_moves==0){
+    if(dice_position.x == terminal_position.x && dice_position.y == terminal_position.y)
+      return true;
+    else
+      return false;
+  }  
+  
+  if(dice_position.x < terminal_position.x){//moving dx
+    if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
+      int i = 1;
+      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(i, 0)) == dices.end() && dice_position.x+i < MAP_WIDTH))
+        i++;
+      moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD+(dice_position+P2D(i-1, 0)).manatthan(terminal_position)/100, 0));
+      return find_banal_start_calculate_route(moves, dice_position+P2D(i-1, 0), dice_moves-(i-1), terminal_position, dices);
+    }else{
+      if(dices.find(dice_position+P2D::DX) == dices.end()){
+        moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DX).manatthan(terminal_position)/100, 0));
+        return find_banal_start_calculate_route(moves, dice_position+P2D::DX, dice_moves-1, terminal_position, dices);
+      }else{
+        if(dices.find(dice_position+P2D::UP) == dices.end() && (dice_position+P2D::UP).y >= 0){ 
+          moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD+(dice_position+P2D::UP).manatthan(terminal_position)/100, 0));
+          return find_banal_start_calculate_route(moves, dice_position+P2D::UP, dice_moves-1, terminal_position, dices);
+        }else if(dices.find(dice_position+P2D::DOWN) == dices.end() && (dice_position+P2D::DOWN).y < MAP_HEIGHT){
+          moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, 0));
+          return find_banal_start_calculate_route(moves, dice_position+P2D::DOWN, dice_moves-1, terminal_position, dices);
+        }else
+          return false;
+      }
+    }
+  }
+  else if(dice_position.x > terminal_position.x){//moving sx
+    if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
+      int i = 1;
+      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(-i, 0)) == dices.end() && dice_position.x-i >= 0))
+        i++;
+      moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD+(dice_position+P2D(-(i-1), 0)).manatthan(terminal_position)/100, 0));
+      return find_banal_start_calculate_route(moves, dice_position+P2D(-(i-1), 0), dice_moves-(i-1), terminal_position, dices);
+    }else{
+      if(dices.find(dice_position+P2D::SX) == dices.end()){
+        moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::SX).manatthan(terminal_position)/100, 0));
+        return find_banal_start_calculate_route(moves, dice_position+P2D::SX, dice_moves-1, terminal_position, dices);
+      }else{
+        if(dices.find(dice_position+P2D::UP) == dices.end() && (dice_position+P2D::UP).y >= 0){ 
+          moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD+(dice_position+P2D::UP).manatthan(terminal_position)/100, 0));
+          return find_banal_start_calculate_route(moves, dice_position+P2D::UP, dice_moves-1, terminal_position, dices);
+        }else if(dices.find(dice_position+P2D::DOWN) == dices.end() && (dice_position+P2D::DOWN).y < MAP_HEIGHT){
+          moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, 0));
+          return find_banal_start_calculate_route(moves, dice_position+P2D::DOWN, dice_moves-1, terminal_position, dices);
+        }else
+          return false;
+      }
+    }
+  }
+  else if(dice_position.y > terminal_position.y){//moving up
+    if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
+      int i = 1;
+      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, -i)) == dices.end() && dice_position.y-i >= 0))
+        i++;
+      moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD+(dice_position+P2D(0, -(i-1))).manatthan(terminal_position)/100, 0));
+      return find_banal_start_calculate_route(moves, dice_position+P2D(0, -(i-1)), dice_moves-(i-1), terminal_position, dices);
+    }else{
+      if(dices.find(dice_position+P2D::UP) == dices.end()){
+        moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD+(dice_position+P2D::UP).manatthan(terminal_position)/100, 0));
+        return find_banal_start_calculate_route(moves, dice_position+P2D::UP, dice_moves-1, terminal_position, dices);
+      }else{
+        if(dices.find(dice_position+P2D::SX) == dices.end() && (dice_position+P2D::SX).x >= 0){ 
+          moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::SX).manatthan(terminal_position)/100, 0));
+          return find_banal_start_calculate_route(moves, dice_position+P2D::SX, dice_moves-1, terminal_position, dices);
+        }else if(dices.find(dice_position+P2D::DX) == dices.end() && (dice_position+P2D::DX).x < MAP_WIDTH){
+          moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DX).manatthan(terminal_position)/100, 0));
+          return find_banal_start_calculate_route(moves, dice_position+P2D::DX, dice_moves-1, terminal_position, dices);
+        }else
+          return false;
+      }
+    }
+  }
+  else if(dice_position.y < terminal_position.y){//moving down
+    if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
+      int i = 1;
+      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, i)) == dices.end() && dice_position.y+i < MAP_HEIGHT))
+        i++;
+      moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD+(dice_position+P2D(0, i-1)).manatthan(terminal_position)/100, 0));
+      return find_banal_start_calculate_route(moves, dice_position+P2D(0, i-1), dice_moves-(i-1), terminal_position, dices);
+    }else{
+      if(dices.find(dice_position+P2D::DOWN) == dices.end()){
+        moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, 0));
+        return find_banal_start_calculate_route(moves, dice_position+P2D::DOWN, dice_moves-1, terminal_position, dices);
+      }else{
+        if(dices.find(dice_position+P2D::SX) == dices.end() && (dice_position+P2D::SX).x >= 0){ 
+          moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::SX).manatthan(terminal_position)/100, 0));
+          return find_banal_start_calculate_route(moves, dice_position+P2D::SX, dice_moves-1, terminal_position, dices);
+        }else if(dices.find(dice_position+P2D::DX) == dices.end() && (dice_position+P2D::DX).x < MAP_WIDTH){
+          moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DX).manatthan(terminal_position)/100, 0));
+          return find_banal_start_calculate_route(moves, dice_position+P2D::DX, dice_moves-1, terminal_position, dices);
+        }else
+          return false;
+      }
+    }
+  }
+  
+  return false;
 }

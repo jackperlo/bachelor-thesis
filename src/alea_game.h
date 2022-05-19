@@ -49,7 +49,8 @@ class AleaGame{
     int remaining_moves() const;
     bool is_valid_starting_configuration_backward_search();
     bool is_valid_ending_configuration_forward_search();
-    
+    pair<bool, pair<AleaGame, vector<Action>>> find_banal_start_forward_search();
+
     static Action revert_action(Action backward_action);
 
     struct HashFun {
@@ -63,6 +64,8 @@ class AleaGame{
     bool is_valid_ending_configuration_backward_search();
     bool has_dice(const P2D& pos) const;
     double calculate_distance_from_closer_terminal(P2D dice_position);
+    static bool find_banal_start_calculate_route(vector<Action> &moves, P2D dice_position, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
+    static bool terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
 };
 
 #endif

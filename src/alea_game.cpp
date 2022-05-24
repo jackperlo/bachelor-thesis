@@ -718,25 +718,27 @@ bool AleaGame::move(const Action& action, bool isMovingBackward) {
 }
 
 bool AleaGame::move(const P2D pos, const P2D dir, const int movementType, bool isMovingBackward) {
-  Dice *dice = dices[pos];
-  if(isMovingBackward){
-    if(dir.x<0)
-      return dice->reverseMove("sx", dices, __func__, false, movementType).first;
-    else if(dir.x>0)
-      return dice->reverseMove("dx", dices, __func__, false, movementType).first;
-    else if(dir.y>0)
-      return dice->reverseMove("down", dices, __func__, false, movementType).first;
-    else if(dir.y<0)
-      return dice->reverseMove("up", dices, __func__, false, movementType).first;
-  }else{
-    if(dir.x<0)
-      return dice->move("sx", dices, __func__, false).first;
-    else if(dir.x>0)
-      return dice->move("dx", dices, __func__, false).first;
-    else if(dir.y>0)
-      return dice->move("down", dices, __func__, false).first;
-    else if(dir.y<0)
-      return dice->move("up", dices, __func__, false).first;
+  if(dices.find(pos) != dices.end()){
+    Dice *dice = dices[pos];
+    if(isMovingBackward){
+      if(dir.x<0)
+        return dice->reverseMove("sx", dices, __func__, false, movementType).first;
+      else if(dir.x>0)
+        return dice->reverseMove("dx", dices, __func__, false, movementType).first;
+      else if(dir.y>0)
+        return dice->reverseMove("down", dices, __func__, false, movementType).first;
+      else if(dir.y<0)
+        return dice->reverseMove("up", dices, __func__, false, movementType).first;
+    }else{
+      if(dir.x<0)
+        return dice->move("sx", dices, __func__, false).first;
+      else if(dir.x>0)
+        return dice->move("dx", dices, __func__, false).first;
+      else if(dir.y>0)
+        return dice->move("down", dices, __func__, false).first;
+      else if(dir.y<0)
+        return dice->move("up", dices, __func__, false).first;
+    }
   }
   return false;
 }

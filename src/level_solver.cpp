@@ -37,7 +37,7 @@ pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_na
 void get_solution_number_and_related_difficulty(string starting_config_file_name){
   cout<<starting_config_file_name<<endl;
   AleaGame *starting_config_analyzed_game = new AleaGame(starting_config_file_name, false, "ANALYZED");
-  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> solutions_queue = AStarNode::astar_forward_search(*starting_config_analyzed_game, 50000);
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> solutions_queue = AStarNode::astar_forward_search(*starting_config_analyzed_game, 500000);
   
   cout<<"\n# Solutions Found: "<<solutions_queue.size();
   if(solutions_queue.size()>0){

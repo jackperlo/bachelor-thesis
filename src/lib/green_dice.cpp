@@ -226,13 +226,13 @@ pair<bool, int> GreenDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(this->getNMoves() == 0){ //moving when pushed
-    while(x+i >= 0 && checkArrivalCellIsEmpty(x+i, y, dices)){ //arrival cell is not out of map bounds and empty
+    while(x+i < MAP_WIDTH && checkArrivalCellIsEmpty(x+i, y, dices)){ //arrival cell is not out of map bounds and empty
       res.first = true;
       res.second ++;
       i++;
     }
   }else{ //moving actively
-    while(x+i >= 0 && checkArrivalCellIsEmpty(x+i, y, dices) && this->getNMoves()-res.second > 0){ //arrival cell is not out of map bounds, is empty and there are moves available
+    while(x+i < MAP_WIDTH && checkArrivalCellIsEmpty(x+i, y, dices) && this->getNMoves()-res.second > 0){ //arrival cell is not out of map bounds, is empty and there are moves available
       res.first = true;
       res.second ++;
       i++;
@@ -264,13 +264,13 @@ pair<bool, int> GreenDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(this->getNMoves() == 0){ //moving when pushed
-    while(y+i >= 0 && checkArrivalCellIsEmpty(x, y+i, dices)){ //arrival cell is not out of map bounds and empty
+    while(y+i < MAP_HEIGHT && checkArrivalCellIsEmpty(x, y+i, dices)){ //arrival cell is not out of map bounds and empty
       res.first = true;
       res.second ++;
       i++;
     }
   }else{ //moving actively
-    while(y+i >= 0 && checkArrivalCellIsEmpty(x, y+i, dices) && this->getNMoves()-res.second > 0){ //arrival cell is not out of map bounds, is empty and there are moves available
+    while(y+i < MAP_HEIGHT && checkArrivalCellIsEmpty(x, y+i, dices) && this->getNMoves()-res.second > 0){ //arrival cell is not out of map bounds, is empty and there are moves available
       res.first = true;
       res.second ++;
       i++;

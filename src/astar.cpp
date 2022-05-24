@@ -172,8 +172,8 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       cout << "\n\nBRANCHED_NODES LIMIT REACHED. EXIT\n\n";
       break;
     }
-    if(branched_nodes % 500)
-      cout << branched_nodes;
+    if(branched_nodes % 25000 == 0)
+      cout << "Branched:" << branched_nodes << endl;
   }
   /*cout << "Evaluated:" << evaluated_moves << endl;
   cout << "Dead:"<< dead_positions << endl;

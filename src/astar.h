@@ -51,6 +51,9 @@ class AStarNode {
     static pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit=numeric_limits<int>::max());
     static string printLevel(AleaGame map_configuration, double difficulty);
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> astar_forward_search(AleaGame game, int limit=numeric_limits<int>::max());   
+
+  private:
+    static int worst_case_brancheable_nodes(int tree_level);
 };
 
 

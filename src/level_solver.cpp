@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
   
   if(solution.first.compare("") != 0){
     get_solution_number_and_related_difficulty(solution.first);
-  
+
     print_expected_forward_solution(solution);  
   }else
     cout << "\nlevel_solver:main: level_generated file has not been created. astar_backward_search failed.\n";  

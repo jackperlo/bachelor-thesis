@@ -33,6 +33,7 @@
 #define RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(nMoves) nMoves-1
 
 #define BRANCHED_NODES_LIMIT 50000
+#define BRANCHING_FACTOR 4
 
 #define NO_MOVE {false, 0}
 #define MOVE_BY_1 {true, 1}

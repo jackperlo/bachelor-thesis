@@ -586,7 +586,7 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
       } 
     }
     if(c.getX() == x+1){
-      res = dice->reverseMove("dx", dices, __func__, true);
+      res = dice->move("dx", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DX);
         if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
@@ -598,7 +598,7 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
       } 
     }
     if(c.getY() == y-1){
-      res = dice->reverseMove("up", dices, __func__, true);
+      res = dice->move("up", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::UP);
         if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
@@ -610,7 +610,7 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
       }
     }
     if(c.getY() == y+1){
-      res = dice->reverseMove("down", dices, __func__, true);
+      res = dice->move("down", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DOWN);
         if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){

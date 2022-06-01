@@ -75,7 +75,7 @@ Action::Action(P2D from, P2D dir, double weight, int movementType, P2D head)
     : from(from), dir(dir), head(head), weight(weight), movementType(movementType) {}
 
 ostream& operator<<(ostream& out, Action act) {
-  return out << "From " << act.from << " direction " << act.dir;
+  return out << "From " << act.from << " direction " << act.dir << " moveType " << act.movementType;
 }
 
 P2D P2D::cellToP2D(Cell c){

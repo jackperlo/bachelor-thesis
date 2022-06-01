@@ -99,6 +99,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   unordered_set<AleaGame, AleaGame::HashFun> closed;
   double difficulty = 0.00;
   bool banal_solution_found = false;
+  cout<<"\nWorst Case Brancheable Nodes number: "<<worst_case_brancheable_nodes(game.remaining_moves())<<"\n";
   pair<bool, pair<AleaGame, vector<Action>>> banal_search = game.find_banal_start_forward_search();
   if(banal_search.first){
     game = banal_search.second.first;
@@ -175,11 +176,17 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     if(branched_nodes % 25000 == 0)
       cout << "Branched:" << branched_nodes << endl;
   }
-  /*cout << "Evaluated:" << evaluated_moves << endl;
-  cout << "Dead:"<< dead_positions << endl;
+  cout << "Evaluated:" << evaluated_moves << endl;
   cout << "Skipped:"<< skipped_moves << endl;
-  cout << "Branched:"<< branched_nodes << endl;*/
+  cout << "Branched:"<< branched_nodes << endl;
   return res;
+}
+
+int AStarNode::worst_case_brancheable_nodes(int tree_level){
+  if(tree_level == 0)
+    return 1;
+  else
+    return BRANCHING_FACTOR*worst_case_brancheable_nodes(tree_level-1);
 }
 
 string AStarNode::printLevel(AleaGame map_configuration, double difficulty){

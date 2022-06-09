@@ -256,44 +256,44 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
       res = dice->reverseMove("sx", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
-          moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::SX)); 
+          moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::SX)); 
         else if(res.second == 2 && dices.find(P2D(x-2, y)) == dices.end())
-          moves.push_back(Action(P2D(x, y), P2D(-2, 0), JUMPING_MOVE_BACKWARD, 2, P2D(x-2, y))); 
+          moves.push_back(Action(P2D(x, y), P2D(-2, 0), JUMPING_MOVE_BACKWARD_WEIGHT, JUMP_MOVE, P2D(x-2, y))); 
         else
-          moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_BACKWARD, 1, P2D(x-(res.second+1), y)));
+          moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x-(res.second+1), y)));
       }      
     }
     if(c.getX() == x+1 && last_action_performed.dir != P2D::SX && last_action_performed.dir != P2D::JUMPING_SX){
       res = dice->reverseMove("dx", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
-          moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::DX)); 
+          moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::DX)); 
         else if(res.second == 2 && dices.find(P2D(x+2, y)) == dices.end())
-          moves.push_back(Action(P2D(x, y), P2D(2, 0), JUMPING_MOVE_BACKWARD, 2, P2D(x+2, y))); 
+          moves.push_back(Action(P2D(x, y), P2D(2, 0), JUMPING_MOVE_BACKWARD_WEIGHT, JUMP_MOVE, P2D(x+2, y))); 
         else
-          moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_BACKWARD, 1, P2D(x+(res.second+1), y)));
+          moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x+(res.second+1), y)));
       }      
     }
     if(c.getY() == y-1  && last_action_performed.dir != P2D::DOWN  && last_action_performed.dir != P2D::JUMPING_DOWN){
       res = dice->reverseMove("up", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
-          moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::UP)); 
+          moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::UP)); 
         else if(res.second == 2 && dices.find(P2D(x, y-2)) == dices.end())
-          moves.push_back(Action(P2D(x, y), P2D(0, -2), JUMPING_MOVE_BACKWARD, 2, P2D(x, y-2))); 
+          moves.push_back(Action(P2D(x, y), P2D(0, -2), JUMPING_MOVE_BACKWARD_WEIGHT, JUMP_MOVE, P2D(x, y-2))); 
         else
-          moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD, 1, P2D(x, y-(res.second+1))));
+          moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x, y-(res.second+1))));
       }      
     }
     if(c.getY() == y+1  && last_action_performed.dir != P2D::UP && last_action_performed.dir != P2D::JUMPING_UP){
       res = dice->reverseMove("down", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
-          moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::DOWN)); 
+          moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::DOWN)); 
         else if(res.second == 2 && dices.find(P2D(x, y+2)) == dices.end())
-          moves.push_back(Action(P2D(x, y), P2D(0, 2), JUMPING_MOVE_BACKWARD, 2, P2D(x, y+2))); 
+          moves.push_back(Action(P2D(x, y), P2D(0, 2), JUMPING_MOVE_BACKWARD_WEIGHT, JUMP_MOVE, P2D(x, y+2))); 
         else
-          moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD, 1, P2D(x, y+(res.second+1))));
+          moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x, y+(res.second+1))));
       }      
     }
   }
@@ -310,19 +310,19 @@ void AleaGame::red_dice_possible_moves_backward(Dice *dice, vector<Action> &move
     pair<bool, int> res = NO_MOVE;
     if(c.getX() == x-1  && last_action_performed.dir != P2D::DX){
       res = dice->reverseMove("sx", dices, __func__, true);
-      if(res.first) moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::SX));      
+      if(res.first) moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::SX));      
     }
     if(c.getX() == x+1 && last_action_performed.dir != P2D::SX){
       res = dice->reverseMove("dx", dices, __func__, true);
-      if(res.first) moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::DX));      
+      if(res.first) moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::DX));      
     }
     if(c.getY() == y-1 && last_action_performed.dir != P2D::DOWN){
       res = dice->reverseMove("up", dices, __func__, true);
-      if(res.first) moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::UP));      
+      if(res.first) moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::UP));      
     }
     if(c.getY() == y+1 && last_action_performed.dir != P2D::UP){
       res = dice->reverseMove("down", dices, __func__, true);
-      if(res.first) moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::DOWN));      
+      if(res.first) moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::DOWN));      
     }
   }
 }
@@ -340,36 +340,36 @@ void AleaGame::white_dice_possible_moves_backward(Dice *dice, vector<Action> &mo
       res = dice->reverseMove("sx", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
-          moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::SX));
+          moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::SX));
         else
-          moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_BACKWARD, 1, P2D(x-res.second, y)));       
+          moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x-res.second, y)));       
       }
     }
     if(c.getX() == x+1 && last_action_performed.dir != P2D::SX){
       res = dice->reverseMove("dx", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
-          moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::DX));
+          moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::DX));
         else
-          moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_BACKWARD, 1, P2D(x+res.second, y)));           
+          moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x+res.second, y)));           
       }
     }
     if(c.getY() == y-1 && last_action_performed.dir != P2D::DOWN){
       res = dice->reverseMove("up", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
-          moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::UP));
+          moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::UP));
         else
-          moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD, 1, P2D(x, y-res.second)));         
+          moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x, y-res.second)));         
       }
     }
     if(c.getY() == y+1 && last_action_performed.dir != P2D::UP){
       res = dice->reverseMove("down", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
-          moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD, 0, P2D(x, y)+P2D::DOWN));
+          moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::DOWN));
         else
-          moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD, 1, P2D(x, y+res.second)));       
+          moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x, y+res.second)));       
       }
     }
   }
@@ -394,66 +394,66 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
     pair<bool, int> res = NO_MOVE;
     if((c.getX() == x-1 || x == 0) && last_action_performed.dir != P2D::SX){ // left one occupied/boundary, then could move right
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
-        res = dice->reverseMove("dx", dices, __func__, true, 0);
+        res = dice->reverseMove("dx", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            moves.push_back(Action(P2D(x, y), P2D(i, 0), SIMPLE_MOVE_BACKWARD*i, 0, P2D(x+i, y)));
+            moves.push_back(Action(P2D(x, y), P2D(i, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x+i, y)));
             i++;
           }
         }
       }else{
-        res = dice->reverseMove("sx", dices, __func__, true, 0);
+        res = dice->reverseMove("sx", dices, __func__, true, SIMPLE_MOVE);
         if(res.first)
-          moves.push_back(Action(P2D(x, y), P2D(-res.second, 0), SIMPLE_MOVE_BACKWARD*res.second, 0, P2D(x-res.second, y)));
+          moves.push_back(Action(P2D(x, y), P2D(-res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x-res.second, y)));
       }
     }
     if((c.getX() == x+1 || x == MAP_WIDTH-1) && last_action_performed.dir != P2D::DX){ //right one occupied/boundary, then could move left 
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
-        res = dice->reverseMove("sx", dices, __func__, true, 0);
+        res = dice->reverseMove("sx", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            moves.push_back(Action(P2D(x, y), P2D((-1*i), 0), SIMPLE_MOVE_BACKWARD*i, 0, P2D(x-i, y)));
+            moves.push_back(Action(P2D(x, y), P2D((-1*i), 0), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x-i, y)));
             i++;
           }
         }
       }else{
-        res = dice->reverseMove("dx", dices, __func__, true, 0);
+        res = dice->reverseMove("dx", dices, __func__, true, SIMPLE_MOVE);
         if(res.first)
-          moves.push_back(Action(P2D(x, y), P2D(res.second, 0), SIMPLE_MOVE_BACKWARD*res.second, 0, P2D(x+res.second, y)));
+          moves.push_back(Action(P2D(x, y), P2D(res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x+res.second, y)));
       }
     }
     if((c.getY() == y+1 || y == MAP_HEIGHT-1) && last_action_performed.dir != P2D::DOWN){ //down one occupied/boundary, then could move up 
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
-        res = dice->reverseMove("up", dices, __func__, true, 0);
+        res = dice->reverseMove("up", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            moves.push_back(Action(P2D(x, y), P2D(0, (-1*i)), SIMPLE_MOVE_BACKWARD*i, 0, P2D(x, y-i)));
+            moves.push_back(Action(P2D(x, y), P2D(0, (-1*i)), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x, y-i)));
             i++;
           }
         }
       }else{
-        res = dice->reverseMove("down", dices, __func__, true, 0);
+        res = dice->reverseMove("down", dices, __func__, true, SIMPLE_MOVE);
         if(res.first)
-          moves.push_back(Action(P2D(x, y), P2D(0, res.second), SIMPLE_MOVE_BACKWARD*res.second, 0, P2D(x, y+res.second)));
+          moves.push_back(Action(P2D(x, y), P2D(0, res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y+res.second)));
       }
     }
     if((c.getY() == y-1 || y == 0) && last_action_performed.dir != P2D::UP){ //up one occupied, then could move down 
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
-        res = dice->reverseMove("down", dices, __func__, true, 0);
+        res = dice->reverseMove("down", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            moves.push_back(Action(P2D(x, y), P2D(0, i), SIMPLE_MOVE_BACKWARD*i, 0, P2D(x, y+i)));
+            moves.push_back(Action(P2D(x, y), P2D(0, i), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x, y+i)));
             i++;
           }
         }
       }else{
-        res = dice->reverseMove("up", dices, __func__, true, 0);
+        res = dice->reverseMove("up", dices, __func__, true, SIMPLE_MOVE);
         if(res.first)
-          moves.push_back(Action(P2D(x, y), P2D(0, -res.second), SIMPLE_MOVE_BACKWARD*res.second, 0, P2D(x, y-res.second)));
+          moves.push_back(Action(P2D(x, y), P2D(0, -res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y-res.second)));
       }
     }
   }
@@ -463,24 +463,24 @@ void AleaGame::green_dice_possible_moves_being_pushed_backward(Dice *dice, vecto
   int x = dice->getPosition().getX(), y = dice->getPosition().getY();
 
   if(x>0 && last_action_performed.dir != P2D::DX){ //check if can have been pushed from left
-    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("sx", dices, __func__, true, 1);
+    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("sx", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
-      moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_BACKWARD*res.second, 1, P2D(x-res.second, y)));
+      moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x-res.second, y)));
   }
   if(x+1<MAP_WIDTH && last_action_performed.dir != P2D::SX){ //check if can have been pushed from right
-    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("dx", dices, __func__, true, 1);
+    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("dx", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
-      moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_BACKWARD*res.second, 1, P2D(x+res.second, y))); 
+      moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x+res.second, y))); 
   }
   if(y>0 && last_action_performed.dir != P2D::DOWN){ //check if can have been pushed from up
-    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("up", dices, __func__, true, 1);
+    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("up", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
-      moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD*res.second, 1, P2D(x, y-res.second)));
+      moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x, y-res.second)));
   }
   if(y+1<MAP_HEIGHT && last_action_performed.dir != P2D::UP){ //check if can have been pushed from down
-    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("down", dices, __func__, true, 1);
+    pair<bool, int> res = dices.at(P2D(x,y))->reverseMove("down", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
-      moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD*res.second, 1, P2D(x, y+res.second)));
+      moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x, y+res.second)));
   }
 }
 
@@ -518,9 +518,9 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::SX);
         if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_FORWARD+distance_from_closer_terminal_after_move, 0));
+            moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, SIMPLE_MOVE));
           else
-            moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_FORWARD+distance_from_closer_terminal_after_move, 1));       
+            moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, PUSHED_MOVE));       
         }
       }
     }
@@ -530,9 +530,9 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DX);
         if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_FORWARD+distance_from_closer_terminal_after_move, 0));
+            moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, SIMPLE_MOVE));
           else
-            moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_FORWARD+distance_from_closer_terminal_after_move, 1));           
+            moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, PUSHED_MOVE));           
         }
       }
     }
@@ -542,9 +542,9 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::UP);
         if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_FORWARD+distance_from_closer_terminal_after_move, 0));
+            moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, SIMPLE_MOVE));
           else
-            moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_FORWARD+distance_from_closer_terminal_after_move, 1));
+            moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, PUSHED_MOVE));
         }         
       }
     }
@@ -554,9 +554,9 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DOWN);
         if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD+distance_from_closer_terminal_after_move, 0));
+            moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD_WEIGHT+distance_from_closer_terminal_after_move, SIMPLE_MOVE));
           else
-            moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD+distance_from_closer_terminal_after_move, 1)); 
+            moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD_WEIGHT+distance_from_closer_terminal_after_move, PUSHED_MOVE)); 
         }       
       }
     }
@@ -579,9 +579,9 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::SX);
         if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_FORWARD+distance_from_closer_terminal_after_move, 0));      
+            moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, SIMPLE_MOVE));      
           else
-            moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_FORWARD+distance_from_closer_terminal_after_move, 1));      
+            moves.push_back(Action(P2D(x, y), P2D::SX, PUSHED_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, PUSHED_MOVE));      
         }
       } 
     }
@@ -591,9 +591,9 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DX);
         if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_FORWARD+distance_from_closer_terminal_after_move, 0));      
+            moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, SIMPLE_MOVE));      
           else
-            moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_FORWARD+distance_from_closer_terminal_after_move, 1));       
+            moves.push_back(Action(P2D(x, y), P2D::DX, PUSHED_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, PUSHED_MOVE));       
         }
       } 
     }
@@ -603,9 +603,9 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::UP);
         if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_FORWARD+distance_from_closer_terminal_after_move, 0));      
+            moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, SIMPLE_MOVE));      
           else
-            moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_FORWARD+distance_from_closer_terminal_after_move, 1));      
+            moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, PUSHED_MOVE));      
         }
       }
     }
@@ -615,9 +615,9 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DOWN);
         if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->getNMoves())){
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_FORWARD+distance_from_closer_terminal_after_move, 0)); 
+            moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, SIMPLE_MOVE)); 
           else
-            moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_FORWARD+distance_from_closer_terminal_after_move, 1)); 
+            moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_FORWARD_WEIGHT+distance_from_closer_terminal_after_move, PUSHED_MOVE)); 
         }
       }      
     }
@@ -637,36 +637,36 @@ void AleaGame::yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &mo
       res = dice->move("sx", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
-          moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_BACKWARD+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::SX), 0)); 
+          moves.push_back(Action(P2D(x, y), P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::SX), SIMPLE_MOVE)); 
         else
-          moves.push_back(Action(P2D(x, y), P2D(-2, 0), JUMPING_MOVE_BACKWARD+calculate_distance_from_closer_terminal(P2D(x, y)+P2D(-2,0)), 2)); 
+          moves.push_back(Action(P2D(x, y), P2D(-2, 0), JUMPING_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D(-2,0)), JUMP_MOVE)); 
       }      
     }
     if(c.getX() == x+1){
       res = dice->move("dx", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
-          moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_BACKWARD+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DX), 0)); 
+          moves.push_back(Action(P2D(x, y), P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DX), SIMPLE_MOVE)); 
         else 
-          moves.push_back(Action(P2D(x, y), P2D(2, 0), JUMPING_MOVE_BACKWARD+calculate_distance_from_closer_terminal(P2D(x, y)+P2D(2,0)), 2)); 
+          moves.push_back(Action(P2D(x, y), P2D(2, 0), JUMPING_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D(2,0)), JUMP_MOVE)); 
       }      
     }
     if(c.getY() == y-1){
       res = dice->move("up", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
-          moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_BACKWARD+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::UP), 0)); 
+          moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::UP), SIMPLE_MOVE)); 
         else
-          moves.push_back(Action(P2D(x, y), P2D(0, -2), JUMPING_MOVE_BACKWARD+calculate_distance_from_closer_terminal(P2D(x, y)+P2D(0,-2)), 2)); 
+          moves.push_back(Action(P2D(x, y), P2D(0, -2), JUMPING_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D(0,-2)), JUMP_MOVE)); 
       }      
     }
     if(c.getY() == y+1){
       res = dice->move("down", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
-          moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DOWN), 0)); 
+          moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::DOWN), SIMPLE_MOVE)); 
         else
-          moves.push_back(Action(P2D(x, y), P2D(0, 2), JUMPING_MOVE_BACKWARD+calculate_distance_from_closer_terminal(P2D(x, y)+P2D(0,2)), 2)); 
+          moves.push_back(Action(P2D(x, y), P2D(0, 2), JUMPING_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D(0,2)), JUMP_MOVE)); 
       }      
     }
   }
@@ -686,28 +686,28 @@ void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       res = dice->move("sx", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D(x-res.second, 0));
-        moves.push_back(Action(P2D(x, y), P2D::SX, (SIMPLE_MOVE_FORWARD*res.second)+distance_from_closer_terminal_after_move, 0));       
+        moves.push_back(Action(P2D(x, y), P2D::SX, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second)+distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
       }
     }
     if(c.getX() == x+1){
       res = dice->move("dx", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D(x+res.second, 0));
-        moves.push_back(Action(P2D(x, y), P2D::DX, (SIMPLE_MOVE_FORWARD*res.second)+distance_from_closer_terminal_after_move, 0));       
+        moves.push_back(Action(P2D(x, y), P2D::DX, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second)+distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
       }
     }
     if(c.getY() == y-1){
       res = dice->move("up", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D(0, y-res.second));
-        moves.push_back(Action(P2D(x, y), P2D::UP, (SIMPLE_MOVE_FORWARD*res.second)+distance_from_closer_terminal_after_move, 0));              
+        moves.push_back(Action(P2D(x, y), P2D::UP, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second)+distance_from_closer_terminal_after_move, SIMPLE_MOVE));              
       }
     }
     if(c.getY() == y+1){
       res = dice->move("down", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D(0, y+res.second));
-        moves.push_back(Action(P2D(x, y), P2D::DOWN, (SIMPLE_MOVE_FORWARD*res.second)+distance_from_closer_terminal_after_move, 0));             
+        moves.push_back(Action(P2D(x, y), P2D::DOWN, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second)+distance_from_closer_terminal_after_move, SIMPLE_MOVE));             
       }
     }
   }
@@ -731,13 +731,13 @@ bool AleaGame::move(const P2D pos, const P2D dir, const int movementType, bool i
         return dice->reverseMove("up", dices, __func__, false, movementType).first;
     }else{
       if(dir.x<0)
-        return dice->move("sx", dices, __func__, false).first;
+        return dice->move("sx", dices, __func__, false, movementType).first;
       else if(dir.x>0)
-        return dice->move("dx", dices, __func__, false).first;
+        return dice->move("dx", dices, __func__, false, movementType).first;
       else if(dir.y>0)
-        return dice->move("down", dices, __func__, false).first;
+        return dice->move("down", dices, __func__, false, movementType).first;
       else if(dir.y<0)
-        return dice->move("up", dices, __func__, false).first;
+        return dice->move("up", dices, __func__, false, movementType).first;
     }
   }
   return false;
@@ -782,7 +782,7 @@ bool AleaGame::has_dice(const P2D& pos) const {
 }
 
 Action AleaGame::revert_action(Action backward_action){
-  return Action(backward_action.head, P2D(backward_action.dir.x*-1, backward_action.dir.y*-1), backward_action.weight);
+  return Action(backward_action.head, P2D(backward_action.dir.x*-1, backward_action.dir.y*-1), backward_action.weight, backward_action.movementType);
 }
 
 void AleaGame::show_map(){
@@ -847,18 +847,18 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
       int i = 1;
       while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(i, 0)) == dices.end() && dice_position.x+i < MAP_WIDTH))
         i++;
-      moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD+(dice_position+P2D(i-1, 0)).manatthan(terminal_position)/100, 0));
+      moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(i-1, 0)).manatthan(terminal_position)/100, SIMPLE_MOVE));
       return find_banal_start_calculate_route(moves, dice_position+P2D(i-1, 0), dice_moves-(i-1), terminal_position, dices);
     }else{
       if(dices.find(dice_position+P2D::DX) == dices.end()){
-        moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DX).manatthan(terminal_position)/100, 0));
+        moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::DX).manatthan(terminal_position)/100, SIMPLE_MOVE));
         return find_banal_start_calculate_route(moves, dice_position+P2D::DX, dice_moves-1, terminal_position, dices);
       }else{
         if(dices.find(dice_position+P2D::UP) == dices.end() && (dice_position+P2D::UP).y >= 0){ 
-          moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD+(dice_position+P2D::UP).manatthan(terminal_position)/100, 0));
+          moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::UP).manatthan(terminal_position)/100, SIMPLE_MOVE));
           return find_banal_start_calculate_route(moves, dice_position+P2D::UP, dice_moves-1, terminal_position, dices);
         }else if(dices.find(dice_position+P2D::DOWN) == dices.end() && (dice_position+P2D::DOWN).y < MAP_HEIGHT){
-          moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, 0));
+          moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, SIMPLE_MOVE));
           return find_banal_start_calculate_route(moves, dice_position+P2D::DOWN, dice_moves-1, terminal_position, dices);
         }else
           return false;
@@ -870,18 +870,18 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
       int i = 1;
       while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(-i, 0)) == dices.end() && dice_position.x-i >= 0))
         i++;
-      moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD+(dice_position+P2D(-(i-1), 0)).manatthan(terminal_position)/100, 0));
+      moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(-(i-1), 0)).manatthan(terminal_position)/100, SIMPLE_MOVE));
       return find_banal_start_calculate_route(moves, dice_position+P2D(-(i-1), 0), dice_moves-(i-1), terminal_position, dices);
     }else{
       if(dices.find(dice_position+P2D::SX) == dices.end()){
-        moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::SX).manatthan(terminal_position)/100, 0));
+        moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::SX).manatthan(terminal_position)/100, SIMPLE_MOVE));
         return find_banal_start_calculate_route(moves, dice_position+P2D::SX, dice_moves-1, terminal_position, dices);
       }else{
         if(dices.find(dice_position+P2D::UP) == dices.end() && (dice_position+P2D::UP).y >= 0){ 
-          moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD+(dice_position+P2D::UP).manatthan(terminal_position)/100, 0));
+          moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::UP).manatthan(terminal_position)/100, SIMPLE_MOVE));
           return find_banal_start_calculate_route(moves, dice_position+P2D::UP, dice_moves-1, terminal_position, dices);
         }else if(dices.find(dice_position+P2D::DOWN) == dices.end() && (dice_position+P2D::DOWN).y < MAP_HEIGHT){
-          moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, 0));
+          moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, SIMPLE_MOVE));
           return find_banal_start_calculate_route(moves, dice_position+P2D::DOWN, dice_moves-1, terminal_position, dices);
         }else
           return false;
@@ -893,18 +893,18 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
       int i = 1;
       while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, -i)) == dices.end() && dice_position.y-i >= 0))
         i++;
-      moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD+(dice_position+P2D(0, -(i-1))).manatthan(terminal_position)/100, 0));
+      moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(0, -(i-1))).manatthan(terminal_position)/100, SIMPLE_MOVE));
       return find_banal_start_calculate_route(moves, dice_position+P2D(0, -(i-1)), dice_moves-(i-1), terminal_position, dices);
     }else{
       if(dices.find(dice_position+P2D::UP) == dices.end()){
-        moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD+(dice_position+P2D::UP).manatthan(terminal_position)/100, 0));
+        moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::UP).manatthan(terminal_position)/100, SIMPLE_MOVE));
         return find_banal_start_calculate_route(moves, dice_position+P2D::UP, dice_moves-1, terminal_position, dices);
       }else{
         if(dices.find(dice_position+P2D::SX) == dices.end() && (dice_position+P2D::SX).x >= 0){ 
-          moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::SX).manatthan(terminal_position)/100, 0));
+          moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::SX).manatthan(terminal_position)/100, SIMPLE_MOVE));
           return find_banal_start_calculate_route(moves, dice_position+P2D::SX, dice_moves-1, terminal_position, dices);
         }else if(dices.find(dice_position+P2D::DX) == dices.end() && (dice_position+P2D::DX).x < MAP_WIDTH){
-          moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DX).manatthan(terminal_position)/100, 0));
+          moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::DX).manatthan(terminal_position)/100, SIMPLE_MOVE));
           return find_banal_start_calculate_route(moves, dice_position+P2D::DX, dice_moves-1, terminal_position, dices);
         }else
           return false;
@@ -916,18 +916,18 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
       int i = 1;
       while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, i)) == dices.end() && dice_position.y+i < MAP_HEIGHT))
         i++;
-      moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD+(dice_position+P2D(0, i-1)).manatthan(terminal_position)/100, 0));
+      moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(0, i-1)).manatthan(terminal_position)/100, SIMPLE_MOVE));
       return find_banal_start_calculate_route(moves, dice_position+P2D(0, i-1), dice_moves-(i-1), terminal_position, dices);
     }else{
       if(dices.find(dice_position+P2D::DOWN) == dices.end()){
-        moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, 0));
+        moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, SIMPLE_MOVE));
         return find_banal_start_calculate_route(moves, dice_position+P2D::DOWN, dice_moves-1, terminal_position, dices);
       }else{
         if(dices.find(dice_position+P2D::SX) == dices.end() && (dice_position+P2D::SX).x >= 0){ 
-          moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::SX).manatthan(terminal_position)/100, 0));
+          moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::SX).manatthan(terminal_position)/100, SIMPLE_MOVE));
           return find_banal_start_calculate_route(moves, dice_position+P2D::SX, dice_moves-1, terminal_position, dices);
         }else if(dices.find(dice_position+P2D::DX) == dices.end() && (dice_position+P2D::DX).x < MAP_WIDTH){
-          moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD+(dice_position+P2D::DX).manatthan(terminal_position)/100, 0));
+          moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::DX).manatthan(terminal_position)/100, SIMPLE_MOVE));
           return find_banal_start_calculate_route(moves, dice_position+P2D::DX, dice_moves-1, terminal_position, dices);
         }else
           return false;
@@ -936,4 +936,13 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
   }
   
   return false;
+}
+
+int AleaGame::number_of_movable_dices(){
+  int count = 0;
+  for (auto const& pair: dices) {
+    Dice *dice = pair.second;
+    if(dice->getNMoves() > 0) count++;
+  }
+  return count;
 }

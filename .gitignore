@@ -1,5 +1,6 @@
 build/*
-src/mad_dices
+src/level_solver
+generated_levels/*
 !src/tests/tests
 src/tests/*
 !src/tests/tests.cpp

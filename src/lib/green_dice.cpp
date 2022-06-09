@@ -65,12 +65,12 @@ pair<bool, int> GreenDice::reverseMove(string direction, unordered_map<P2D, Dice
   int y = this->getPosition().getY();
   pair<bool, int> res = NO_MOVE;
   int i = 1;
-  if(movementType == 1){
+  if(movementType == PUSHED_MOVE){
     if(direction.compare("sx") == 0){
       while(x-i>=0){
         if(dices.find(P2D::cellToP2D(Cell(x-i, y))) != dices.end() && (x == MAP_WIDTH-1 || dices.find(P2D::cellToP2D(Cell(x+1, y))) != dices.end())){ //if there's a right side or is a boundary cell 
           if(dices.at(P2D::cellToP2D(Cell(x-i, y)))->getActualType().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x-i, y)))->getActualType().compare("RedDice") == 0){
-            res = dices.at(P2D::cellToP2D(Cell(x-i, y)))->reverseMove("sx", dices, __func__, isJustForSimulation);
+            res = dices.at(P2D::cellToP2D(Cell(x-i, y)))->reverseMove("sx", dices, __func__, isJustForSimulation, movementType);
             if(res.first){
               res.second += i;
               if(!isJustForSimulation)
@@ -86,7 +86,7 @@ pair<bool, int> GreenDice::reverseMove(string direction, unordered_map<P2D, Dice
       while(x+i<MAP_WIDTH){
         if(dices.find(P2D::cellToP2D(Cell(x+i, y))) != dices.end() && (x == 0 || dices.find(P2D::cellToP2D(Cell(x-1, y))) != dices.end())){ //if there's a left side or is a boundary cell 
           if(dices.at(P2D::cellToP2D(Cell(x+i, y)))->getActualType().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x+i, y)))->getActualType().compare("RedDice") == 0){
-            res = dices.at(P2D::cellToP2D(Cell(x+i, y)))->reverseMove("dx", dices, __func__, isJustForSimulation);
+            res = dices.at(P2D::cellToP2D(Cell(x+i, y)))->reverseMove("dx", dices, __func__, isJustForSimulation, movementType);
             if(res.first){
               res.second += i;
               if(!isJustForSimulation)
@@ -102,7 +102,7 @@ pair<bool, int> GreenDice::reverseMove(string direction, unordered_map<P2D, Dice
       while(y-i>=0){
         if(dices.find(P2D::cellToP2D(Cell(x, y-i))) != dices.end() && (y == MAP_HEIGHT-1 || dices.find(P2D::cellToP2D(Cell(x, y+1))) != dices.end())){ //if there's a down side or is a boundary cell          
           if(dices.at(P2D::cellToP2D(Cell(x, y-i)))->getActualType().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y-i)))->getActualType().compare("RedDice") == 0){
-            res = dices.at(P2D::cellToP2D(Cell(x, y-i)))->reverseMove("up", dices, __func__, isJustForSimulation);
+            res = dices.at(P2D::cellToP2D(Cell(x, y-i)))->reverseMove("up", dices, __func__, isJustForSimulation, movementType);
             if(res.first){
               res.second += i;
               if(!isJustForSimulation)
@@ -118,7 +118,7 @@ pair<bool, int> GreenDice::reverseMove(string direction, unordered_map<P2D, Dice
       while(y+i<MAP_HEIGHT){
         if(dices.find(P2D::cellToP2D(Cell(x, y+i))) != dices.end() && (y == 0 || dices.find(P2D::cellToP2D(Cell(x, y-1))) != dices.end())){ //if there's an up side or is a boundary cell 
           if(dices.at(P2D::cellToP2D(Cell(x, y+i)))->getActualType().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y+i)))->getActualType().compare("RedDice") == 0){
-            res = dices.at(P2D::cellToP2D(Cell(x, y+i)))->reverseMove("down", dices, __func__, isJustForSimulation);
+            res = dices.at(P2D::cellToP2D(Cell(x, y+i)))->reverseMove("down", dices, __func__, isJustForSimulation, movementType);
             if(res.first){
               res.second += i;
               if(!isJustForSimulation)
@@ -203,10 +203,10 @@ pair<bool, int> GreenDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dice
   return res;
 }
 
-pair<bool, int> GreenDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
+pair<bool, int> GreenDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */, int movementType){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
-  if(this->getNMoves() == 0){ //moving when pushed
+  if(movementType == PUSHED_MOVE || this->getNMoves() == 0){ //moving when pushed
     while(x-i >= 0 && checkArrivalCellIsEmpty(x-i, y, dices)){ //arrival cell is not out of map bounds and empty
       res.first = true;
       res.second ++;
@@ -222,10 +222,10 @@ pair<bool, int> GreenDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::
   return res;
 }
 
-pair<bool, int> GreenDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
+pair<bool, int> GreenDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */, int movementType){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
-  if(this->getNMoves() == 0){ //moving when pushed
+  if(movementType == PUSHED_MOVE || this->getNMoves() == 0){ //moving when pushed
     while(x+i < MAP_WIDTH && checkArrivalCellIsEmpty(x+i, y, dices)){ //arrival cell is not out of map bounds and empty
       res.first = true;
       res.second ++;
@@ -241,10 +241,10 @@ pair<bool, int> GreenDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::
   return res;
 }
 
-pair<bool, int> GreenDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
+pair<bool, int> GreenDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */, int movementType){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
-  if(this->getNMoves() == 0){ //moving when pushed
+  if(movementType == PUSHED_MOVE || this->getNMoves() == 0){ //moving when pushed
     while(y-i >= 0 && checkArrivalCellIsEmpty(x, y-i, dices)){ //arrival cell is not out of map bounds and empty
       res.first = true;
       res.second ++;
@@ -260,10 +260,10 @@ pair<bool, int> GreenDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::
   return res;
 }
 
-pair<bool, int> GreenDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
+pair<bool, int> GreenDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */, int movementType){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
-  if(this->getNMoves() == 0){ //moving when pushed
+  if(movementType == PUSHED_MOVE || this->getNMoves() == 0){ //moving when pushed
     while(y+i < MAP_HEIGHT && checkArrivalCellIsEmpty(x, y+i, dices)){ //arrival cell is not out of map bounds and empty
       res.first = true;
       res.second ++;

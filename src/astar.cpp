@@ -97,27 +97,23 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> open;
   unordered_set<AStarNode*, AStarNode::HashFun> open_set;
   unordered_set<AleaGame, AleaGame::HashFun> closed;
-  double difficulty = 0.00;
-  bool banal_solution_found = false;
-  cout<<"\nWorst Case Brancheable Nodes number: "<<worst_case_brancheable_nodes(game.remaining_moves())<<"\n";
-  pair<bool, pair<AleaGame, vector<Action>>> banal_search = game.find_banal_start_forward_search();
-  if(banal_search.first){
-    game = banal_search.second.first;
-    cout<<"Banal Starting Configuration Found.\n";
-    for(Action move : banal_search.second.second){
-      difficulty += move.weight;
-      cout<<move<<endl;
-    }
-    if(game.is_valid_ending_configuration_forward_search())
-      res.push(make_pair(banal_search.second.second, difficulty));
-  }
-  banal_solution_found = banal_search.first;
-  AStarNode* start_node = new AStarNode(game, difficulty, 0.00);
-  open.push(start_node);
-  open_set.insert(start_node);
   int evaluated_moves = 0;
   int skipped_moves = 0;
   int branched_nodes = 0;
+  double difficulty = 0.00;
+  bool banal_solution_found = false;
+  
+  //cout<<"\nWorst Case Brancheable Nodes number: "<<worst_case_brancheable_nodes(game.remaining_moves())<<"\n";
+  
+  pair<bool, pair<AleaGame, vector<Action>>> banal_search = game.find_banal_start_forward_search();
+  if(banal_search.first)
+    if(setting_up_banal_configuration(banal_search.second, game, &difficulty))
+      res.push(make_pair(banal_search.second.second, difficulty));
+  banal_solution_found = banal_search.first;
+  
+  AStarNode* start_node = new AStarNode(game, difficulty, 0.00);
+  open.push(start_node);
+  open_set.insert(start_node);
   while (open.size() > 0) {
     ++branched_nodes;
     AStarNode* current_node = open.top();
@@ -167,8 +163,18 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       }
     }
     //current_node->game.show_map();
-    //char ch;
-    //cin>>ch;
+    /*
+    priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> q = open;
+    while (! q.empty() ) {
+      cout << "Map: ";
+      q.top()->game.show_map();
+      cout << "difficulty: "<< q.top()->f  << "\n\n";
+      q.pop();
+    } 
+    char ch;
+    cin>>ch;
+    cout << "-------------";
+    */
     if (branched_nodes > limit){
       cout << "\n\nBRANCHED_NODES LIMIT REACHED. EXIT\n\n";
       break;
@@ -182,11 +188,23 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   return res;
 }
 
-int AStarNode::worst_case_brancheable_nodes(int tree_level){
+bool AStarNode::setting_up_banal_configuration(pair<AleaGame, std::vector<Action>> banal_configuration, AleaGame &game, double *difficulty){
+  game = banal_configuration.first;
+  cout<<"Banal Starting Configuration Found.\n";
+  for(Action move : banal_configuration.second){
+    *difficulty += move.weight;
+    cout<<move<<endl;
+  }
+  if(game.is_valid_ending_configuration_forward_search())
+    return true;
+  return false;
+}
+
+long AStarNode::worst_case_brancheable_nodes(int tree_level){
   if(tree_level == 0)
     return 1;
   else
-    return BRANCHING_FACTOR*worst_case_brancheable_nodes(tree_level-1);
+    return BRANCHING_FACTOR*worst_case_brancheable_nodes(tree_level-1); //4(suppongo di non avere mai limiti di movimento)*numero di dadi che hanno ancora mosse(non calcolabile perché non so a questo tempo che mossa ho fatto)
 }
 
 string AStarNode::printLevel(AleaGame map_configuration, double difficulty){

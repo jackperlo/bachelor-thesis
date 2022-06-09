@@ -197,7 +197,7 @@ pair<bool, int> YellowDice::reverseMoveDown(int x, int y, unordered_map<P2D, Dic
   return res;
 }
 
-pair<bool, int> YellowDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
+pair<bool, int> YellowDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */, int /*movementType unused */){
   pair<bool, int> res = NO_MOVE;
   if(x-1 >= 0 && checkArrivalCellIsEmpty(x-1, y, dices))
     return MOVE_BY_1;
@@ -206,7 +206,7 @@ pair<bool, int> YellowDice::moveSx(int x, int y, unordered_map<P2D, Dice *, P2D:
   return res;
 }
 
-pair<bool, int> YellowDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
+pair<bool, int> YellowDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */, int /*movementType unused */){
   pair<bool, int> res = NO_MOVE;
   if(x+1 < MAP_WIDTH && checkArrivalCellIsEmpty(x+1, y, dices))
     return MOVE_BY_1;
@@ -215,7 +215,7 @@ pair<bool, int> YellowDice::moveDx(int x, int y, unordered_map<P2D, Dice *, P2D:
   return res;
 }
 
-pair<bool, int> YellowDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
+pair<bool, int> YellowDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */, int /*movementType unused */){
   pair<bool, int> res = NO_MOVE;
   if(y-1 >= 0 && checkArrivalCellIsEmpty(x, y-1, dices))
     return MOVE_BY_1;
@@ -224,7 +224,7 @@ pair<bool, int> YellowDice::moveUp(int x, int y, unordered_map<P2D, Dice *, P2D:
   return res;
 }
 
-pair<bool, int> YellowDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */){
+pair<bool, int> YellowDice::moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* isJustForSimulation unused */, int /*movementType unused */){
   pair<bool, int> res = NO_MOVE;
   if(y+1 < MAP_HEIGHT && checkArrivalCellIsEmpty(x, y+1, dices))
     return MOVE_BY_1;

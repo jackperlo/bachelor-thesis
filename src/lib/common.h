@@ -21,13 +21,13 @@
 #define MAX(a, b) a > b ? a : b
 #define MIN(a, b) a < b ? a : b
 
-#define SIMPLE_MOVE_BACKWARD 0.01
-#define JUMPING_MOVE_BACKWARD 1.00
-#define PUSHED_MOVE_BACKWARD 1.00
+#define SIMPLE_MOVE_BACKWARD_WEIGHT 0.01
+#define JUMPING_MOVE_BACKWARD_WEIGHT 1.00
+#define PUSHED_MOVE_BACKWARD_WEIGHT 1.00
 
-#define SIMPLE_MOVE_FORWARD 0.01
-#define JUMPING_MOVE_FORWARD 1.00
-#define PUSHED_MOVE_FORWARD 1.00
+#define SIMPLE_MOVE_FORWARD_WEIGHT 0.01
+#define JUMPING_MOVE_FORWARD_WEIGHT 1.00
+#define PUSHED_MOVE_FORWARD_WEIGHT 1.00
 
 #define WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(nMoves) ((nMoves-1)*2)+1
 #define RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(nMoves) nMoves-1
@@ -46,5 +46,11 @@ using json = nlohmann::json;
 extern int TOTAL_MOVES;
 extern int MAP_WIDTH;
 extern int MAP_HEIGHT;
+
+enum {
+  SIMPLE_MOVE,
+  PUSHED_MOVE,
+  JUMP_MOVE
+};
 
 #endif

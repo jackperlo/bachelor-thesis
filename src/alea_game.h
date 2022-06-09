@@ -51,6 +51,8 @@ class AleaGame{
     bool is_valid_ending_configuration_forward_search();
     pair<bool, pair<AleaGame, vector<Action>>> find_banal_start_forward_search();
 
+    int number_of_movable_dices();
+
     static Action revert_action(Action backward_action);
 
     struct HashFun {

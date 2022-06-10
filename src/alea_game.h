@@ -8,6 +8,8 @@
 #include "./lib/green_dice.h"
 #include "./lib/p2d.h"
 
+using namespace std;
+
 class AleaGame{
   public:
     unordered_set<P2D, P2D::HashFun> terminals;
@@ -49,9 +51,7 @@ class AleaGame{
     int remaining_moves() const;
     bool is_valid_starting_configuration_backward_search();
     bool is_valid_ending_configuration_forward_search();
-    pair<bool, pair<AleaGame, vector<Action>>> find_banal_start_forward_search();
-
-    int number_of_movable_dices();
+    vector<pair<bool, pair<AleaGame, vector<Action>>>> find_banal_starts_forward_search_wrapper();
 
     static Action revert_action(Action backward_action);
 
@@ -68,6 +68,9 @@ class AleaGame{
     double calculate_distance_from_closer_terminal(P2D dice_position);
     static bool find_banal_start_calculate_route(vector<Action> &moves, P2D dice_position, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static bool terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
+    static vector<pair<P2D, Dice *>> disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
+    static bool disputed_is_assigned(P2D terminal, vector<std::pair<P2D, Dice *>> disputer_dices);
+    pair<bool, pair<AleaGame, vector<Action>>> find_banal_starts_forward_search(pair<bool, pair<AleaGame, vector<Action>>> previous_game_actions);
 };
 
 #endif

@@ -798,29 +798,73 @@ void AleaGame::show_moves(vector<Action> moves){
     cout << "\nfrom: " << m.from << " | dir: " << m.dir << "\n";
 }
 
-//BANAL: means the terminal-dice distance is equal to nMoves and the terminal is not disputed between 2 or more dices
-pair<bool, pair<AleaGame, vector<Action>>> AleaGame::find_banal_start_forward_search(){
-  pair<bool, pair<AleaGame, vector<Action>>> res;
-  res.first = false;
-  res.second.first = *this;
+//BANAL: means the terminal-dice distance is equal to nMoves
+vector<pair<bool, pair<AleaGame, vector<Action>>>> AleaGame::find_banal_starts_forward_search_wrapper(){
+  vector<pair<bool, pair<AleaGame, vector<Action>>>> banal_games;
   for(pair<P2D, Dice*> pair : this->dices){
-    vector<Action> dice_moves;
-    Dice *dice = pair.second;
-    P2D dice_position = pair.first;
     for(P2D terminal : this->terminals){
-      if(dice_position.manatthan(terminal) == dice->getNMoves() && !terminal_is_disputed(terminal, this->dices)){
-        if(find_banal_start_calculate_route(dice_moves, dice_position, dice->getNMoves(), terminal, res.second.first.dices)){
-          for(Action action : dice_moves){
-            res.second.first.move(action, false);
-            res.second.second.push_back(action);
+      if(pair.first.manatthan(terminal) == pair.second->getNMoves() && pair.first!=terminal){
+        if(terminal_is_disputed(terminal, this->dices)){
+          vector<std::pair<P2D, Dice *>> disputer_dices_result = disputer_dices(terminal, this->dices);
+          if(!disputed_is_assigned(terminal, disputer_dices_result)){
+            for(std::pair<P2D, Dice*> d : disputer_dices_result){
+              std::pair<bool, std::pair<AleaGame, vector<Action>>> res = make_pair(false, make_pair(*this, vector<Action>()));
+              if(find_banal_start_calculate_route(res.second.second, d.first, d.second->getNMoves(), terminal, res.second.first.dices)){
+                for(Action action : res.second.second)
+                  res.second.first.move(action, false);
+                res.first = true;
+                banal_games.push_back(find_banal_starts_forward_search(res));
+              }
+            }
           }
-          res.first = true;
-          continue;
+        }else{
+          std::pair<bool, std::pair<AleaGame, vector<Action>>> res = make_pair(false, make_pair(*this, vector<Action>()));
+          if(find_banal_start_calculate_route(res.second.second, pair.first, pair.second->getNMoves(), terminal, res.second.first.dices)){
+            for(Action action : res.second.second)
+              res.second.first.move(action, false);
+            res.first = true;
+            banal_games.push_back(find_banal_starts_forward_search(res));
+          }
         }
-      } 
+      }
     }
   }
-  return res;
+  return banal_games;
+}
+
+pair<bool, pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_search(pair<bool, pair<AleaGame, vector<Action>>> previous_game_actions){
+  std::pair<bool, std::pair<AleaGame, vector<Action>>> moves = previous_game_actions;
+  for(pair<P2D, Dice*> pair : previous_game_actions.second.first.dices){
+  for(P2D terminal : previous_game_actions.second.first.terminals){ 
+    if(pair.first.manatthan(terminal) == pair.second->getNMoves() && pair.first!=terminal){
+      if(terminal_is_disputed(terminal, previous_game_actions.second.first.dices)){
+        vector<std::pair<P2D, Dice *>> disputer_dices_result = disputer_dices(terminal, moves.second.first.dices);
+        if(!disputed_is_assigned(terminal, disputer_dices_result)){
+          for(std::pair<P2D, Dice*> d : disputer_dices_result){
+            d.second->printDice();
+            vector<Action> actions;
+            if(find_banal_start_calculate_route(actions, d.first, d.second->getNMoves(), terminal, moves.second.first.dices)){
+              for(Action action : actions){
+                moves.second.first.move(action, false);
+                moves.second.second.push_back(action);
+              }
+              moves = find_banal_starts_forward_search(make_pair(true, make_pair(moves.second.first, moves.second.second)));
+            }
+          }
+        }
+      }else{
+        vector<Action> actions;
+        if(find_banal_start_calculate_route(actions, pair.first, pair.second->getNMoves(), terminal, moves.second.first.dices)){
+          for(Action action : actions){
+            moves.second.first.move(action, false);
+            moves.second.second.push_back(action);
+          }
+        }
+      }
+    }
+  }
+}
+return moves;
 }
 
 bool AleaGame::terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
@@ -832,6 +876,25 @@ bool AleaGame::terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Di
   if(counter>1) 
     return true;
   return false;
+}
+
+vector<pair<P2D, Dice *>> AleaGame::disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
+  vector<pair<P2D, Dice *>> res;
+  for(pair<P2D, Dice*> pair : dices){
+    if(pair.first.manatthan(terminal_position) == pair.second->getNMoves())
+      res.push_back(pair);
+  }
+  return res;
+}
+
+//if a terminal is disputed but as already a dice on it, the dispution doesnt sussist
+bool AleaGame::disputed_is_assigned(P2D terminal, vector<std::pair<P2D, Dice *>> disputer_dices){
+  bool res=false;
+  for(pair<P2D, Dice*> pair : disputer_dices){
+    if(pair.first==terminal) res = true;
+    break;
+  }
+  return res;
 }
 
 bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_position, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
@@ -936,13 +999,4 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
   }
   
   return false;
-}
-
-int AleaGame::number_of_movable_dices(){
-  int count = 0;
-  for (auto const& pair: dices) {
-    Dice *dice = pair.second;
-    if(dice->getNMoves() > 0) count++;
-  }
-  return count;
 }

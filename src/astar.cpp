@@ -92,7 +92,33 @@ pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int
   return res;
 }
 
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_search(AleaGame game, int limit) {
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_wrapper(AleaGame original_game, int limit) {
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> tmp;
+  double difficulty = 0.00;
+  
+  vector<pair<bool, pair<AleaGame, vector<Action>>>> banal_search_results = original_game.find_banal_starts_forward_search_wrapper();
+  for(pair<bool, pair<AleaGame, vector<Action>>> banal_search : banal_search_results){
+    if(banal_search.first){
+      AleaGame new_game = original_game;
+      if(setting_up_banal_configuration(banal_search.second, new_game, &difficulty))
+        res.push(make_pair(banal_search.second.second, difficulty));
+      
+      tmp = astar_forward_search(new_game, limit, &difficulty, banal_search.first, banal_search);
+      res = merge_priority_queues(res, tmp);
+      if(res.size() > 0)
+        return res;
+    }
+  }
+  if(res.size() == 0){
+    tmp = astar_forward_search(original_game, limit, &difficulty);
+    res = merge_priority_queues(res, tmp);
+  }
+
+  return res;
+}
+
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_search(AleaGame game, int limit, double *difficulty, bool banal_solution_found, pair<bool, pair<AleaGame, vector<Action>>> banal_search) {
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
   priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> open;
   unordered_set<AStarNode*, AStarNode::HashFun> open_set;
@@ -100,18 +126,8 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   int evaluated_moves = 0;
   int skipped_moves = 0;
   int branched_nodes = 0;
-  double difficulty = 0.00;
-  bool banal_solution_found = false;
   
-  //cout<<"\nWorst Case Brancheable Nodes number: "<<worst_case_brancheable_nodes(game.remaining_moves())<<"\n";
-  
-  pair<bool, pair<AleaGame, vector<Action>>> banal_search = game.find_banal_start_forward_search();
-  if(banal_search.first)
-    if(setting_up_banal_configuration(banal_search.second, game, &difficulty))
-      res.push(make_pair(banal_search.second.second, difficulty));
-  banal_solution_found = banal_search.first;
-  
-  AStarNode* start_node = new AStarNode(game, difficulty, 0.00);
+  AStarNode* start_node = new AStarNode(game, *difficulty, 0.00);
   open.push(start_node);
   open_set.insert(start_node);
   while (open.size() > 0) {
@@ -236,4 +252,12 @@ string AStarNode::printLevel(AleaGame map_configuration, double difficulty){
   ofstream o("generated_levels/level_" + string(to_print) + "_" + to_string(time(nullptr)) + ".json");
 	o << setw(4) << level << endl;
   return "generated_levels/level_" + string(to_print) + "_" + to_string(time(nullptr)) + ".json";
+}
+
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::merge_priority_queues(priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source1, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source2){
+  while (!source2.empty()){
+    source1.push(source2.top());
+    source2.pop();
+  }
+  return source1;
 }

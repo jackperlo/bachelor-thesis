@@ -813,7 +813,8 @@ vector<pair<bool, pair<AleaGame, vector<Action>>>> AleaGame::find_banal_starts_f
                 for(Action action : res.second.second)
                   res.second.first.move(action, false);
                 res.first = true;
-                banal_games.push_back(find_banal_starts_forward_search(res));
+                if(!banal_start_already_found(res.second, banal_games))
+                  banal_games.push_back(find_banal_starts_forward_search(res));
               }
             }
           }
@@ -823,7 +824,8 @@ vector<pair<bool, pair<AleaGame, vector<Action>>>> AleaGame::find_banal_starts_f
             for(Action action : res.second.second)
               res.second.first.move(action, false);
             res.first = true;
-            banal_games.push_back(find_banal_starts_forward_search(res));
+            if(!banal_start_already_found(res.second, banal_games))
+              banal_games.push_back(find_banal_starts_forward_search(res));
           }
         }
       }
@@ -841,7 +843,6 @@ pair<bool, pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_s
         vector<std::pair<P2D, Dice *>> disputer_dices_result = disputer_dices(terminal, moves.second.first.dices);
         if(!disputed_is_assigned(terminal, disputer_dices_result)){
           for(std::pair<P2D, Dice*> d : disputer_dices_result){
-            d.second->printDice();
             vector<Action> actions;
             if(find_banal_start_calculate_route(actions, d.first, d.second->getNMoves(), terminal, moves.second.first.dices)){
               for(Action action : actions){
@@ -865,6 +866,36 @@ pair<bool, pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_s
   }
 }
 return moves;
+}
+
+bool AleaGame::setting_up_banal_configuration(pair<AleaGame, vector<Action>> banal_configuration, double *difficulty, int counter, int banal_search_number){
+  *this = banal_configuration.first;
+  cout<<"\nBanal Starting Configuration Found: ("<<counter<<"/"<<banal_search_number<<")\n";
+  for(Action move : banal_configuration.second){
+    *difficulty += move.weight;
+    cout<<move<<endl;
+  }
+  if(this->is_valid_ending_configuration_forward_search())
+    return true;
+  return false;
+}
+
+bool AleaGame::banal_start_already_found(pair<AleaGame, vector<Action>> banal_config, vector<pair<bool, pair<AleaGame, vector<Action>>>> banal_config_vector){
+  AleaGame simulation_game = banal_config.first;
+  for(Action act : banal_config.second)
+    simulation_game.move(act, false);
+
+  for(pair<bool, pair<AleaGame, vector<Action>>> banal_start_found : banal_config_vector){
+    if(banal_start_found.first){
+      AleaGame tmp_game = banal_start_found.second.first;
+      for(Action act : banal_start_found.second.second)
+        tmp_game.move(act, false);
+
+      if(tmp_game == simulation_game)
+        return true;
+    }
+  }
+  return false;
 }
 
 bool AleaGame::terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
@@ -908,10 +939,13 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
   if(dice_position.x < terminal_position.x){//moving dx
     if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
       int i = 1;
-      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(i, 0)) == dices.end() && dice_position.x+i < MAP_WIDTH))
-        i++;
-      moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(i-1, 0)).manatthan(terminal_position)/100, SIMPLE_MOVE));
-      return find_banal_start_calculate_route(moves, dice_position+P2D(i-1, 0), dice_moves-(i-1), terminal_position, dices);
+      if(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(i, 0)) == dices.end() && dice_position.x+i < MAP_WIDTH)){
+        while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(i, 0)) == dices.end() && dice_position.x+i < MAP_WIDTH))
+          i++;
+        moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(i-1, 0)).manatthan(terminal_position)/100, SIMPLE_MOVE));
+        return find_banal_start_calculate_route(moves, dice_position+P2D(i-1, 0), dice_moves-(i-1), terminal_position, dices);
+      }else
+        return false;
     }else{
       if(dices.find(dice_position+P2D::DX) == dices.end()){
         moves.push_back(Action(dice_position, P2D::DX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::DX).manatthan(terminal_position)/100, SIMPLE_MOVE));
@@ -931,10 +965,13 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
   else if(dice_position.x > terminal_position.x){//moving sx
     if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
       int i = 1;
-      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(-i, 0)) == dices.end() && dice_position.x-i >= 0))
-        i++;
-      moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(-(i-1), 0)).manatthan(terminal_position)/100, SIMPLE_MOVE));
-      return find_banal_start_calculate_route(moves, dice_position+P2D(-(i-1), 0), dice_moves-(i-1), terminal_position, dices);
+      if(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(-i, 0)) == dices.end() && dice_position.x-i >= 0)){ //if it can move at least by one
+         while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(-i, 0)) == dices.end() && dice_position.x-i >= 0))
+          i++;
+        moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(-(i-1), 0)).manatthan(terminal_position)/100, SIMPLE_MOVE));
+        return find_banal_start_calculate_route(moves, dice_position+P2D(-(i-1), 0), dice_moves-(i-1), terminal_position, dices);
+      }else
+        return false;
     }else{
       if(dices.find(dice_position+P2D::SX) == dices.end()){
         moves.push_back(Action(dice_position, P2D::SX, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::SX).manatthan(terminal_position)/100, SIMPLE_MOVE));
@@ -954,10 +991,13 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
   else if(dice_position.y > terminal_position.y){//moving up
     if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
       int i = 1;
-      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, -i)) == dices.end() && dice_position.y-i >= 0))
-        i++;
-      moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(0, -(i-1))).manatthan(terminal_position)/100, SIMPLE_MOVE));
-      return find_banal_start_calculate_route(moves, dice_position+P2D(0, -(i-1)), dice_moves-(i-1), terminal_position, dices);
+      if(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, -i)) == dices.end() && dice_position.y-i >= 0)){
+        while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, -i)) == dices.end() && dice_position.y-i >= 0))
+          i++;
+        moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(0, -(i-1))).manatthan(terminal_position)/100, SIMPLE_MOVE));
+        return find_banal_start_calculate_route(moves, dice_position+P2D(0, -(i-1)), dice_moves-(i-1), terminal_position, dices);
+      }else
+        return false;
     }else{
       if(dices.find(dice_position+P2D::UP) == dices.end()){
         moves.push_back(Action(dice_position, P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::UP).manatthan(terminal_position)/100, SIMPLE_MOVE));
@@ -977,10 +1017,13 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
   else if(dice_position.y < terminal_position.y){//moving down
     if(dices.find(dice_position) != dices.end() && dices.at(dice_position)->getActualType().compare("GreenDice") == 0){
       int i = 1;
-      while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, i)) == dices.end() && dice_position.y+i < MAP_HEIGHT))
-        i++;
-      moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(0, i-1)).manatthan(terminal_position)/100, SIMPLE_MOVE));
-      return find_banal_start_calculate_route(moves, dice_position+P2D(0, i-1), dice_moves-(i-1), terminal_position, dices);
+      if(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, i)) == dices.end() && dice_position.y+i < MAP_HEIGHT)){
+        while(dice_moves-(i-1) > 0 && (dices.find(dice_position+P2D(0, i)) == dices.end() && dice_position.y+i < MAP_HEIGHT))
+          i++;
+        moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D(0, i-1)).manatthan(terminal_position)/100, SIMPLE_MOVE));
+        return find_banal_start_calculate_route(moves, dice_position+P2D(0, i-1), dice_moves-(i-1), terminal_position, dices);
+      }else
+        return false;
     }else{
       if(dices.find(dice_position+P2D::DOWN) == dices.end()){
         moves.push_back(Action(dice_position, P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT+(dice_position+P2D::DOWN).manatthan(terminal_position)/100, SIMPLE_MOVE));

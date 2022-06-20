@@ -98,16 +98,18 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   double difficulty = 0.00;
   
   vector<pair<bool, pair<AleaGame, vector<Action>>>> banal_search_results = original_game.find_banal_starts_forward_search_wrapper();
+  int i=1;
   for(pair<bool, pair<AleaGame, vector<Action>>> banal_search : banal_search_results){
     if(banal_search.first){
       AleaGame new_game = original_game;
-      if(setting_up_banal_configuration(banal_search.second, new_game, &difficulty))
+      if(new_game.setting_up_banal_configuration(banal_search.second, &difficulty, i, banal_search_results.size()))
         res.push(make_pair(banal_search.second.second, difficulty));
       
       tmp = astar_forward_search(new_game, limit, &difficulty, banal_search.first, banal_search);
       res = merge_priority_queues(res, tmp);
       if(res.size() > 0)
         return res;
+      i++;
     }
   }
   if(res.size() == 0){
@@ -118,7 +120,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   return res;
 }
 
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_search(AleaGame game, int limit, double *difficulty, bool banal_solution_found, pair<bool, pair<AleaGame, vector<Action>>> banal_search) {
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_search(AleaGame game, int limit, double *difficulty, bool banal_solution_found, pair<bool, pair<AleaGame, vector<Action>>> banal_search){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
   priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> open;
   unordered_set<AStarNode*, AStarNode::HashFun> open_set;
@@ -161,7 +163,6 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     }
     vector<Action> actions = current_node->game.possible_moves_forward();
     for (Action action : actions) {
-      //cout<<action<<endl;
       AleaGame new_game = AleaGame(current_node->game);
       if(!new_game.move(action, false)){
         cout<<"\nastar.cpp:astar_forward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movementType<<", head:"<<action.head<<"\nExiting.\n"; 
@@ -178,49 +179,17 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
         open_set.insert(neighbor);
       }
     }
-    //current_node->game.show_map();
-    /*
-    priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> q = open;
-    while (! q.empty() ) {
-      cout << "Map: ";
-      q.top()->game.show_map();
-      cout << "difficulty: "<< q.top()->f  << "\n\n";
-      q.pop();
-    } 
-    char ch;
-    cin>>ch;
-    cout << "-------------";
-    */
     if (branched_nodes > limit){
-      cout << "\n\nBRANCHED_NODES LIMIT REACHED. EXIT\n\n";
+      cout << "BRANCHED_NODES LIMIT REACHED. EXIT\n\n";
       break;
     }
-    if(branched_nodes % 25000 == 0)
+    if(branched_nodes % 2000 == 0)
       cout << "Branched:" << branched_nodes << endl;
   }
   cout << "Evaluated:" << evaluated_moves << endl;
   cout << "Skipped:"<< skipped_moves << endl;
-  cout << "Branched:"<< branched_nodes << endl;
+  cout << "Branched:"<< branched_nodes << endl<<endl;
   return res;
-}
-
-bool AStarNode::setting_up_banal_configuration(pair<AleaGame, std::vector<Action>> banal_configuration, AleaGame &game, double *difficulty){
-  game = banal_configuration.first;
-  cout<<"Banal Starting Configuration Found.\n";
-  for(Action move : banal_configuration.second){
-    *difficulty += move.weight;
-    cout<<move<<endl;
-  }
-  if(game.is_valid_ending_configuration_forward_search())
-    return true;
-  return false;
-}
-
-long AStarNode::worst_case_brancheable_nodes(int tree_level){
-  if(tree_level == 0)
-    return 1;
-  else
-    return BRANCHING_FACTOR*worst_case_brancheable_nodes(tree_level-1); //4(suppongo di non avere mai limiti di movimento)*numero di dadi che hanno ancora mosse(non calcolabile perché non so a questo tempo che mossa ho fatto)
 }
 
 string AStarNode::printLevel(AleaGame map_configuration, double difficulty){

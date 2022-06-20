@@ -54,8 +54,6 @@ class AStarNode {
 
   private:
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> astar_forward_search(AleaGame game, int limit, double *difficulty, bool banal_solution_found = false, pair<bool, pair<AleaGame, vector<Action>>> banal_search = make_pair(false, make_pair(AleaGame(), vector<Action>())));
-    static long worst_case_brancheable_nodes(int tree_level);
-    static bool setting_up_banal_configuration(pair<AleaGame, std::vector<Action>> banal_configuration, AleaGame &game, double *difficulty);
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> merge_priority_queues(priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source1, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source2);
 };
 

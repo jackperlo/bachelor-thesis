@@ -52,6 +52,8 @@ class AleaGame{
     bool is_valid_starting_configuration_backward_search();
     bool is_valid_ending_configuration_forward_search();
     vector<pair<bool, pair<AleaGame, vector<Action>>>> find_banal_starts_forward_search_wrapper();
+    bool setting_up_banal_configuration(pair<AleaGame, vector<Action>> banal_configuration, double *difficulty, int counter, int banal_search_number);
+    bool banal_start_already_found(pair<AleaGame, vector<Action>> banal_config, vector<pair<bool, pair<AleaGame, vector<Action>>>> banal_config_vector);
 
     static Action revert_action(Action backward_action);
 

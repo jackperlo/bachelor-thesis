@@ -141,12 +141,12 @@ size_t AleaGame::HashFun::operator()(const AleaGame& game) const {
 }
 
 bool AleaGame::operator==(const AleaGame& other) const {
-  for (const auto& elem: other.terminals) {
+  for (auto& elem: other.terminals) {
     if (!is_terminal(elem)) return false;
   }
-  for (auto const& elem : other.dices) {
+  for (auto elem : other.dices) {
     if (!has_dice(elem.first)) return false;
-    if (dices.find(elem.first)->second != elem.second) return false;
+    if (!(*(this->dices.find(elem.first)->second) == elem.second)) return false;
   }
   return true;
 }
@@ -813,8 +813,9 @@ vector<pair<bool, pair<AleaGame, vector<Action>>>> AleaGame::find_banal_starts_f
                 for(Action action : res.second.second)
                   res.second.first.move(action, false);
                 res.first = true;
-                if(!banal_start_already_found(res.second, banal_games))
-                  banal_games.push_back(find_banal_starts_forward_search(res));
+                auto banal_start = find_banal_starts_forward_search(res);
+                if(!banal_start_already_found(banal_start.second, banal_games))
+                  banal_games.push_back(banal_start);                
               }
             }
           }
@@ -824,48 +825,49 @@ vector<pair<bool, pair<AleaGame, vector<Action>>>> AleaGame::find_banal_starts_f
             for(Action action : res.second.second)
               res.second.first.move(action, false);
             res.first = true;
-            if(!banal_start_already_found(res.second, banal_games))
-              banal_games.push_back(find_banal_starts_forward_search(res));
+            auto banal_start = find_banal_starts_forward_search(res);
+            if(!banal_start_already_found(banal_start.second, banal_games))
+              banal_games.push_back(banal_start);
           }
         }
       }
     }
-  }
+  }   
   return banal_games;
 }
 
 pair<bool, pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_search(pair<bool, pair<AleaGame, vector<Action>>> previous_game_actions){
   std::pair<bool, std::pair<AleaGame, vector<Action>>> moves = previous_game_actions;
   for(pair<P2D, Dice*> pair : previous_game_actions.second.first.dices){
-  for(P2D terminal : previous_game_actions.second.first.terminals){ 
-    if(pair.first.manatthan(terminal) == pair.second->getNMoves() && pair.first!=terminal){
-      if(terminal_is_disputed(terminal, previous_game_actions.second.first.dices)){
-        vector<std::pair<P2D, Dice *>> disputer_dices_result = disputer_dices(terminal, moves.second.first.dices);
-        if(!disputed_is_assigned(terminal, disputer_dices_result)){
-          for(std::pair<P2D, Dice*> d : disputer_dices_result){
-            vector<Action> actions;
-            if(find_banal_start_calculate_route(actions, d.first, d.second->getNMoves(), terminal, moves.second.first.dices)){
-              for(Action action : actions){
-                moves.second.first.move(action, false);
-                moves.second.second.push_back(action);
+    for(P2D terminal : previous_game_actions.second.first.terminals){ 
+      if(pair.first.manatthan(terminal) == pair.second->getNMoves() && pair.first!=terminal){
+        if(terminal_is_disputed(terminal, previous_game_actions.second.first.dices)){
+          vector<std::pair<P2D, Dice *>> disputer_dices_result = disputer_dices(terminal, moves.second.first.dices);
+          if(!disputed_is_assigned(terminal, disputer_dices_result)){
+            for(std::pair<P2D, Dice*> d : disputer_dices_result){
+              vector<Action> actions;
+              if(find_banal_start_calculate_route(actions, d.first, d.second->getNMoves(), terminal, moves.second.first.dices)){
+                for(Action action : actions){
+                  moves.second.first.move(action, false);
+                  moves.second.second.push_back(action);
+                }
+                moves = find_banal_starts_forward_search(make_pair(true, make_pair(moves.second.first, moves.second.second)));
               }
-              moves = find_banal_starts_forward_search(make_pair(true, make_pair(moves.second.first, moves.second.second)));
             }
           }
-        }
-      }else{
-        vector<Action> actions;
-        if(find_banal_start_calculate_route(actions, pair.first, pair.second->getNMoves(), terminal, moves.second.first.dices)){
-          for(Action action : actions){
-            moves.second.first.move(action, false);
-            moves.second.second.push_back(action);
+        }else{
+          vector<Action> actions;
+          if(find_banal_start_calculate_route(actions, pair.first, pair.second->getNMoves(), terminal, moves.second.first.dices)){
+            for(Action action : actions){
+              moves.second.first.move(action, false);
+              moves.second.second.push_back(action);
+            }
           }
         }
       }
     }
   }
-}
-return moves;
+  return moves;
 }
 
 bool AleaGame::setting_up_banal_configuration(pair<AleaGame, vector<Action>> banal_configuration, double *difficulty, int counter, int banal_search_number){

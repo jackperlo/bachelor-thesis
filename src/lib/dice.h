@@ -26,6 +26,7 @@ class Dice{
     Dice(Cell position, int nMoves, int initialMoves);
     Dice();
     virtual operator string () = 0;
+    bool operator==(Dice *other_dice);
     void setPosition(Cell position);
     Cell getPosition() const;
     void setNMoves(int nMoves);

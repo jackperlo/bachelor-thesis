@@ -9,6 +9,11 @@ Dice::Dice(Cell position, int nMoves, int initialMoves){
 
 Dice::Dice(){}
 
+bool Dice::operator==(Dice *other_dice){
+  return (this->nMoves == other_dice->getNMoves()) && 
+          (this->getActualTypeInt() == other_dice->getActualTypeInt());
+}
+
 void Dice::setPosition(Cell position){
   this->position = position;
 }

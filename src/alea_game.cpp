@@ -813,7 +813,7 @@ vector<pair<bool, pair<AleaGame, vector<Action>>>> AleaGame::find_banal_starts_f
                 for(Action action : res.second.second)
                   res.second.first.move(action, false);
                 res.first = true;
-                auto banal_start = find_banal_starts_forward_search(res);
+                auto banal_start = find_banal_starts_forward_search(res); //calling the recursive search to find other dice which can be moved banally
                 if(!banal_start_already_found(banal_start.second, banal_games))
                   banal_games.push_back(banal_start);                
               }
@@ -825,7 +825,7 @@ vector<pair<bool, pair<AleaGame, vector<Action>>>> AleaGame::find_banal_starts_f
             for(Action action : res.second.second)
               res.second.first.move(action, false);
             res.first = true;
-            auto banal_start = find_banal_starts_forward_search(res);
+            auto banal_start = find_banal_starts_forward_search(res); //calling the recursive search to find other dice which can be moved banally
             if(!banal_start_already_found(banal_start.second, banal_games))
               banal_games.push_back(banal_start);
           }
@@ -837,7 +837,7 @@ vector<pair<bool, pair<AleaGame, vector<Action>>>> AleaGame::find_banal_starts_f
 }
 
 pair<bool, pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_search(pair<bool, pair<AleaGame, vector<Action>>> previous_game_actions){
-  std::pair<bool, std::pair<AleaGame, vector<Action>>> moves = previous_game_actions;
+  pair<bool, pair<AleaGame, vector<Action>>> moves = previous_game_actions;
   for(pair<P2D, Dice*> pair : previous_game_actions.second.first.dices){
     for(P2D terminal : previous_game_actions.second.first.terminals){ 
       if(pair.first.manatthan(terminal) == pair.second->getNMoves() && pair.first!=terminal){
@@ -846,7 +846,7 @@ pair<bool, pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_s
           if(!disputed_is_assigned(terminal, disputer_dices_result)){
             for(std::pair<P2D, Dice*> d : disputer_dices_result){
               vector<Action> actions;
-              if(find_banal_start_calculate_route(actions, d.first, d.second->getNMoves(), terminal, moves.second.first.dices)){
+              if(find_banal_start_calculate_route(actions, d.first, d.second->getNMoves(), terminal, moves.second.first.dices)){                
                 for(Action action : actions){
                   moves.second.first.move(action, false);
                   moves.second.second.push_back(action);
@@ -903,7 +903,7 @@ bool AleaGame::banal_start_already_found(pair<AleaGame, vector<Action>> banal_co
 bool AleaGame::terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
   int counter = 0;
   for(pair<P2D, Dice*> pair : dices){
-    if(pair.first.manatthan(terminal_position) == pair.second->getNMoves())
+    if(pair.first.manatthan(terminal_position) == pair.second->getNMoves() && pair.first!=terminal_position)
       counter++;
   }
   if(counter>1) 
@@ -914,7 +914,7 @@ bool AleaGame::terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Di
 vector<pair<P2D, Dice *>> AleaGame::disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
   vector<pair<P2D, Dice *>> res;
   for(pair<P2D, Dice*> pair : dices){
-    if(pair.first.manatthan(terminal_position) == pair.second->getNMoves())
+    if(pair.first.manatthan(terminal_position) == pair.second->getNMoves() && pair.first!=terminal_position)
       res.push_back(pair);
   }
   return res;
@@ -930,6 +930,8 @@ bool AleaGame::disputed_is_assigned(P2D terminal, vector<std::pair<P2D, Dice *>>
   return res;
 }
 
+//tells me if the dice (which has manhattan distance from terminal = 0) can move up to the terminal in practical (imagine if there is an obstacles in between and the dice has not
+//enough moves to avoid the obstacle and reach the terminal)
 bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_position, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
   if(dice_moves==0){
     if(dice_position.x == terminal_position.x && dice_position.y == terminal_position.y)

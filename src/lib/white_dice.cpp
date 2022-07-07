@@ -13,9 +13,12 @@ WhiteDice::WhiteDice() : Dice(){}
 
 WhiteDice::WhiteDice(const WhiteDice &wd1) : Dice(wd1){position = wd1.position; nMoves = wd1.nMoves;}
 
-WhiteDice::operator string () {
+string WhiteDice::print_dice_to_string (bool print_with_initial_moves){
   string t = "";
-  t = BGWHT(this->getNMoves());
+  if(!print_with_initial_moves)
+    t = BGWHT(this->getNMoves());
+  else
+    t = BGWHT(this->getInitialMoves());
   return t;
 }
 

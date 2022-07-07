@@ -21,13 +21,13 @@ class AleaGame{
     AleaGame(string filename, bool isBackward, string type = "");
     AleaGame(const AleaGame& game);
 
-    operator string ();
-		friend ostream& operator<<(ostream& out, AleaGame game);
+    static string print_aleagame_to_string (pair<bool, AleaGame> pair);
+		friend ostream& operator<<(ostream& out, pair<bool, AleaGame> pair);
     bool operator==(const AleaGame& other) const;
     AleaGame& operator=(const AleaGame&);
     string read_json(string filename);
 
-    void print(const bool& color=false);
+    void print(const bool& color=false, bool print_init_moves_number = false);
     void show_map();
     static void show_moves(vector<Action> moves);
 

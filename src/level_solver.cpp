@@ -13,7 +13,6 @@ int main(int argc, char *argv[]){
     exit(1);
   }
   
- 
   solution = start_backward_analysis(argv[1]);
   
   if(solution.first.compare("") != 0){
@@ -30,6 +29,7 @@ pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_na
   string level_name = "./custom_level_config/";
   level_name.append(ending_config_file_name);
   AleaGame *backward_game = new AleaGame(level_name, true);
+  cout<<"Starting Configuration (user end)"<<endl;
 	backward_game->print(true);
   return AStarNode::astar_backward_search(*backward_game, BRANCHED_NODES_LIMIT);
 }

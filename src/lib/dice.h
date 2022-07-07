@@ -25,7 +25,7 @@ class Dice{
   public:
     Dice(Cell position, int nMoves, int initialMoves);
     Dice();
-    virtual operator string () = 0;
+    string virtual print_dice_to_string (bool print_with_initial_moves) = 0;
     bool operator==(Dice *other_dice);
     void setPosition(Cell position);
     Cell getPosition() const;

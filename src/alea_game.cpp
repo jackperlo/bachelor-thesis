@@ -116,13 +116,13 @@ void AleaGame::generateMapForExpectedForwardMovements(json json_dict, string typ
 	cout << "================================================" << FGRESET << endl;
 }
 
-AleaGame::operator string () {
+string print_aleagame_to_string (pair<bool, AleaGame> pair) {
   string s = string(3*MAP_WIDTH, ' ') + " \n";
   for (int i = 0; i < MAP_HEIGHT; ++i) {
     for (int j = 0; j < MAP_WIDTH; ++j) {
       P2D pos = P2D(j, i);
-      string d = dices.find(pos) == dices.end() ? BGGRAY : (string) *(dices[pos]);
-      s += terminals.find(pos) == terminals.end() ? " " + d + " " :  "[" + d + "]";
+      string d = pair.second.dices.find(pos) == pair.second.dices.end() ? BGGRAY : (string) (pair.second.dices[pos]->print_dice_to_string(pair.first));
+      s += pair.second.terminals.find(pos) == pair.second.terminals.end() ? " " + d + " " :  "[" + d + "]";
     }
     s += "\n" + string(3*MAP_WIDTH, ' ') + " \n";
   }
@@ -172,8 +172,8 @@ AleaGame& AleaGame::operator=(const AleaGame& game){
   return *this;
 }
 
-ostream& operator<<(ostream& out, AleaGame game) {
-  return out << (string) game;
+ostream& operator<<(ostream& out, pair<bool, AleaGame> pair) {
+  return out << (string) print_aleagame_to_string(pair);
 }
 
 string AleaGame::read_json(string filename) {
@@ -193,9 +193,9 @@ string AleaGame::read_json(string filename) {
 	return json_text;
 }
 
-void AleaGame::print(const bool& color) {
+void AleaGame::print(const bool& color, bool print_init_moves_number) {
   if (color) {
-    cout << *this << endl;
+    cout << make_pair(print_init_moves_number, *this) << endl;
     return;
   }
   string s = "";
@@ -208,7 +208,10 @@ void AleaGame::print(const bool& color) {
         else if(dices[pos]->getActualType().compare("RedDice") == 0) d = "R";
         else if(dices[pos]->getActualType().compare("YellowDice") == 0) d = "Y";
         else if(dices[pos]->getActualType().compare("GreenDice") == 0) d = "G";
-        d += "(" + to_string(dices[pos]->getNMoves()) + ")";
+        if(!print_init_moves_number)
+          d += "(" + to_string(dices[pos]->getNMoves()) + ")";
+        else
+          d += "(" + to_string(dices[pos]->getInitialMoves()) + ")";
       } 
       s += terminals.find(pos) == terminals.end() ? "." + d + "." :  "[" + d + "]";
     }

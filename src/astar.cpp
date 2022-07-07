@@ -54,7 +54,8 @@ pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int
     open_set.erase(current_node);
     closed.insert(current_node->game);
     if (current_node->game.is_valid_starting_configuration_backward_search()) {
-      current_node->game.print(true);
+      cout<<"Configuration Found (user start): "<<endl;
+      current_node->game.print(true, true);
       res.first = printLevel(current_node->game, current_node->f);
       while (current_node->parent != NULL) {
         res.second.push_back(AleaGame::revert_action(current_node->action));
@@ -189,6 +190,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   cout << "Evaluated:" << evaluated_moves << endl;
   cout << "Skipped:"<< skipped_moves << endl;
   cout << "Branched:"<< branched_nodes << endl<<endl;
+
   return res;
 }
 

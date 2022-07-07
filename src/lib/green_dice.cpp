@@ -17,9 +17,12 @@ GreenDice::GreenDice() : Dice(){}
 
 GreenDice::GreenDice(const GreenDice &gd1) : Dice(gd1){position = gd1.position; nMoves = gd1.nMoves;}
 
-GreenDice::operator string () {
+string GreenDice::print_dice_to_string (bool print_with_initial_moves) {
   string t = "";
-  t = BGGRE(this->getNMoves());
+  if(!print_with_initial_moves)
+    t = BGGRE(this->getNMoves());
+  else
+    t = BGGRE(this->getInitialMoves());
   return t;
 }
 

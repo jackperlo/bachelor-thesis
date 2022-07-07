@@ -9,7 +9,7 @@ class GreenDice : public Dice{
   public:
     GreenDice(Cell position, int nMoves, int initialMoves);
     GreenDice();
-    operator string () override;
+    string print_dice_to_string (bool print_with_initial_moves) override;
     GreenDice(const GreenDice &gd1); //copying constructor, invoked in situation as: GreenDice gd1 = gd2.
     string getActualType() override;
     int getActualTypeInt() override;

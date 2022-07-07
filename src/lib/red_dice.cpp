@@ -13,9 +13,12 @@ RedDice::RedDice() : Dice(){}
 
 RedDice::RedDice(const RedDice &rd1) : Dice(rd1){position = rd1.position; nMoves = rd1.nMoves;}
 
-RedDice::operator string () {
+string RedDice::print_dice_to_string (bool print_with_initial_moves){
   string t = "";
-  t = BGRED(this->getNMoves());
+  if(!print_with_initial_moves)
+    t = BGRED(this->getNMoves());
+  else
+    t = BGRED(this->getInitialMoves());
   return t;
 }
 

@@ -13,9 +13,12 @@ YellowDice::YellowDice() : Dice(){}
 
 YellowDice::YellowDice(const YellowDice &yd1) : Dice(yd1){position = yd1.position; nMoves = yd1.nMoves;}
 
-YellowDice::operator string () {
+string YellowDice::print_dice_to_string (bool print_with_initial_moves){
   string t = "";
-  t = BGYEL(this->getNMoves());
+  if(!print_with_initial_moves)
+    t = BGYEL(this->getNMoves());
+  else
+    t = BGYEL(this->getInitialMoves());
   return t;
 }
 

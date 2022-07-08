@@ -1,3 +1,8 @@
+/**
+  This contains the A* Backward algorithm and the A* Forward algorithm
+  @file astar.h astar.cpp
+  @authors Polato Mirko, Giacomo Perlo
+*/
 #include "astar.h"
 #include <string>
 #include <iomanip>
@@ -36,6 +41,25 @@ bool AStarNode::CompareFunSolutionsForward:: operator() (pair<vector<Action>, do
   return solution1.second > solution2.second; //ordering priority queue as a min-heap
 }
 
+/**
+  This algorithm is deep search based and explores the tree developing from the root node(= @game):
+  for each node it checks if it's a valid starting configuration(user pov), if so returns;
+  otherwise it computes the possible moves backward and, for each one, it creates a child node
+  making that move.
+
+  The nodes are stored in a priority queue ordered as a Max-Heap, comparing them on their f(n) value.
+  Note that, f(n) = g(n) + h(n), where:
+    - g(n) = sum, from root_node up to this_node, of the interactions occured between dices which moved
+            (see common.h which contains the movement weights)
+    - f(n) = next move weight (from the "possible moves backwards" bundle)
+
+  Being a backward search, when a valid starting configuration is found, the moves to do are reverted
+  so that can be used to show (forward: starting config->ending config) how A* got the solution
+  @param game AleaGame instance based on ending configuration specified in its .json file
+  @param limit maximum number of branched nodes astar can explore.
+  @return returns the .json file which contains the starting configuration(user pov), and the vector of moves to
+          astar used to get from ending config->starting config (reversed).
+*/
 pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int limit) {
   pair<string, vector<Action>> res;
   priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunBackward> open;
@@ -93,35 +117,79 @@ pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int
   return res;
 }
 
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_wrapper(AleaGame original_game, int limit) {
+/**
+  This is a wrapper for the A* forward algorithm which obtains the banal starting configurations 
+  (these are derivied by sequences of "banal" moves: dices which has manhattan distance from 
+  a terminal equal to the number of their available moves).
+
+  Once obtained all the banal configurations possible, it calls the A* forward algorithm starting 
+  from each one of them. After that, if no solution has been found (starting from banal
+  configurations) it calls A* forward starting from @original_game.
+  Note that it's looking for the easier solutions, so if it find one (or more) solution starting 
+  from a banal configuration then it will be way easier than a solution starting from @original_game; 
+  so it can consider to avoid A* forward starting from @original_game in this case, saving time and 
+  resources.
+
+  Since more than a solution can be found, every time A* forward is called and returns one (or more) 
+  solutions, the old priorty queue (which contains the solutions found so far) must be merged with 
+  the one returned by A* (containing the new solution(s)).
+  @param original_game AleaGame instance based on starting configuration specified in its .json file 
+          previously found by A* backward search
+  @param limit maximum number of branched nodes astar can explore.
+  @return a priority queue containing pairs (each pair corresponds to a solution found) composed by:
+          a vector of moves (to get from starting config->ending config(=solution)) 
+          and the difficulty calculated for that solution
+*/
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_search(AleaGame original_game, int limit) {
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> tmp;
   double difficulty = 0.00;
   
-  vector<pair<bool, pair<AleaGame, vector<Action>>>> banal_search_results = original_game.find_banal_starts_forward_search_wrapper();
+  vector<pair<AleaGame, vector<Action>>> banal_search_results = original_game.find_banal_starts_forward_search_wrapper();
   int i=1;
-  for(pair<bool, pair<AleaGame, vector<Action>>> banal_search : banal_search_results){
-    if(banal_search.first){
-      AleaGame new_game = original_game;
-      if(new_game.setting_up_banal_configuration(banal_search.second, &difficulty, i, banal_search_results.size()))
-        res.push(make_pair(banal_search.second.second, difficulty));
-      
-      tmp = astar_forward_search(new_game, limit, &difficulty, banal_search.first, banal_search);
-      res = merge_priority_queues(res, tmp);
-      if(res.size() > 0)
-        return res;
-      i++;
-    }
+  for(pair<AleaGame, vector<Action>> banal_search : banal_search_results){
+    AleaGame new_game = original_game;
+    if(new_game.setting_up_banal_configuration(banal_search, &difficulty, i, banal_search_results.size()))
+      res.push(make_pair(banal_search.second, difficulty));
+    
+    tmp = astar_forward(new_game, limit, &difficulty, banal_search);
+    if(tmp.size() > 0) res = merge_priority_queues(res, tmp);
+    if(res.size() > 0) return res;
+    
+    i++;
   }
   if(res.size() == 0){
-    tmp = astar_forward_search(original_game, limit, &difficulty);
+    tmp = astar_forward(original_game, limit, &difficulty);
     res = merge_priority_queues(res, tmp);
   }
 
   return res;
 }
 
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_search(AleaGame game, int limit, double *difficulty, bool banal_solution_found, pair<bool, pair<AleaGame, vector<Action>>> banal_search){
+/**
+  This algorithm is deep search based and explores the tree developing from the root node(= @game):
+  for each node it checks if it's a valid ending configuration(user pov), if so returns;
+  otherwise it computes the possible moves forward and, for each one, it creates a child node
+  making that move.
+
+  The nodes are stored in a priority queue ordered as a Min-Heap, comparing them on their f(n) value.
+  Note that, f(n) = g(n) + h(n), where:
+    - g(n) = sum, from root_node up to this_node, of the interactions occured between dices which moved
+            (see common.h which contains the movement weights)
+    - f(n) = next move weight (from the "possible moves backwards" bundle)
+
+  If the node considered is a valid ending configuration it mixes in a proper way the banal moves 
+  computed before (if presents) and the moves computed by A* forward to reach the ending configuration
+  @param game AleaGame instance prepared and passed by the wrapper (astar_forward_search)
+  @param limit maximum number of branched nodes astar can explore.
+  @param difficulty number which rapresents level difficulty. Initialized (=0) by the wrapper 
+  @param banal_search banal configurations found by the wrapper: 
+                      starting configuration and list of moves detected, for each
+  @return a priority queue containing pairs (each pair corresponds to a solution found) composed by:
+          a vector of moves (to get from starting config->ending config(=solution)) 
+          and the difficulty calculated for that solution
+*/
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward(AleaGame game, int limit, double *difficulty, pair<AleaGame, vector<Action>> banal_search){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
   priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> open;
   unordered_set<AStarNode*, AStarNode::HashFun> open_set;
@@ -139,28 +207,23 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     open.pop();
     open_set.erase(current_node);
     closed.insert(current_node->game);
-    if(banal_solution_found) banal_solution_found = false;
-    else{
-      if (current_node->game.is_valid_ending_configuration_forward_search()){
-        pair<vector<Action>, double> solution;
-        while (current_node->parent != NULL) {
-          solution.first.push_back(current_node->action);
-          solution.second += current_node->f;
-          current_node = current_node->parent;
-        }
-        reverse(solution.first.begin(), solution.first.end());
-        if(banal_search.first){
-          int offset = 0;
-          for(Action move : banal_search.second.second){
-            solution.first.insert(solution.first.begin()+offset, move);
-            solution.second += move.weight;
-            offset++;
-          }
-        }
-        cout<<"\nAStar Forward: New Solution Found!\n";
-        res.push(solution);
-        continue;
+    if (current_node->game.is_valid_ending_configuration_forward_search()){
+      pair<vector<Action>, double> solution;
+      while (current_node->parent != NULL) {
+        solution.first.push_back(current_node->action);
+        solution.second += current_node->f;
+        current_node = current_node->parent;
       }
+      reverse(solution.first.begin(), solution.first.end());
+      int offset = 0;
+      for(Action move : banal_search.second){
+        solution.first.insert(solution.first.begin()+offset, move);
+        solution.second += move.weight;
+        offset++;
+      }
+      cout<<"\nAStar Forward: New Solution Found!\n";
+      res.push(solution);
+      continue;
     }
     vector<Action> actions = current_node->game.possible_moves_forward();
     for (Action action : actions) {
@@ -194,6 +257,15 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   return res;
 }
 
+
+/**
+  Prints the configuration found by A* backwards in a .json file in generated_levels folder.
+  This file are the starting level from which a user could start to play.
+  @param map_configuration AleaGame instance prepared and passed by A* backwards
+  @param difficulty number which rapresents level difficulty. Initialized (=0) by the wrapper 
+  @return a string containing the path to reach the level just generated (so that can be used
+          by level_solver.cpp to do forward search)
+*/
 string AStarNode::printLevel(AleaGame map_configuration, double difficulty){
   json level, dice, terminal;
   level["columns"] = MAP_WIDTH;
@@ -225,6 +297,13 @@ string AStarNode::printLevel(AleaGame map_configuration, double difficulty){
   return "generated_levels/level_" + string(to_print) + "_" + to_string(time(nullptr)) + ".json";
 }
 
+/**
+  Returns a priority queue which is the mix of the two passed as parameter
+  @param source1 priority queue containing pairs of moves and related difficulty(for each one)
+  @param source2 priority queue containing pairs of moves and related difficulty(for each one)
+  @return a priority queue which is the mix of @source1 and @sourc2, 
+          containing pairs of moves and related difficulty(for each one)
+*/
 priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::merge_priority_queues(priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source1, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source2){
   while (!source2.empty()){
     source1.push(source2.top());

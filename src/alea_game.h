@@ -51,9 +51,9 @@ class AleaGame{
     int remaining_moves() const;
     bool is_valid_starting_configuration_backward_search();
     bool is_valid_ending_configuration_forward_search();
-    vector<pair<bool, pair<AleaGame, vector<Action>>>> find_banal_starts_forward_search_wrapper();
+    vector<pair<AleaGame, vector<Action>>> find_banal_starts_forward_search_wrapper();
     bool setting_up_banal_configuration(pair<AleaGame, vector<Action>> banal_configuration, double *difficulty, int counter, int banal_search_number);
-    bool banal_start_already_found(pair<AleaGame, vector<Action>> banal_config, vector<pair<bool, pair<AleaGame, vector<Action>>>> banal_config_vector);
+    bool banal_start_already_found(pair<AleaGame, vector<Action>> banal_config, vector<pair<AleaGame, vector<Action>>> banal_config_vector);
 
     static Action revert_action(Action backward_action);
 
@@ -72,7 +72,7 @@ class AleaGame{
     static bool terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static vector<pair<P2D, Dice *>> disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static bool disputed_is_assigned(P2D terminal, vector<std::pair<P2D, Dice *>> disputer_dices);
-    pair<bool, pair<AleaGame, vector<Action>>> find_banal_starts_forward_search(pair<bool, pair<AleaGame, vector<Action>>> previous_game_actions);
+    pair<AleaGame, vector<Action>> find_banal_starts_forward_search(pair<AleaGame, vector<Action>> previous_game_actions);
 };
 
 #endif

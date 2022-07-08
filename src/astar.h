@@ -1,3 +1,8 @@
+/**
+  This contains the A* Backward algorithm and the A* Forward algorithm
+  @file astar.h astar.cpp
+  @authors Polato Mirko, Giacomo Perlo
+*/
 #ifndef ASTAR_H
 #define ASTAR_H
 
@@ -49,11 +54,11 @@ class AStarNode {
     };
 
     static pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit=numeric_limits<int>::max());
+    static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> astar_forward_search(AleaGame original_game, int limit=numeric_limits<int>::max());   
     static string printLevel(AleaGame map_configuration, double difficulty);
-    static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> astar_forward_wrapper(AleaGame original_game, int limit=numeric_limits<int>::max());   
 
   private:
-    static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> astar_forward_search(AleaGame game, int limit, double *difficulty, bool banal_solution_found = false, pair<bool, pair<AleaGame, vector<Action>>> banal_search = make_pair(false, make_pair(AleaGame(), vector<Action>())));
+    static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> astar_forward(AleaGame game, int limit, double *difficulty, pair<AleaGame, vector<Action>> banal_search = make_pair(AleaGame(), vector<Action>()));
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> merge_priority_queues(priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source1, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source2);
 };
 

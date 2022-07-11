@@ -302,7 +302,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
     if(c.get_x() == x-1 && last_action_performed.dir != P2D::RIGHT && last_action_performed.dir != P2D::JUMPING_RIGHT){
-      res = dice->reverse_move("LEFT", dices, __func__, true); 
+      res = dice->reverse_move("left", dices, __func__, true); 
       if(res.first){ 
         if(res.second == 1) 
           moves.push_back(Action(P2D(x, y), P2D::LEFT, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::LEFT)); 
@@ -313,7 +313,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
       }      
     }
     if(c.get_x() == x+1 && last_action_performed.dir != P2D::LEFT && last_action_performed.dir != P2D::JUMPING_LEFT){
-      res = dice->reverse_move("RIGHT", dices, __func__, true);
+      res = dice->reverse_move("right", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
           moves.push_back(Action(P2D(x, y), P2D::RIGHT, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::RIGHT)); 
@@ -373,11 +373,11 @@ void AleaGame::red_dice_possible_moves_backward(Dice *dice, vector<Action> &move
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
     if(c.get_x() == x-1  && last_action_performed.dir != P2D::RIGHT){
-      res = dice->reverse_move("LEFT", dices, __func__, true);
+      res = dice->reverse_move("left", dices, __func__, true);
       if(res.first) moves.push_back(Action(P2D(x, y), P2D::LEFT, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::LEFT));      
     }
     if(c.get_x() == x+1 && last_action_performed.dir != P2D::LEFT){
-      res = dice->reverse_move("RIGHT", dices, __func__, true);
+      res = dice->reverse_move("right", dices, __func__, true);
       if(res.first) moves.push_back(Action(P2D(x, y), P2D::RIGHT, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::RIGHT));      
     }
     if(c.get_y() == y-1 && last_action_performed.dir != P2D::DOWN){
@@ -416,7 +416,7 @@ void AleaGame::white_dice_possible_moves_backward(Dice *dice, vector<Action> &mo
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
     if(c.get_x() == x-1 && last_action_performed.dir != P2D::RIGHT){
-      res = dice->reverse_move("LEFT", dices, __func__, true);
+      res = dice->reverse_move("left", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
           moves.push_back(Action(P2D(x, y), P2D::LEFT, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::LEFT));
@@ -425,7 +425,7 @@ void AleaGame::white_dice_possible_moves_backward(Dice *dice, vector<Action> &mo
       }
     }
     if(c.get_x() == x+1 && last_action_performed.dir != P2D::LEFT){
-      res = dice->reverse_move("RIGHT", dices, __func__, true);
+      res = dice->reverse_move("right", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
           moves.push_back(Action(P2D(x, y), P2D::RIGHT, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::RIGHT));
@@ -489,7 +489,7 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
     pair<bool, int> res = NO_MOVE;
     if((c.get_x() == x-1 || x == 0) && last_action_performed.dir != P2D::LEFT){ // left one occupied/boundary, then could move right
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
-        res = dice->reverse_move("RIGHT", dices, __func__, true, SIMPLE_MOVE);
+        res = dice->reverse_move("right", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
@@ -498,14 +498,14 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
           }
         }
       }else{
-        res = dice->reverse_move("LEFT", dices, __func__, true, SIMPLE_MOVE);
+        res = dice->reverse_move("left", dices, __func__, true, SIMPLE_MOVE);
         if(res.first)
           moves.push_back(Action(P2D(x, y), P2D(-res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x-res.second, y)));
       }
     }
     if((c.get_x() == x+1 || x == MAP_WIDTH-1) && last_action_performed.dir != P2D::RIGHT){ //right one occupied/boundary, then could move left 
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
-        res = dice->reverse_move("LEFT", dices, __func__, true, SIMPLE_MOVE);
+        res = dice->reverse_move("left", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
@@ -514,7 +514,7 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
           }
         }
       }else{
-        res = dice->reverse_move("RIGHT", dices, __func__, true, SIMPLE_MOVE);
+        res = dice->reverse_move("right", dices, __func__, true, SIMPLE_MOVE);
         if(res.first)
           moves.push_back(Action(P2D(x, y), P2D(res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x+res.second, y)));
       }
@@ -573,12 +573,12 @@ void AleaGame::green_dice_possible_moves_being_pushed_backward(Dice *dice, vecto
   int x = dice->get_position().get_x(), y = dice->get_position().get_y();
 
   if(x>0 && last_action_performed.dir != P2D::RIGHT){ //check if can have been pushed from left
-    pair<bool, int> res = dices.at(P2D(x,y))->reverse_move("LEFT", dices, __func__, true, PUSHED_MOVE);
+    pair<bool, int> res = dices.at(P2D(x,y))->reverse_move("left", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
       moves.push_back(Action(P2D(x, y), P2D::LEFT, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x-res.second, y)));
   }
   if(x+1<MAP_WIDTH && last_action_performed.dir != P2D::LEFT){ //check if can have been pushed from right
-    pair<bool, int> res = dices.at(P2D(x,y))->reverse_move("RIGHT", dices, __func__, true, PUSHED_MOVE);
+    pair<bool, int> res = dices.at(P2D(x,y))->reverse_move("right", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
       moves.push_back(Action(P2D(x, y), P2D::RIGHT, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x+res.second, y))); 
   }
@@ -594,6 +594,11 @@ void AleaGame::green_dice_possible_moves_being_pushed_backward(Dice *dice, vecto
   }
 }
 
+/**
+  this analyzes, for each dice, the possible moves which could be done Forward
+  @return a vector of legal action formed by:
+         <from_position, to_position, move_weight, move_type>
+*/
 vector<Action> AleaGame::possible_moves_forward() {
   vector<Action> moves;
   for (auto const& pair: dices) {
@@ -612,6 +617,20 @@ vector<Action> AleaGame::possible_moves_forward() {
   return moves;
 }
 
+/**
+  this is reached if the current dice analyzed is WHITE; the legal forward actions 
+  are added to @moves vector.
+
+  For every direction(up, down, left, right) the action is simulated(doesn't really modify current
+  dice position neither number of moves available). If the response is that the action could be done, 
+  then is added to moves vector. 
+
+  Note that a heuristic excludes the moves which brings the dice too far (((nMoves-1)*2)+1) 
+  from closer terminal. Basically if the dice cannot reach the closer terminal anymore, the
+  game would fail, so we exclude that kind of moves.
+  @param dice the considered dice
+  @param moves vector of actions passed by reference 
+*/  
 void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &moves){
   int x = dice->get_position().get_x(), y = dice->get_position().get_y();
   double distance_from_closer_terminal_after_move = 0.00;
@@ -623,7 +642,7 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
     if(c.get_x() == x-1){
-      res = dice->move("LEFT", dices, __func__, true);
+      res = dice->move("left", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::LEFT);
         if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
@@ -635,7 +654,7 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       }
     }
     if(c.get_x() == x+1){
-      res = dice->move("RIGHT", dices, __func__, true);
+      res = dice->move("right", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::RIGHT);
         if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
@@ -673,6 +692,20 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
   }
 }
 
+/**
+  this is reached if the current dice analyzed is RED; the legal forward actions 
+  are added to @moves vector.
+
+  For every direction(up, down, left, right) the action is simulated(doesn't really modify current
+  dice position neither number of moves available). If the response is that the action could be done, 
+  then is added to moves vector. 
+
+  Note that a heuristic excludes the moves which brings the dice too far (nMoves-1)
+  from closer terminal. Basically if the dice cannot reach the closer terminal anymore, the
+  game would fail, so we exclude that kind of moves.
+  @param dice the considered dice
+  @param moves vector of actions passed by reference 
+*/  
 void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves){
   int x = dice->get_position().get_x(), y = dice->get_position().get_y();
   double distance_from_closer_terminal_after_move = 0.00;
@@ -684,7 +717,7 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
     if(c.get_x() == x-1){
-      res = dice->move("LEFT", dices, __func__, true);
+      res = dice->move("left", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::LEFT);
         if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
@@ -696,7 +729,7 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
       } 
     }
     if(c.get_x() == x+1){
-      res = dice->move("RIGHT", dices, __func__, true);
+      res = dice->move("right", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D::RIGHT);
         if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
@@ -734,6 +767,19 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
   }
 }
 
+
+/**
+  this is reached if the current dice analyzed is YELLOW; the legal forward actions 
+  are added to @moves vector.
+
+  For every direction(up, down, left, right) the action is simulated(doesn't really modify current
+  dice position neither number of moves available). If the response is that the action could be done, 
+  then is added to moves vector. 
+
+  No suitable heuristics have been found so far
+  @param dice the considered dice
+  @param moves vector of actions passed by reference 
+*/  
 void AleaGame::yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &moves){
   int x = dice->get_position().get_x(), y = dice->get_position().get_y();
   vector<Cell> cells;
@@ -744,7 +790,7 @@ void AleaGame::yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &mo
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
     if(c.get_x() == x-1){
-      res = dice->move("LEFT", dices, __func__, true);
+      res = dice->move("left", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
           moves.push_back(Action(P2D(x, y), P2D::LEFT, SIMPLE_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::LEFT), SIMPLE_MOVE)); 
@@ -753,7 +799,7 @@ void AleaGame::yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &mo
       }      
     }
     if(c.get_x() == x+1){
-      res = dice->move("RIGHT", dices, __func__, true);
+      res = dice->move("right", dices, __func__, true);
       if(res.first){
         if(res.second == 1) 
           moves.push_back(Action(P2D(x, y), P2D::RIGHT, SIMPLE_MOVE_FORWARD_WEIGHT+calculate_distance_from_closer_terminal(P2D(x, y)+P2D::RIGHT), SIMPLE_MOVE)); 
@@ -782,6 +828,18 @@ void AleaGame::yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &mo
   }
 }
 
+/**
+  this is reached if the current dice analyzed is GREEN; the legal forward actions 
+  are added to @moves vector.
+
+  For every direction(up, down, left, right) the action is simulated(doesn't really modify current
+  dice position neither number of moves available). If the response is that the action could be done, 
+  then is added to moves vector. 
+
+  No suitable heuristics have been found so far
+  @param dice the considered dice
+  @param moves vector of actions passed by reference 
+*/  
 void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &moves){
   int x = dice->get_position().get_x(), y = dice->get_position().get_y();
   double distance_from_closer_terminal_after_move = 0.00;
@@ -793,14 +851,14 @@ void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
     if(c.get_x() == x-1){
-      res = dice->move("LEFT", dices, __func__, true);
+      res = dice->move("left", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D(x-res.second, 0));
         moves.push_back(Action(P2D(x, y), P2D::LEFT, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second)+distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
       }
     }
     if(c.get_x() == x+1){
-      res = dice->move("RIGHT", dices, __func__, true);
+      res = dice->move("right", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y)+P2D(x+res.second, 0));
         moves.push_back(Action(P2D(x, y), P2D::RIGHT, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second)+distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
@@ -823,27 +881,35 @@ void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
   }
 }
 
-bool AleaGame::move(const Action& action, bool isMovingBackward) {
-  return move(action.from, action.dir, action.movement_type, isMovingBackward);
+bool AleaGame::move(const Action& action, bool is_moving_backward) {
+  return move(action.from, action.dir, action.movement_type, is_moving_backward);
 }
 
-bool AleaGame::move(const P2D pos, const P2D dir, const int movement_type, bool isMovingBackward) {
+/**
+  this method manages the move of the dice in position @pos
+  @param pos position of the dice to be moved
+  @param dir direction of move
+  @param movement_type simple, jumping, pushed move
+  @param is_moving_backward if the move is backward (true), or forward (false)
+  @return true, if the move has been successful
+*/  
+bool AleaGame::move(const P2D pos, const P2D dir, const int movement_type, bool is_moving_backward) {
   if(dices.find(pos) != dices.end()){
     Dice *dice = dices[pos];
-    if(isMovingBackward){
+    if(is_moving_backward){
       if(dir.x<0)
-        return dice->reverse_move("LEFT", dices, __func__, false, movement_type).first;
+        return dice->reverse_move("left", dices, __func__, false, movement_type).first;
       else if(dir.x>0)
-        return dice->reverse_move("RIGHT", dices, __func__, false, movement_type).first;
+        return dice->reverse_move("right", dices, __func__, false, movement_type).first;
       else if(dir.y>0)
         return dice->reverse_move("down", dices, __func__, false, movement_type).first;
       else if(dir.y<0)
         return dice->reverse_move("up", dices, __func__, false, movement_type).first;
     }else{
       if(dir.x<0)
-        return dice->move("LEFT", dices, __func__, false, movement_type).first;
+        return dice->move("left", dices, __func__, false, movement_type).first;
       else if(dir.x>0)
-        return dice->move("RIGHT", dices, __func__, false, movement_type).first;
+        return dice->move("right", dices, __func__, false, movement_type).first;
       else if(dir.y>0)
         return dice->move("down", dices, __func__, false, movement_type).first;
       else if(dir.y<0)
@@ -851,61 +917,6 @@ bool AleaGame::move(const P2D pos, const P2D dir, const int movement_type, bool 
     }
   }
   return false;
-}
-
-double AleaGame::calculate_distance_from_closer_terminal(P2D dice_position){
-  double distance = 0.00;
-  for(auto terminal : terminals)
-    distance = MIN(distance, dice_position.manatthan(P2D(terminal.x, terminal.y)));
-  return distance/100;
-}
-
-bool AleaGame::is_valid_starting_configuration_backward_search() {
-  for(auto pair: dices) {
-    if (pair.second->get_n_moves() > 0)
-      return false;
-  }
-  return true;
-}
-
-bool AleaGame::is_valid_ending_configuration_backward_search() {
-  for(auto const& dice: dices) {
-    if (!is_terminal(dice.first) || dice.second->get_n_moves() <= 0) return false;
-  }
-  return true;
-}
-
-bool AleaGame::is_valid_ending_configuration_forward_search() {
-  for(auto pair: dices) {
-    if (pair.second->get_n_moves() > 0 || !is_terminal(pair.first))
-      return false;
-  }
-  return true;
-}
-
-bool AleaGame::is_terminal(const P2D& pos) const {
-  return terminals.find(pos) != terminals.end();
-}
-
-bool AleaGame::has_dice(const P2D& pos) const {
-    return dices.find(pos) != dices.end();
-}
-
-Action AleaGame::revert_action(Action backward_action){
-  return Action(backward_action.head, P2D(backward_action.dir.x*-1, backward_action.dir.y*-1), backward_action.weight, backward_action.movement_type);
-}
-
-void AleaGame::show_map(){
-  cout << "\n";
-  for(auto d : dices){
-    cout << d.second->get_actual_type() << ": (" << d.second->get_position().get_x() << ", " << d.second->get_position().get_y() << ")\n";
-  }
-  cout << "\n";
-}
-
-void AleaGame::show_moves(vector<Action> moves){
-  for(auto m : moves)
-    cout << "\nfrom: " << m.from << " | dir: " << m.dir << "\n";
 }
 
 //BANAL: means the terminal-dice distance is equal to nMoves
@@ -1152,4 +1163,59 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, P2D dice_
   }
   
   return false;
+}
+
+double AleaGame::calculate_distance_from_closer_terminal(P2D dice_position){
+  double distance = 0.00;
+  for(auto terminal : terminals)
+    distance = MIN(distance, dice_position.manatthan(P2D(terminal.x, terminal.y)));
+  return distance/100;
+}
+
+bool AleaGame::is_valid_starting_configuration_backward_search() {
+  for(auto pair: dices) {
+    if (pair.second->get_n_moves() > 0)
+      return false;
+  }
+  return true;
+}
+
+bool AleaGame::is_valid_ending_configuration_backward_search() {
+  for(auto const& dice: dices) {
+    if (!is_terminal(dice.first) || dice.second->get_n_moves() <= 0) return false;
+  }
+  return true;
+}
+
+bool AleaGame::is_valid_ending_configuration_forward_search() {
+  for(auto pair: dices) {
+    if (pair.second->get_n_moves() > 0 || !is_terminal(pair.first))
+      return false;
+  }
+  return true;
+}
+
+bool AleaGame::is_terminal(const P2D& pos) const {
+  return terminals.find(pos) != terminals.end();
+}
+
+bool AleaGame::has_dice(const P2D& pos) const {
+    return dices.find(pos) != dices.end();
+}
+
+Action AleaGame::revert_action(Action backward_action){
+  return Action(backward_action.head, P2D(backward_action.dir.x*-1, backward_action.dir.y*-1), backward_action.weight, backward_action.movement_type);
+}
+
+void AleaGame::show_map(){
+  cout << "\n";
+  for(auto d : dices){
+    cout << d.second->get_actual_type() << ": (" << d.second->get_position().get_x() << ", " << d.second->get_position().get_y() << ")\n";
+  }
+  cout << "\n";
+}
+
+void AleaGame::show_moves(vector<Action> moves){
+  for(auto m : moves)
+    cout << "\nfrom: " << m.from << " | dir: " << m.dir << "\n";
 }

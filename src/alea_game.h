@@ -49,8 +49,8 @@ class AleaGame{
     void red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves);
     void yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &moves);
 
-    bool move(const Action& action, bool isMovingBackward);
-		bool move(const P2D pos, const P2D dir, const int isPushed, bool isMovingBackward);
+    bool move(const Action& action, bool is_moving_backward);
+		bool move(const P2D pos, const P2D dir, const int isPushed, bool is_moving_backward);
     
     int remaining_moves() const;
     bool is_valid_starting_configuration_backward_search();

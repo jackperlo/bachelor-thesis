@@ -82,7 +82,7 @@ void print_expected_forward_solution(pair<string, vector<Action>> solution){
 void playGamePrinter(AleaGame game, vector<Action> actions){
   game.print(true);
   for (Action action : actions) {
-    cout<<"moving from: "<<action.from<<" | dir: "<<action.dir<<" | weight: "<<action.weight<<" | moveType: "<<action.movementType<<"\n\n"; 
+    cout<<"moving from: "<<action.from<<" | dir: "<<action.dir<<" | weight: "<<action.weight<<" | moveType: "<<action.movement_type<<"\n\n"; 
     if(!game.move(action, false)){
       cout<<"\nlevel_solver.cpp:playGamePrinter: Error while moving from: "<<action.from<<" | dir: "<<action.dir<<"Exiting.\n"; 
       exit(1);

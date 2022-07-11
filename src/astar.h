@@ -1,7 +1,7 @@
 /**
   This contains the A* Backward algorithm and the A* Forward algorithm
   @file astar.h astar.cpp
-  @authors Polato Mirko, Giacomo Perlo
+  @authors Mirko Polato, Giacomo Perlo
 */
 #ifndef ASTAR_H
 #define ASTAR_H

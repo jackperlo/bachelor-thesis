@@ -33,23 +33,23 @@ class P2D {
 		};
 
 		static const P2D UP;
-		static const P2D DX;
+		static const P2D RIGHT;
 		static const P2D DOWN;
-		static const P2D SX;
+		static const P2D LEFT;
     static const P2D JUMPING_UP;
-		static const P2D JUMPING_DX;
+		static const P2D JUMPING_RIGHT;
 		static const P2D JUMPING_DOWN;
-		static const P2D JUMPING_SX;
+		static const P2D JUMPING_LEFT;
     static const P2D null_p2d;
 };
 
 struct Action {
 	P2D from, dir, head;
 	double weight;
-	int movementType; //0->activeMove, 1->pushedMove, 2->jumpingMove
+	int movement_type; //0->activeMove, 1->pushedMove, 2->jumpingMove
     
 	Action();
-	Action(P2D from, P2D dir, double weight = 0.00, int movementType = 0, P2D head = P2D::null_p2d);
+	Action(P2D from, P2D dir, double weight = 0.00, int movement_type = 0, P2D head = P2D::null_p2d);
 	friend ostream& operator<<(ostream& out, Action act);
 
   static const Action null_action;

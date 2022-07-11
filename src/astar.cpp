@@ -1,7 +1,7 @@
 /**
   This contains the A* Backward algorithm and the A* Forward algorithm
   @file astar.h astar.cpp
-  @authors Polato Mirko, Giacomo Perlo
+  @authors Mirko Polato, Giacomo Perlo
 */
 #include "astar.h"
 #include <string>
@@ -91,7 +91,7 @@ pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int
     for (Action action : actions) {
       AleaGame new_game = AleaGame(current_node->game);
       if(!new_game.move(action, true)){
-        cout<<"\nastar.cpp:astar_backward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movementType<<", head:"<<action.head<<"\nExiting.\n"; 
+        cout<<"\nastar.cpp:astar_backward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movement_type<<", head:"<<action.head<<"\nExiting.\n"; 
         exit(1);
       }
       new_game.last_action_performed = action;
@@ -229,7 +229,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     for (Action action : actions) {
       AleaGame new_game = AleaGame(current_node->game);
       if(!new_game.move(action, false)){
-        cout<<"\nastar.cpp:astar_forward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movementType<<", head:"<<action.head<<"\nExiting.\n"; 
+        cout<<"\nastar.cpp:astar_forward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movement_type<<", head:"<<action.head<<"\nExiting.\n"; 
         exit(1);
       }
       if (closed.find(new_game) != closed.end()) {
@@ -283,10 +283,10 @@ string AStarNode::printLevel(AleaGame map_configuration, double difficulty){
   }
 
   for(pair<P2D, Dice *> d : map_configuration.dices){
-    dice["num"] = d.second->getInitialMoves();
-    dice["type"] = d.second->getActualTypeInt(); 
-    dice["x"] = d.second->getPosition().getX();
-    dice["y"] = d.second->getPosition().getY();
+    dice["num"] = d.second->get_initial_moves();
+    dice["type"] = d.second->get_actual_type_int(); 
+    dice["x"] = d.second->get_position().get_x();
+    dice["y"] = d.second->get_position().get_y();
     level["dice"].push_back(dice);
   }
   level["difficulty"] = difficulty;

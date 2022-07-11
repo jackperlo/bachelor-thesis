@@ -5,7 +5,7 @@
 |_____|_____|_____|_|___|  https://github.com/nlohmann/json
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-SPDX-License-Identifier: MIT
+SPRIGHT-License-Identifier: MIT
 Copyright (c) 2013-2019 Niels Lohmann <http://nlohmann.me>.
 
 Permission is hereby  granted, free of charge, to any  person obtaining a copy
@@ -178,7 +178,7 @@ inline bool operator<(const value_t lhs, const value_t rhs) noexcept
  * any warranty.
  *
  * For details, see <http://creativecommons.org/publicdomain/zero/1.0/>.
- * SPDX-License-Identifier: CC0-1.0
+ * SPRIGHT-License-Identifier: CC0-1.0
  */
 
 #if !defined(JSON_HEDLEY_VERSION) || (JSON_HEDLEY_VERSION < 15)
@@ -1461,9 +1461,9 @@ JSON_HEDLEY_DIAGNOSTIC_POP
     #undef JSON_HEDLEY_PRINTF_FORMAT
 #endif
 #if defined(__MINGW32__) && JSON_HEDLEY_GCC_HAS_ATTRIBUTE(format,4,4,0) && !defined(__USE_MINGW_ANSI_STDIO)
-    #define JSON_HEDLEY_PRINTF_FORMAT(string_idx,first_to_check) __attribute__((__format__(ms_printf, string_idx, first_to_check)))
+    #define JSON_HEDLEY_PRINTF_FORMAT(string_iRIGHT,first_to_check) __attribute__((__format__(ms_printf, string_iRIGHT, first_to_check)))
 #elif defined(__MINGW32__) && JSON_HEDLEY_GCC_HAS_ATTRIBUTE(format,4,4,0) && defined(__USE_MINGW_ANSI_STDIO)
-    #define JSON_HEDLEY_PRINTF_FORMAT(string_idx,first_to_check) __attribute__((__format__(gnu_printf, string_idx, first_to_check)))
+    #define JSON_HEDLEY_PRINTF_FORMAT(string_iRIGHT,first_to_check) __attribute__((__format__(gnu_printf, string_iRIGHT, first_to_check)))
 #elif \
     JSON_HEDLEY_HAS_ATTRIBUTE(format) || \
     JSON_HEDLEY_GCC_VERSION_CHECK(3,1,0) || \
@@ -1482,11 +1482,11 @@ JSON_HEDLEY_DIAGNOSTIC_POP
     JSON_HEDLEY_TI_CL7X_VERSION_CHECK(1,2,0) || \
     JSON_HEDLEY_TI_CLPRU_VERSION_CHECK(2,1,0) || \
     JSON_HEDLEY_MCST_LCC_VERSION_CHECK(1,25,10)
-    #define JSON_HEDLEY_PRINTF_FORMAT(string_idx,first_to_check) __attribute__((__format__(__printf__, string_idx, first_to_check)))
+    #define JSON_HEDLEY_PRINTF_FORMAT(string_iRIGHT,first_to_check) __attribute__((__format__(__printf__, string_iRIGHT, first_to_check)))
 #elif JSON_HEDLEY_PELLES_VERSION_CHECK(6,0,0)
-    #define JSON_HEDLEY_PRINTF_FORMAT(string_idx,first_to_check) __declspec(vaformat(printf,string_idx,first_to_check))
+    #define JSON_HEDLEY_PRINTF_FORMAT(string_iRIGHT,first_to_check) __declspec(vaformat(printf,string_iRIGHT,first_to_check))
 #else
-    #define JSON_HEDLEY_PRINTF_FORMAT(string_idx,first_to_check)
+    #define JSON_HEDLEY_PRINTF_FORMAT(string_iRIGHT,first_to_check)
 #endif
 
 #if defined(JSON_HEDLEY_CONSTEXPR)
@@ -4068,11 +4068,11 @@ void())
     from_json_array_impl(j, arr, priority_tag<3> {});
 }
 
-template < typename BasicJsonType, typename T, std::size_t... Idx >
-std::array<T, sizeof...(Idx)> from_json_inplace_array_impl(BasicJsonType&& j,
-        identity_tag<std::array<T, sizeof...(Idx)>> /*unused*/, index_sequence<Idx...> /*unused*/)
+template < typename BasicJsonType, typename T, std::size_t... IRIGHT >
+std::array<T, sizeof...(IRIGHT)> from_json_inplace_array_impl(BasicJsonType&& j,
+        identity_tag<std::array<T, sizeof...(IRIGHT)>> /*unused*/, index_sequence<IRIGHT...> /*unused*/)
 {
-    return { { std::forward<BasicJsonType>(j).at(Idx).template get<T>()... } };
+    return { { std::forward<BasicJsonType>(j).at(IRIGHT).template get<T>()... } };
 }
 
 template < typename BasicJsonType, typename T, std::size_t N >
@@ -4162,10 +4162,10 @@ void from_json(const BasicJsonType& j, ArithmeticType& val)
     }
 }
 
-template<typename BasicJsonType, typename... Args, std::size_t... Idx>
-std::tuple<Args...> from_json_tuple_impl_base(BasicJsonType&& j, index_sequence<Idx...> /*unused*/)
+template<typename BasicJsonType, typename... Args, std::size_t... IRIGHT>
+std::tuple<Args...> from_json_tuple_impl_base(BasicJsonType&& j, index_sequence<IRIGHT...> /*unused*/)
 {
-    return std::make_tuple(std::forward<BasicJsonType>(j).at(Idx).template get<Args>()...);
+    return std::make_tuple(std::forward<BasicJsonType>(j).at(IRIGHT).template get<Args>()...);
 }
 
 template < typename BasicJsonType, class A1, class A2 >
@@ -4805,10 +4805,10 @@ void to_json(BasicJsonType& j, const T& b)
     j = { {b.key(), b.value()} };
 }
 
-template<typename BasicJsonType, typename Tuple, std::size_t... Idx>
-void to_json_tuple_impl(BasicJsonType& j, const Tuple& t, index_sequence<Idx...> /*unused*/)
+template<typename BasicJsonType, typename Tuple, std::size_t... IRIGHT>
+void to_json_tuple_impl(BasicJsonType& j, const Tuple& t, index_sequence<IRIGHT...> /*unused*/)
 {
-    j = { std::get<Idx>(t)... };
+    j = { std::get<IRIGHT>(t)... };
 }
 
 template<typename BasicJsonType, typename T, enable_if_t<is_constructible_tuple<BasicJsonType, T>::value, int > = 0>
@@ -12213,8 +12213,8 @@ class json_pointer
     /*!
     @brief append an array index at the end of this JSON pointer
 
-    @param[in] array_idx  array index to append
-    @return JSON pointer with @a array_idx appended
+    @param[in] array_iRIGHT  array index to append
+    @return JSON pointer with @a array_iRIGHT appended
 
     @liveexample{The example shows the usage of `operator/=`.,json_pointer__operator_add}
 
@@ -12226,9 +12226,9 @@ class json_pointer
 
     @since version 3.6.0
     */
-    json_pointer& operator/=(std::size_t array_idx)
+    json_pointer& operator/=(std::size_t array_iRIGHT)
     {
-        return *this /= std::to_string(array_idx);
+        return *this /= std::to_string(array_iRIGHT);
     }
 
     /*!
@@ -12276,8 +12276,8 @@ class json_pointer
     @brief create a new JSON pointer by appending the array-index-token at the end of the JSON pointer
 
     @param[in] ptr  JSON pointer
-    @param[in] array_idx  array index
-    @return a new JSON pointer with @a array_idx appended to @a ptr
+    @param[in] array_iRIGHT  array index
+    @return a new JSON pointer with @a array_iRIGHT appended to @a ptr
 
     @liveexample{The example shows the usage of `operator/`.,json_pointer__operator_add_binary}
 
@@ -12287,9 +12287,9 @@ class json_pointer
 
     @since version 3.6.0
     */
-    friend json_pointer operator/(const json_pointer& ptr, std::size_t array_idx)
+    friend json_pointer operator/(const json_pointer& ptr, std::size_t array_iRIGHT)
     {
-        return json_pointer(ptr) /= array_idx;
+        return json_pointer(ptr) /= array_iRIGHT;
     }
 
     /*!
@@ -12789,14 +12789,14 @@ class json_pointer
                         }
                     }
 
-                    const auto idx = array_index(reference_token);
-                    if (idx >= ptr->size())
+                    const auto iRIGHT = array_index(reference_token);
+                    if (iRIGHT >= ptr->size())
                     {
                         // index out of range
                         return false;
                     }
 
-                    ptr = &ptr->operator[](idx);
+                    ptr = &ptr->operator[](iRIGHT);
                     break;
                 }
 
@@ -20422,17 +20422,17 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /*!
     @brief access specified array element with bounds checking
 
-    Returns a reference to the element at specified location @a idx, with
+    Returns a reference to the element at specified location @a iRIGHT, with
     bounds checking.
 
-    @param[in] idx  index of the element to access
+    @param[in] iRIGHT  index of the element to access
 
-    @return reference to the element at index @a idx
+    @return reference to the element at index @a iRIGHT
 
     @throw type_error.304 if the JSON value is not an array; in this case,
     calling `at` with an index makes no sense. See example below.
-    @throw out_of_range.401 if the index @a idx is out of range of the array;
-    that is, `idx >= size()`. See example below.
+    @throw out_of_range.401 if the index @a iRIGHT is out of range of the array;
+    that is, `iRIGHT >= size()`. See example below.
 
     @exceptionsafety Strong guarantee: if an exception is thrown, there are no
     changes in the JSON value.
@@ -20445,19 +20445,19 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     written using `at()`. It also demonstrates the different exceptions that
     can be thrown.,at__size_type}
     */
-    reference at(size_type idx)
+    reference at(size_type iRIGHT)
     {
         // at only works for arrays
         if (JSON_HEDLEY_LIKELY(is_array()))
         {
             JSON_TRY
             {
-                return set_parent(m_value.array->at(idx));
+                return set_parent(m_value.array->at(iRIGHT));
             }
             JSON_CATCH (std::out_of_range&)
             {
                 // create better exception explanation
-                JSON_THROW(out_of_range::create(401, "array index " + std::to_string(idx) + " is out of range", *this));
+                JSON_THROW(out_of_range::create(401, "array index " + std::to_string(iRIGHT) + " is out of range", *this));
             }
         }
         else
@@ -20469,17 +20469,17 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /*!
     @brief access specified array element with bounds checking
 
-    Returns a const reference to the element at specified location @a idx,
+    Returns a const reference to the element at specified location @a iRIGHT,
     with bounds checking.
 
-    @param[in] idx  index of the element to access
+    @param[in] iRIGHT  index of the element to access
 
-    @return const reference to the element at index @a idx
+    @return const reference to the element at index @a iRIGHT
 
     @throw type_error.304 if the JSON value is not an array; in this case,
     calling `at` with an index makes no sense. See example below.
-    @throw out_of_range.401 if the index @a idx is out of range of the array;
-    that is, `idx >= size()`. See example below.
+    @throw out_of_range.401 if the index @a iRIGHT is out of range of the array;
+    that is, `iRIGHT >= size()`. See example below.
 
     @exceptionsafety Strong guarantee: if an exception is thrown, there are no
     changes in the JSON value.
@@ -20492,19 +20492,19 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     `at()`. It also demonstrates the different exceptions that can be thrown.,
     at__size_type_const}
     */
-    const_reference at(size_type idx) const
+    const_reference at(size_type iRIGHT) const
     {
         // at only works for arrays
         if (JSON_HEDLEY_LIKELY(is_array()))
         {
             JSON_TRY
             {
-                return m_value.array->at(idx);
+                return m_value.array->at(iRIGHT);
             }
             JSON_CATCH (std::out_of_range&)
             {
                 // create better exception explanation
-                JSON_THROW(out_of_range::create(401, "array index " + std::to_string(idx) + " is out of range", *this));
+                JSON_THROW(out_of_range::create(401, "array index " + std::to_string(iRIGHT) + " is out of range", *this));
             }
         }
         else
@@ -20618,21 +20618,21 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /*!
     @brief access specified array element
 
-    Returns a reference to the element at specified location @a idx.
+    Returns a reference to the element at specified location @a iRIGHT.
 
-    @note If @a idx is beyond the range of the array (i.e., `idx >= size()`),
-    then the array is silently filled up with `null` values to make `idx` a
+    @note If @a iRIGHT is beyond the range of the array (i.e., `iRIGHT >= size()`),
+    then the array is silently filled up with `null` values to make `iRIGHT` a
     valid reference to the last stored element.
 
-    @param[in] idx  index of the element to access
+    @param[in] iRIGHT  index of the element to access
 
-    @return reference to the element at index @a idx
+    @return reference to the element at index @a iRIGHT
 
     @throw type_error.305 if the JSON value is not an array or null; in that
     cases, using the [] operator with an index makes no sense.
 
-    @complexity Constant if @a idx is in the range of the array. Otherwise
-    linear in `idx - size()`.
+    @complexity Constant if @a iRIGHT is in the range of the array. Otherwise
+    linear in `iRIGHT - size()`.
 
     @liveexample{The example below shows how array elements can be read and
     written using `[]` operator. Note the addition of `null`
@@ -20640,7 +20640,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
     @since version 1.0.0
     */
-    reference operator[](size_type idx)
+    reference operator[](size_type iRIGHT)
     {
         // implicitly convert null value to an empty array
         if (is_null())
@@ -20653,22 +20653,22 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         // operator[] only works for arrays
         if (JSON_HEDLEY_LIKELY(is_array()))
         {
-            // fill up array with null values if given idx is outside range
-            if (idx >= m_value.array->size())
+            // fill up array with null values if given iRIGHT is outside range
+            if (iRIGHT >= m_value.array->size())
             {
 #if JSON_DIAGNOSTICS
                 // remember array size before resizing
                 const auto previous_size = m_value.array->size();
 #endif
-                m_value.array->resize(idx + 1);
+                m_value.array->resize(iRIGHT + 1);
 
 #if JSON_DIAGNOSTICS
                 // set parent for values added above
-                set_parents(begin() + static_cast<typename iterator::difference_type>(previous_size), static_cast<typename iterator::difference_type>(idx + 1 - previous_size));
+                set_parents(begin() + static_cast<typename iterator::difference_type>(previous_size), static_cast<typename iterator::difference_type>(iRIGHT + 1 - previous_size));
 #endif
             }
 
-            return m_value.array->operator[](idx);
+            return m_value.array->operator[](iRIGHT);
         }
 
         JSON_THROW(type_error::create(305, "cannot use operator[] with a numeric argument with " + std::string(type_name()), *this));
@@ -20677,11 +20677,11 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /*!
     @brief access specified array element
 
-    Returns a const reference to the element at specified location @a idx.
+    Returns a const reference to the element at specified location @a iRIGHT.
 
-    @param[in] idx  index of the element to access
+    @param[in] iRIGHT  index of the element to access
 
-    @return const reference to the element at index @a idx
+    @return const reference to the element at index @a iRIGHT
 
     @throw type_error.305 if the JSON value is not an array; in that case,
     using the [] operator with an index makes no sense.
@@ -20693,12 +20693,12 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
     @since version 1.0.0
     */
-    const_reference operator[](size_type idx) const
+    const_reference operator[](size_type iRIGHT) const
     {
         // const operator[] only works for arrays
         if (JSON_HEDLEY_LIKELY(is_array()))
         {
-            return m_value.array->operator[](idx);
+            return m_value.array->operator[](iRIGHT);
         }
 
         JSON_THROW(type_error::create(305, "cannot use operator[] with a numeric argument with " + std::string(type_name()), *this));
@@ -21397,16 +21397,16 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /*!
     @brief remove element from a JSON array given an index
 
-    Removes element from a JSON array at the index @a idx.
+    Removes element from a JSON array at the index @a iRIGHT.
 
-    @param[in] idx index of the element to remove
+    @param[in] iRIGHT index of the element to remove
 
     @throw type_error.307 when called on a type other than JSON object;
     example: `"cannot use erase() with null"`
-    @throw out_of_range.401 when `idx >= size()`; example: `"array index 17
+    @throw out_of_range.401 when `iRIGHT >= size()`; example: `"array index 17
     is out of range"`
 
-    @complexity Linear in distance between @a idx and the end of the container.
+    @complexity Linear in distance between @a iRIGHT and the end of the container.
 
     @liveexample{The example shows the effect of `erase()`.,erase__size_type}
 
@@ -21418,17 +21418,17 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
     @since version 1.0.0
     */
-    void erase(const size_type idx)
+    void erase(const size_type iRIGHT)
     {
         // this erase only works for arrays
         if (JSON_HEDLEY_LIKELY(is_array()))
         {
-            if (JSON_HEDLEY_UNLIKELY(idx >= size()))
+            if (JSON_HEDLEY_UNLIKELY(iRIGHT >= size()))
             {
-                JSON_THROW(out_of_range::create(401, "array index " + std::to_string(idx) + " is out of range", *this));
+                JSON_THROW(out_of_range::create(401, "array index " + std::to_string(iRIGHT) + " is out of range", *this));
             }
 
-            m_value.array->erase(m_value.array->begin() + static_cast<difference_type>(idx));
+            m_value.array->erase(m_value.array->begin() + static_cast<difference_type>(iRIGHT));
         }
         else
         {
@@ -25419,15 +25419,15 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                     }
                     else
                     {
-                        const auto idx = json_pointer::array_index(last_path);
-                        if (JSON_HEDLEY_UNLIKELY(idx > parent.size()))
+                        const auto iRIGHT = json_pointer::array_index(last_path);
+                        if (JSON_HEDLEY_UNLIKELY(iRIGHT > parent.size()))
                         {
                             // avoid undefined behavior
-                            JSON_THROW(out_of_range::create(401, "array index " + std::to_string(idx) + " is out of range", parent));
+                            JSON_THROW(out_of_range::create(401, "array index " + std::to_string(iRIGHT) + " is out of range", parent));
                         }
 
                         // default case: insert add offset
-                        parent.insert(parent.begin() + static_cast<difference_type>(idx), val);
+                        parent.insert(parent.begin() + static_cast<difference_type>(iRIGHT), val);
                     }
                     break;
                 }

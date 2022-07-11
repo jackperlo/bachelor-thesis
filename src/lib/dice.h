@@ -9,34 +9,33 @@ class Dice{
   protected:
     Cell position;
     int nMoves;
-    int initialMoves;
-    pair<bool, int> virtual moveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation, int movementType = SIMPLE_MOVE) = 0; 
-    pair<bool, int> virtual moveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation, int movementType = SIMPLE_MOVE) = 0;
-    pair<bool, int> virtual moveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation, int movementType = SIMPLE_MOVE) = 0;
-    pair<bool, int> virtual moveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation, int movementType = SIMPLE_MOVE) = 0;
-    pair<bool, int> virtual reverseMoveSx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
-    pair<bool, int> virtual reverseMoveDx(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
-    pair<bool, int> virtual reverseMoveUp(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
-    pair<bool, int> virtual reverseMoveDown(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool isJustForSimulation) = 0;
-    int checkArrivalCellIsEmpty(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices); //returns -1 if it's Empty
-    bool makeMove(int x, int y, int nMovesDone, unordered_map<P2D, Dice *, P2D::HashFun> &dices);
-    string stringToLower(string inputString);
+    int initial_moves;
+    pair<bool, int> virtual move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int movement_type = SIMPLE_MOVE) = 0; 
+    pair<bool, int> virtual move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int movement_type = SIMPLE_MOVE) = 0;
+    pair<bool, int> virtual move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int movement_type = SIMPLE_MOVE) = 0;
+    pair<bool, int> virtual move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int movement_type = SIMPLE_MOVE) = 0;
+    pair<bool, int> virtual reverse_move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation) = 0;
+    pair<bool, int> virtual reverse_move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation) = 0;
+    pair<bool, int> virtual reverse_move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation) = 0;
+    pair<bool, int> virtual reverse_move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation) = 0;
+    int check_arrival_cell_is_empty(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> dices); //returns -1 if it's Empty
+    bool make_move(int x, int y, int nMovesDone, unordered_map<P2D, Dice *, P2D::HashFun> &dices);
+    string string_to_lower(string input_string);
 
   public:
-    Dice(Cell position, int nMoves, int initialMoves);
+    Dice(Cell position, int nMoves, int initial_moves);
     Dice();
     string virtual print_dice_to_string (bool print_with_initial_moves) = 0;
     bool operator==(Dice *other_dice);
-    void setPosition(Cell position);
-    Cell getPosition() const;
-    void setNMoves(int nMoves);
-    int getNMoves();
-    int getInitialMoves();
-    void printDice();
-    pair<bool, int> move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType = SIMPLE_MOVE);
-    pair<bool, int> virtual reverseMove(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * callerName, bool isJustForSimulation, int movementType = SIMPLE_MOVE) = 0;
-    string virtual getActualType() = 0;
-    int virtual getActualTypeInt() = 0;
+    void set_position(Cell position);
+    Cell get_position() const;
+    int get_n_moves();
+    int get_initial_moves();
+    void print_dice();
+    pair<bool, int> move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * caller_name, bool is_a_simulation, int movement_type = SIMPLE_MOVE);
+    pair<bool, int> virtual reverse_move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * caller_name, bool is_a_simulation, int movement_type = SIMPLE_MOVE) = 0;
+    string virtual get_actual_type() = 0;
+    int virtual get_actual_type_int() = 0;
 };
 
 #endif

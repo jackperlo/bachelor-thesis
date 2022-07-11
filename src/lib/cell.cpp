@@ -8,7 +8,7 @@ Cell::Cell(int x, int y){
 
 Cell::Cell(){}
 
-int Cell::getX(){
+int Cell::get_x(){
   return x;
 }
 
@@ -16,7 +16,7 @@ void Cell::setX(int x){
   this->x = x;
 }
 
-int Cell::getY(){
+int Cell::get_y(){
   return y;
 }
 

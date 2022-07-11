@@ -1,3 +1,8 @@
+/**
+  This class contains the work logic of AleaGame 
+  @file astar.h astar.cpp
+  @authors Mirko Polato, Giacomo Perlo
+*/
 #ifndef ALEA_GAME_H
 #define ALEA_GAME_H
 
@@ -17,11 +22,10 @@ class AleaGame{
     Action last_action_performed;
 
     AleaGame();
-    AleaGame(json json_dict, bool isBackward, string type);
-    AleaGame(string filename, bool isBackward, string type = "");
+    AleaGame(json json_dict, bool is_backward, string type);
+    AleaGame(string filename, bool is_backward, string type = "");
     AleaGame(const AleaGame& game);
 
-    static string print_aleagame_to_string (pair<bool, AleaGame> pair);
 		friend ostream& operator<<(ostream& out, pair<bool, AleaGame> pair);
     bool operator==(const AleaGame& other) const;
     AleaGame& operator=(const AleaGame&);
@@ -64,6 +68,7 @@ class AleaGame{
   private:
     void generateMapForBackwardMovements(json json_dict);
     void generateMapForExpectedForwardMovements(json json_dict, string type);
+    static string print_aleagame_to_string (pair<bool, AleaGame> pair);
     bool is_terminal(const P2D& pos) const;
     bool is_valid_ending_configuration_backward_search();
     bool has_dice(const P2D& pos) const;

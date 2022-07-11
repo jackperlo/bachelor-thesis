@@ -7,9 +7,9 @@ class Cell{
   public:
     Cell(int x, int y);
     Cell();
-    int getX();
+    int get_x();
     void setX(int x);
-    int getY();
+    int get_y();
     void setY(int y);
 
   private:

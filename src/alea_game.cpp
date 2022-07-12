@@ -919,7 +919,28 @@ bool AleaGame::move(const P2D pos, const P2D dir, const int movement_type, bool 
   return false;
 }
 
-//BANAL: means the terminal-dice distance is equal to nMoves
+/**
+  This method searchs for all the banal configuration which the user could find at the start to 
+  solve the level. This is a wrapper method cuz the process is recursevely, the wrapper 
+  thinks for the first dice, the core thinks for the rest of the dices.  
+  Note that we're thinking forward, so we're looking for the easier solutions the user could
+  find. 
+  A banal configuration is a sequence of moves which brings a dice(or even more than a dice, reason why
+  this is a recursive process) from its position straight(without having any interaction with other dices) to a terminal,
+  so basically the manhattan distance between it and a terminal is equal to its number of available
+  moves.
+  When more than a dice have manhattan distance from a terminal equal to them number of available moves
+  a conflict born, the terminal is disputed(eg. 2 dices could reach the same terminal straightly, 
+  so we'll have two banal config: the first one assigns the first dice to the terminal without moving 
+  the second dice, the second one vice versa).
+  Note that even if the manhattan distance theoretically allows a dice to reach a terminal, this could
+  not be possible (eg. man_distance=2, n_moves=2, but there's an obstacle between them (another dice), 
+  so the dice should have at least the number of moves needed to bypass the obstacle and reach the 
+  terminal).
+  @return a vector containing all the banal solutions found. Each element(pair) in the vector
+          is formed by the instance of AleaGame on which are applied the actions(moves) contained
+          in the relative vector to get the banal configuration.
+*/  
 vector<pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_search_wrapper(){
   vector<pair<AleaGame, vector<Action>>> banal_games;
   for(pair<P2D, Dice*> pair : this->dices){
@@ -939,7 +960,7 @@ vector<pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_searc
               }
             }
           }
-        }else{
+        }else{ //terminal is not disputed
          std::pair<AleaGame, vector<Action>> res = make_pair(*this, vector<Action>());
           if(find_banal_start_calculate_route(res.second, pair.first, pair.second->get_n_moves(), terminal, res.first.dices)){
             for(Action action : res.second)
@@ -955,6 +976,30 @@ vector<pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_searc
   return banal_games;
 }
 
+/**
+  This method searchs for all the banal configuration which the user could find at the start to 
+  solve the level. This is the recursive core which thinks for the dices not considered by the wrapper.  
+  Note that we're thinking forward, so we're looking for the easier solutions the user could
+  find. 
+  A banal configuration is a sequence of moves which brings a dice(or even more than a dice, reason why
+  this is a recursive process) from its position straight(without having any interaction with other dices) to a terminal,
+  so basically the manhattan distance between it and a terminal is equal to its number of available
+  moves.
+  When more than a dice have manhattan distance from a terminal equal to them number of available moves
+  a conflict born, the terminal is disputed(eg. 2 dices could reach the same terminal straightly, 
+  so we'll have two banal config: the first one assigns the first dice to the terminal without moving 
+  the second dice, the second one vice versa).
+  Note that even if the manhattan distance theoretically allows a dice to reach a terminal, this could
+  not be possible (eg. man_distance=2, n_moves=2, but there's an obstacle between them (another dice), 
+  so the dice should have at least the number of moves needed to bypass the obstacle and reach the 
+  terminal).
+  @param previous_game_actions a pair containing the starting configuration and the moves found by 
+                            the wrapper(for the first dice analyzed). This will be the starting point 
+                            for this core method on which the following moves will be pushed back
+  @return a vector containing all the banal solutions found. Each element(pair) in the vector
+          is formed by the instance of AleaGame on which are applied the actions(moves) contained
+          in the relative vector to get the banal configuration.
+*/  
 pair<AleaGame, vector<Action>> AleaGame::find_banal_starts_forward_search(pair<AleaGame, vector<Action>> previous_game_actions){
   pair<AleaGame, vector<Action>> moves = previous_game_actions;
   for(pair<P2D, Dice*> pair : previous_game_actions.first.dices){
@@ -989,6 +1034,16 @@ pair<AleaGame, vector<Action>> AleaGame::find_banal_starts_forward_search(pair<A
   return moves;
 }
 
+/**
+  This methods executes the moves specified to reach the banal configuration previously found
+  @param banal_configuration a pair containing the starting configuration and the moves found for the 
+                            considered banal cofiguration
+  @param difficulty banal configuration difficulty (will be obtained doing moves specified
+                    by @banal_configuration.second)
+  @param counter i-th banal configuration
+  @param banal_search_number total number of banal configuration found
+  @return true if the banal configuration found is already a solution (no A* search needed), false otherwise
+*/  
 bool AleaGame::setting_up_banal_configuration(pair<AleaGame, vector<Action>> banal_configuration, double *difficulty, int counter, int banal_search_number){
   *this = banal_configuration.first;
   cout<<"\nBanal Starting Configuration Found: ("<<counter<<"/"<<banal_search_number<<")\n";
@@ -1001,6 +1056,16 @@ bool AleaGame::setting_up_banal_configuration(pair<AleaGame, vector<Action>> ban
   return false;
 }
 
+/**
+  This methods is useful because detecs the transpositions: same arrival configuration with different 
+  moves sequence.
+  If a banal configuration is a transposition of another one, then is not considered anymore.
+  @param banal_config a pair containing the starting configuration and the moves found for the 
+                      considered banal cofiguration
+  @param banal_config_vector a vector containing all the banal configuration found so far
+  @return true if the banal configuration already belongs to the @banal_config_vector
+          (the considered @banal_config is a transposition of another banal configuration)
+*/  
 bool AleaGame::banal_start_already_found(pair<AleaGame, vector<Action>> banal_config, vector<pair<AleaGame, vector<Action>>> banal_config_vector){
   AleaGame simulation_game = banal_config.first;
   for(Action act : banal_config.second)
@@ -1017,6 +1082,12 @@ bool AleaGame::banal_start_already_found(pair<AleaGame, vector<Action>> banal_co
   return false;
 }
 
+/**
+  This methods detects if a terminal is disputed by more than one dice
+  @param terminal_position terminal position in the map
+  @param dices hash table containing all the dices and their position in the map
+  @return true if more than two dices could reach the same terminal(manhattan distance only considering)
+*/  
 bool AleaGame::terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
   int counter = 0;
   for(pair<P2D, Dice*> pair : dices){
@@ -1028,6 +1099,12 @@ bool AleaGame::terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Di
   return false;
 }
 
+/**
+  This methods returns the dices which are in conflict for the same terminal
+  @param terminal_position terminal position in the map
+  @param dices hash table containing all the dices and their position in the map
+  @return a vector containing all the dices in conflict for the same terminal
+*/  
 vector<pair<P2D, Dice *>> AleaGame::disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
   vector<pair<P2D, Dice *>> res;
   for(pair<P2D, Dice*> pair : dices){

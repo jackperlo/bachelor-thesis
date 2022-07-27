@@ -5,11 +5,13 @@
 */
 #include "alea_game.h"
 #include "astar.h"
+#include <string>
 
 pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_name);
 void get_solution_number_and_related_difficulty(string starting_config_file_name);
 void print_expected_forward_solution(pair<string, vector<Action>> solution);
 void playGamePrinter(AleaGame game, vector<Action> actions);
+double tokenizing_to_get_level_difficulty(string s, string del = " ");
 
 //controls operation of the program
 int main(int argc, char *argv[]){ 
@@ -52,10 +54,12 @@ void get_solution_number_and_related_difficulty(string starting_config_file_name
   cout<<starting_config_file_name<<endl;
   AleaGame *starting_config_analyzed_game = new AleaGame(starting_config_file_name, false, "ANALYZED");
   
+  double upper_bound = tokenizing_to_get_level_difficulty(starting_config_file_name, "_");
+  cout<<"\nUPPERBOUND: "<<upper_bound<<endl;
   //list of the solutions (seen as list of moves to reach solution), and solution difficulty
-  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> solutions_queue = AStarNode::astar_forward_search(*starting_config_analyzed_game, BRANCHED_NODES_LIMIT);
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> solutions_queue = AStarNode::astar_forward_search(*starting_config_analyzed_game, upper_bound, BRANCHED_NODES_LIMIT);
   
-  cout<<"\n# Solutions Found: "<<solutions_queue.size();
+  cout<<"\nNumber of Solutions Found: "<<solutions_queue.size();
   if(solutions_queue.size()>0){
     cout<<"\nEasiest Solution Difficulty: "<<solutions_queue.top().second<<"\n";
     playGamePrinter(*starting_config_analyzed_game, solutions_queue.top().first);
@@ -91,5 +95,13 @@ void playGamePrinter(AleaGame game, vector<Action> actions){
   }
 }
 
-
-
+double tokenizing_to_get_level_difficulty(string s, string del)
+{
+  int start = 0;
+  int end = s.find(del);
+  start = end + del.size();
+  end = s.find(del, start);
+  start = end + del.size();
+  end = s.find(del, start);
+  return std::stod(s.substr(start, end - start));
+}

@@ -13,7 +13,7 @@ AStarNode::AStarNode(AleaGame game, Action action) : game(game), action(action) 
 AStarNode::AStarNode(AleaGame game, double g) : game(game), g(g) { }
 AStarNode::AStarNode(AleaGame game, double g, double h) : game(game), g(g), h(h) { f = g + h; }
 AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent) : game(game), action(action), parent(parent) { }
-AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent, double g, double h) : game(game), action(action), parent(parent), g(g), h(h) { 
+AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent, double g, double h, double distance_from_closer_terminal_weight) : game(game), action(action), parent(parent), g(g), h(h), distance_from_closer_terminal_weight(distance_from_closer_terminal_weight) { 
   f = g + h;
 }
 
@@ -21,8 +21,24 @@ bool AStarNode::operator==(const AStarNode& other) const {
   return this->game == other.game;
 }
 
+AStarNode& AStarNode::operator=(AStarNode *node){
+  
+  this->game = node->game;
+  this->action = node->action;
+  this->parent = node->parent;
+  this->g = node->g;
+  this->h = node->h;
+  this->f = node->f;
+  return *this;
+}
+
 bool AStarNode::operator<(const AStarNode& other) const {
   return f < other.f;
+}
+
+ostream& operator<<(ostream& out, AStarNode *node) {
+  out << "(" << node->f << ")";
+  return out;
 }
 
 bool AStarNode::CompareFunBackward::operator() (AStarNode* n1, AStarNode* n2) {
@@ -30,7 +46,7 @@ bool AStarNode::CompareFunBackward::operator() (AStarNode* n1, AStarNode* n2) {
 }
 
 bool AStarNode::CompareFunForward::operator() (AStarNode* n1, AStarNode* n2) {
-  return n1->f > n2->f; //ordering priority queue as a min-heap
+  return n1->f+n1->distance_from_closer_terminal_weight > n2->f+n2->distance_from_closer_terminal_weight; //ordering priority queue as a min-heap
 }
 
 size_t AStarNode::HashFun::operator()(AStarNode* const&n) const{
@@ -140,7 +156,7 @@ pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int
           a vector of moves (to get from starting config->ending config(=solution)) 
           and the difficulty calculated for that solution
 */
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_search(AleaGame original_game, int limit) {
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward_search(AleaGame original_game, double upper_bound, int limit) {
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> tmp;
   double difficulty = 0.00;
@@ -149,20 +165,27 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   int i=1;
   for(pair<AleaGame, vector<Action>> banal_search : banal_search_results){
     AleaGame new_game = original_game;
-    if(new_game.setting_up_banal_configuration(banal_search, &difficulty, i, banal_search_results.size()))
+    difficulty = 0.00;
+    if(new_game.setting_up_banal_configuration(banal_search, &difficulty, i, banal_search_results.size()) && difficulty<upper_bound){
       res.push(make_pair(banal_search.second, difficulty));
+      cout<<"\n\t"<< FGGREENSTART <<"New BANAL Solution Found!\n"<< FGRESET;
+    }else{
+      cout<<"Banal Starting Configuration Forward Analysis: (starting difficulty = "<<difficulty<<")\n";
+      tmp = astar_forward(new_game, limit, &difficulty, upper_bound, banal_search);
+      if(tmp.size() > 0) res = merge_priority_queues(res, tmp);
+    }
     
-    tmp = astar_forward(new_game, limit, &difficulty, banal_search);
-    if(tmp.size() > 0) res = merge_priority_queues(res, tmp);
     if(res.size() > 0) return res;
     
     i++;
   }
   if(res.size() == 0){
-    tmp = astar_forward(original_game, limit, &difficulty);
+    difficulty=0.00;
+    cout<<"\nOriginal Starting Configuration Analysis:\n";
+    tmp = astar_forward(original_game, limit, &difficulty, upper_bound);
     res = merge_priority_queues(res, tmp);
   }
-
+  
   return res;
 }
 
@@ -189,11 +212,12 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
           a vector of moves (to get from starting config->ending config(=solution)) 
           and the difficulty calculated for that solution
 */
+/*
 priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward(AleaGame game, int limit, double *difficulty, pair<AleaGame, vector<Action>> banal_search){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
   priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> open;
   unordered_set<AStarNode*, AStarNode::HashFun> open_set;
-  unordered_set<AleaGame, AleaGame::HashFun> closed;
+  unordered_set<int> closed;
   int evaluated_moves = 0;
   int skipped_moves = 0;
   int branched_nodes = 0;
@@ -206,7 +230,9 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     AStarNode* current_node = open.top();
     open.pop();
     open_set.erase(current_node);
-    closed.insert(current_node->game);
+    int a = AleaGame::HashFun()(current_node->game);
+    closed.insert(a);
+    //cout<<"Inserting "<<a<<" in HAshTable"<<closed<<endl;
     if (current_node->game.is_valid_ending_configuration_forward_search()){
       pair<vector<Action>, double> solution;
       while (current_node->parent != NULL) {
@@ -232,10 +258,14 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
         cout<<"\nastar.cpp:astar_forward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movement_type<<", head:"<<action.head<<"\nExiting.\n"; 
         exit(1);
       }
-      if (closed.find(new_game) != closed.end()) {
+      int b = AleaGame::HashFun()(new_game);
+      //cout<<"Game Hash:"<<b<<endl;
+      //games with same hash(so once identical to the other) aren't found as same object
+      if (closed.find(AleaGame::HashFun()(new_game)) != closed.end()) {
         ++skipped_moves;
         continue;
       }
+      //cout << "\nHASH TABLE : "<<closed<<endl;
       ++evaluated_moves;
       AStarNode* neighbor = new AStarNode(new_game, action, current_node, current_node->f, action.weight); 
       if (open_set.find(neighbor) == open_set.end()) {
@@ -247,16 +277,170 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       cout << "BRANCHED_NODES LIMIT REACHED. EXIT\n\n";
       break;
     }
-    if(branched_nodes % 2000 == 0)
+    if(branched_nodes % 2000 == 0){
       cout << "Branched:" << branched_nodes << endl;
+      cout << "Interactions: "<<current_node->f<<endl;
+    }
   }
   cout << "Evaluated:" << evaluated_moves << endl;
   cout << "Skipped:"<< skipped_moves << endl;
   cout << "Branched:"<< branched_nodes << endl<<endl;
 
   return res;
+}*/
+
+int AStarNode::get_siblings(priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> &open, unordered_set<AStarNode*, AStarNode::HashFun> &open_set, int &evaluated_moves, /*int depth,*/ vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
+  while (!open.empty()) open.pop();
+  open_set.clear();
+  
+  vector<Action> actions = this->game.possible_moves_forward(excluding_heuristic_possible_moves_activation);
+  int siblings_number = actions.size();
+  //cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
+  for (Action action : actions) {
+    AleaGame new_game = AleaGame(this->game);
+    if(!new_game.move(action, false)){
+      cout<<"\nastar.cpp:astar_forward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movement_type<<", head:"<<action.head<<"\nExiting.\n"; 
+      exit(1);
+    }
+    evaluated_moves++;
+    AStarNode* neighbor = new AStarNode(new_game, action, this, this->f, action.weight, action.distance_from_closer_terminal); 
+    if (open_set.find(neighbor) == open_set.end()) {
+      open.push(neighbor);
+      open_set.insert(neighbor);
+    }
+  }
+  return siblings_number;
 }
 
+void AStarNode::backtrace_to_grandfather(AStarNode *&parent_node, int &sequentially_skipped_nodes, int &depth, int &siblings_number, priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> &open, unordered_set<AStarNode*, AStarNode::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
+  if(this->parent && this->parent->parent){
+    parent_node = this->parent->parent;
+    if(parent_node){
+      sequentially_skipped_nodes = 0;
+      depth-=DEPTH_DECREASING_INDEX;
+      //cout << "BACKTRACKING, NEW DEEP="<<depth<<endl;
+      siblings_number = parent_node->get_siblings(open, open_set, evaluated_moves, /*depth+1,*/ excluding_heuristic_possible_moves_activation);
+      depth++;
+    }
+  }
+}
+
+
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward(AleaGame game, int limit, double *difficulty, double upper_bound, pair<AleaGame, vector<Action>> banal_search){
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
+  priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> open;
+  unordered_set<AStarNode*, AStarNode::HashFun> open_set;
+  unordered_set<int> closed;
+  unordered_set<int> siblings_closed;
+
+  AStarNode *parent_node;
+  int depth=0;
+  int siblings_number = 1;
+  int sequentially_skipped_nodes = 0;
+  int evaluated_moves = 0;
+  int skipped_moves = 0;
+  int branched_nodes = 0;
+
+  vector<pair<int, int>> excluding_heuristic_possible_moves_activation = {make_pair(0,0), make_pair(0,0), make_pair(0,0), make_pair(0,0)};
+  
+  AStarNode* current_node;
+  AStarNode* start_node = new AStarNode(game, *difficulty, 0.00);
+  open.push(start_node);
+  open_set.insert(start_node);
+  //cout<<"Root DEEP=0\n\n";
+  while (open.size() > 0) {
+    //cout<<"NSiblings: "<<siblings_number<<" | Open.size(): "<<open.size()<<" | Current Depth: "<<depth<<endl;
+    current_node = open.top();
+    open.pop();
+    open_set.erase(current_node);
+
+    if(siblings_number == 0 || siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end() || closed.find(AleaGame::HashFun()(current_node->game)) != closed.end() || current_node->f > upper_bound) {
+      if(siblings_number != 0){
+        skipped_moves++;
+        sequentially_skipped_nodes++;
+        /*if(siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end())
+          cout<<"\tsibling skipped: found in siblings_closed\n\tsequentially skipped siblings"<<sequentially_skipped_nodes<<endl;
+        else if(closed.find(AleaGame::HashFun()(current_node->game)) != closed.end())
+          cout<<"\tsibling skipped: found in closed\n\tsequentially skipped siblings"<<sequentially_skipped_nodes<<endl;
+        else if(current_node->f >= upper_bound)
+          cout<<"\tsibling skipped: "<<current_node->f<<">="<<upper_bound<<"\n\tsequentially skipped siblings"<<sequentially_skipped_nodes<<endl;
+        */
+      }
+      if(siblings_number == 0 || sequentially_skipped_nodes == siblings_number){//BACKTRACKING internal nodes and leafs
+        if(sequentially_skipped_nodes==siblings_number && current_node->parent ) closed.insert(AleaGame::HashFun()(current_node->parent->game));
+        siblings_closed.clear();
+        current_node->backtrace_to_grandfather(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+      } 
+      closed.insert(AleaGame::HashFun()(current_node->game));
+      continue;  
+    }
+
+    sequentially_skipped_nodes = 0;
+    branched_nodes++;
+    depth++;
+    siblings_closed.insert(AleaGame::HashFun()(current_node->game));
+    //cout<<"\n\tsibling found, DEEP="<<depth-1<<endl;
+    siblings_number = current_node->get_siblings(open, open_set, evaluated_moves, /*depth,*/ excluding_heuristic_possible_moves_activation);
+      
+    if (current_node->game.is_valid_ending_configuration_forward_search()){
+      pair<vector<Action>, double> solution;
+      while (current_node->parent != NULL) {
+        solution.first.push_back(current_node->action);
+        solution.second += current_node->f;
+        current_node = current_node->parent;
+      }
+      if(solution.first.size() > 0) cout<< FGGREENSTART <<"\nAStar Forward: New Solution Found!\n"<< FGRESET;
+      reverse(solution.first.begin(), solution.first.end());
+      int offset = 0;
+      for(Action move : banal_search.second){
+        solution.first.insert(solution.first.begin()+offset, move);
+        solution.second += move.weight;
+        offset++;
+      }
+      
+      res.push(solution);
+      continue;
+    }
+
+    if(siblings_number==0){
+      closed.insert(AleaGame::HashFun()(current_node->game));
+      current_node->backtrace_to_grandfather(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+    }
+
+    if (branched_nodes > limit){
+      cout << FGREDSTART << "BRANCHED_NODES LIMIT REACHED. EXIT.\n\n" << FGRESET;
+      break;
+    }
+    if(branched_nodes % 2000 == 0){
+      cout << "Branched:" << branched_nodes << endl;
+      cout << "Interactions Threshold: "<<current_node->f<<endl;
+    }
+  }
+
+  cout << FGYELLOWSTART << "TREE TOTALLY EXPLORED. EXIT.\n\n" << FGRESET;
+
+  cout << "Evaluated:" << evaluated_moves << endl;
+  cout << "Skipped:"<< skipped_moves << endl;
+  cout << "Branched:"<< branched_nodes << endl<<endl;
+  
+  cout << "White Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[0].first << "/" << excluding_heuristic_possible_moves_activation[0].second << ") ";
+  if(excluding_heuristic_possible_moves_activation[0].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[0].first/(double)excluding_heuristic_possible_moves_activation[0].second)*100 << "%" << endl;
+  else cout << " -> 0%" << endl;
+  
+  cout << "Red Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[1].first << "/" << excluding_heuristic_possible_moves_activation[1].second << ") ";
+  if(excluding_heuristic_possible_moves_activation[1].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[1].first/(double)excluding_heuristic_possible_moves_activation[1].second)*100 << "%" << endl;
+  else cout << " -> 0%" << endl;
+  
+  cout << "Yellow Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[2].first << "/" << excluding_heuristic_possible_moves_activation[2].second << ") ";
+  if(excluding_heuristic_possible_moves_activation[2].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[2].first/(double)excluding_heuristic_possible_moves_activation[2].second)*100 << "%" << endl;
+  else cout << " -> 0%" << endl;
+  
+  cout << "Green Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[3].first << "/" << excluding_heuristic_possible_moves_activation[3].second << ") ";
+  if(excluding_heuristic_possible_moves_activation[3].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[3].first/(double)excluding_heuristic_possible_moves_activation[3].second)*100 << "%" << endl<<endl;
+  else cout << " -> 0%" << endl;
+
+  return res;
+}
 
 /**
   Prints the configuration found by A* backwards in a .json file in generated_levels folder.

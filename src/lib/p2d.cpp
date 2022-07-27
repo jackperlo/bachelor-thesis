@@ -13,7 +13,7 @@ const P2D P2D::JUMPING_RIGHT(2, 0);
 const P2D P2D::JUMPING_DOWN(0, 2);
 const P2D P2D::JUMPING_LEFT(-2, 0);
 const P2D P2D::null_p2d(0, 0);
-const Action Action::null_action(P2D::null_p2d, P2D::null_p2d, 0, 0, P2D::null_p2d);
+const Action Action::null_action(P2D::null_p2d, P2D::null_p2d, 0, 0, 0, P2D::null_p2d);
 
 P2D::P2D(){}
 P2D::P2D(int x, int y) : x(x), y(y) { }
@@ -74,8 +74,12 @@ Action::Action(){}
 Action::Action(P2D from, P2D dir, double weight, int movement_type, P2D head)
     : from(from), dir(dir), head(head), weight(weight), movement_type(movement_type) {}
 
+
+Action::Action(P2D from, P2D dir, double weight, double distance_from_closer_terminal, int movement_type, P2D head)
+    : from(from), dir(dir), head(head), weight(weight), distance_from_closer_terminal(distance_from_closer_terminal), movement_type(movement_type) {}
+
 ostream& operator<<(ostream& out, Action act) {
-  return out << "From " << act.from << " direction " << act.dir << " moveType " << act.movement_type;
+  return out << "From " << act.from << " direction " << act.dir << " moveType " << act.movement_type << " weight " << act.weight;
 }
 
 P2D P2D::cellToP2D(Cell c){

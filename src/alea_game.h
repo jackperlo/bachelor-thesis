@@ -43,11 +43,11 @@ class AleaGame{
     void red_dice_possible_moves_backward(Dice *dice, vector<Action> &moves);
     void yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &moves);
     
-    vector<Action> possible_moves_forward();
-    void green_dice_possible_moves_forward(Dice *dice, vector<Action> &moves);
-    void white_dice_possible_moves_forward(Dice *dice, vector<Action> &moves);
-    void red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves);
-    void yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &moves);
+    vector<Action> possible_moves_forward(vector<pair<int, int>> &excluding_heuristic_possible_moves_activation);
+    void green_dice_possible_moves_forward(Dice *dice, vector<Action> &moves, pair<int, int> &green_heuristic_stats);
+    void white_dice_possible_moves_forward(Dice *dice, vector<Action> &moves, pair<int, int> &white_heuristic_stats);
+    void red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves, pair<int, int> &red_heuristic_stats);
+    void yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &moves, pair<int, int> &yellow_heuristic_stats);
 
     bool move(const Action& action, bool is_moving_backward);
 		bool move(const P2D pos, const P2D dir, const int isPushed, bool is_moving_backward);
@@ -62,7 +62,7 @@ class AleaGame{
     static Action revert_action(Action backward_action);
 
     struct HashFun {
-			size_t operator()(const AleaGame& game) const;
+			int operator()(const AleaGame& game) const;
 		};
 
   private:
@@ -72,8 +72,8 @@ class AleaGame{
     bool is_terminal(const P2D& pos) const;
     bool is_valid_ending_configuration_backward_search();
     bool has_dice(const P2D& pos) const;
-    double calculate_distance_from_closer_terminal(P2D dice_position);
-    static bool find_banal_start_calculate_route(vector<Action> &moves, P2D dice_position, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
+    int calculate_distance_from_closer_terminal(P2D dice_position);
+    bool find_banal_start_calculate_route(vector<Action> &moves, P2D dice_position, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static bool terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static vector<pair<P2D, Dice *>> disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static bool disputed_is_assigned(P2D terminal, vector<std::pair<P2D, Dice *>> disputer_dices);

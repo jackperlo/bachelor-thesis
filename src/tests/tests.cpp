@@ -155,7 +155,6 @@ TEST(oneWhiteDice, move_right){
       WhiteDice wd(c, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &wd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
-      wd.print_dice();
       ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
       dices.clear();
     }

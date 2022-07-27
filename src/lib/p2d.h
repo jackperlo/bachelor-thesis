@@ -46,10 +46,12 @@ class P2D {
 struct Action {
 	P2D from, dir, head;
 	double weight;
+	double distance_from_closer_terminal;
 	int movement_type; //0->activeMove, 1->pushedMove, 2->jumpingMove
     
 	Action();
 	Action(P2D from, P2D dir, double weight = 0.00, int movement_type = 0, P2D head = P2D::null_p2d);
+	Action(P2D from, P2D dir, double weight = 0.00, double distance_from_closer_terminal = 0.00, int movement_type = 0, P2D head = P2D::null_p2d);
 	friend ostream& operator<<(ostream& out, Action act);
 
   static const Action null_action;

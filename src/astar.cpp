@@ -312,19 +312,13 @@ int AStarNode::get_siblings(priority_queue<AStarNode*, vector<AStarNode*>, AStar
   return siblings_number;
 }
 
-void AStarNode::backtrace_to_grandfather(AStarNode *&parent_node, int &sequentially_skipped_nodes, int &depth, int &siblings_number, priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> &open, unordered_set<AStarNode*, AStarNode::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
-  if(this->parent && this->parent->parent){
-    parent_node = this->parent->parent;
-    if(parent_node){
-      sequentially_skipped_nodes = 0;
-      depth-=DEPTH_DECREASING_INDEX;
-      //cout << "BACKTRACKING, NEW DEEP="<<depth<<endl;
-      siblings_number = parent_node->get_siblings(open, open_set, evaluated_moves, /*depth+1,*/ excluding_heuristic_possible_moves_activation);
-      depth++;
-    }
-  }
+void AStarNode::backtrace(AStarNode *parent_node, int &sequentially_skipped_nodes, int &depth, int &siblings_number, priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> &open, unordered_set<AStarNode*, AStarNode::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
+  sequentially_skipped_nodes = 0;
+  depth-=DEPTH_DECREASING_INDEX;
+  //cout << "BACKTRACKING, NEW DEEP="<<depth<<endl;
+  siblings_number = parent_node->get_siblings(open, open_set, evaluated_moves, /*depth+1,*/ excluding_heuristic_possible_moves_activation);
+  depth++;
 }
-
 
 priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward(AleaGame game, int limit, double *difficulty, double upper_bound, pair<AleaGame, vector<Action>> banal_search){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
@@ -367,9 +361,18 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
         */
       }
       if(siblings_number == 0 || sequentially_skipped_nodes == siblings_number){//BACKTRACKING internal nodes and leafs
-        if(sequentially_skipped_nodes==siblings_number && current_node->parent ) closed.insert(AleaGame::HashFun()(current_node->parent->game));
-        siblings_closed.clear();
-        current_node->backtrace_to_grandfather(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+        if(current_node->parent){
+          
+          if(sequentially_skipped_nodes==siblings_number) closed.insert(AleaGame::HashFun()(current_node->parent->game));
+          siblings_closed.clear();
+          
+          if(current_node->parent->parent){ 
+            parent_node = current_node->parent->parent;
+            //cout<<"IF sibling 0->backtracking\n";
+            current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+          }
+          
+        }
       } 
       closed.insert(AleaGame::HashFun()(current_node->game));
       continue;  
@@ -379,7 +382,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     branched_nodes++;
     depth++;
     siblings_closed.insert(AleaGame::HashFun()(current_node->game));
-    //cout<<"\n\tsibling found, DEEP="<<depth-1<<endl;
+    //cout<<"\n\tsibling found and added to sibling_closed, DEEP="<<depth-1<<endl;
     siblings_number = current_node->get_siblings(open, open_set, evaluated_moves, /*depth,*/ excluding_heuristic_possible_moves_activation);
       
     if (current_node->game.is_valid_ending_configuration_forward_search()){
@@ -403,8 +406,15 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     }
 
     if(siblings_number==0){
-      closed.insert(AleaGame::HashFun()(current_node->game));
-      current_node->backtrace_to_grandfather(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+      if(current_node->parent != start_node){ //backtracking to grandfather
+        if(current_node->parent->parent){ 
+          parent_node = current_node->parent->parent;
+          //cout<<"Sibling 0->bracktracking\n";
+          closed.insert(AleaGame::HashFun()(current_node->game));
+          depth--;
+          current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+        }
+      }
     }
 
     if (branched_nodes > limit){
@@ -417,7 +427,8 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     }
   }
 
-  cout << FGYELLOWSTART << "TREE TOTALLY EXPLORED. EXIT.\n\n" << FGRESET;
+  if (branched_nodes <= limit)
+    cout << FGYELLOWSTART << "TREE TOTALLY EXPLORED. EXIT.\n\n" << FGRESET;
 
   cout << "Evaluated:" << evaluated_moves << endl;
   cout << "Skipped:"<< skipped_moves << endl;

@@ -12,8 +12,8 @@ AStarNode::AStarNode(AleaGame game) : game(game) { }
 AStarNode::AStarNode(AleaGame game, Action action) : game(game), action(action) { }
 AStarNode::AStarNode(AleaGame game, double g) : game(game), g(g) { }
 AStarNode::AStarNode(AleaGame game, double g, double h) : game(game), g(g), h(h) { f = g + h; }
-AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent) : game(game), action(action), parent(parent) { }
-AStarNode::AStarNode(AleaGame game, Action action, AStarNode* parent, double g, double h, double distance_from_closer_terminal_weight) : game(game), action(action), parent(parent), g(g), h(h), distance_from_closer_terminal_weight(distance_from_closer_terminal_weight) { 
+AStarNode::AStarNode(AleaGame game, Action action, shared_ptr<AStarNode> parent) : game(game), action(action), parent(parent) { }
+AStarNode::AStarNode(AleaGame game, Action action, shared_ptr<AStarNode> parent, double g, double h, double distance_from_closer_terminal_weight) : game(game), action(action), parent(parent), g(g), h(h), distance_from_closer_terminal_weight(distance_from_closer_terminal_weight) { 
   f = g + h;
 }
 
@@ -21,8 +21,7 @@ bool AStarNode::operator==(const AStarNode& other) const {
   return this->game == other.game;
 }
 
-AStarNode& AStarNode::operator=(AStarNode *node){
-  
+AStarNode& AStarNode::operator=(shared_ptr<AStarNode> node){
   this->game = node->game;
   this->action = node->action;
   this->parent = node->parent;
@@ -36,20 +35,20 @@ bool AStarNode::operator<(const AStarNode& other) const {
   return f < other.f;
 }
 
-ostream& operator<<(ostream& out, AStarNode *node) {
+ostream& operator<<(ostream& out, shared_ptr<AStarNode> node) {
   out << "(" << node->f << ")";
   return out;
 }
 
-bool AStarNode::CompareFunBackward::operator() (AStarNode* n1, AStarNode* n2) {
+bool AStarNode::CompareFunBackward::operator() (shared_ptr<AStarNode> n1, shared_ptr<AStarNode> n2) {
   return n1->f < n2->f; //ordering priority queue as a max-heap
 }
 
-bool AStarNode::CompareFunForward::operator() (AStarNode* n1, AStarNode* n2) {
+bool AStarNode::CompareFunForward::operator() (shared_ptr<AStarNode> n1, shared_ptr<AStarNode> n2) {
   return n1->f+n1->distance_from_closer_terminal_weight > n2->f+n2->distance_from_closer_terminal_weight; //ordering priority queue as a min-heap
 }
 
-size_t AStarNode::HashFun::operator()(AStarNode* const&n) const{
+size_t AStarNode::HashFun::operator()(shared_ptr<AStarNode> const&n) const{
   return AleaGame::HashFun()(n->game);
 }
 
@@ -78,10 +77,10 @@ bool AStarNode::CompareFunSolutionsForward:: operator() (pair<vector<Action>, do
 */
 pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int limit) {
   pair<string, vector<Action>> res;
-  priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunBackward> open;
-  unordered_set<AStarNode*, AStarNode::HashFun> open_set;
+  priority_queue<shared_ptr<AStarNode>, vector<shared_ptr<AStarNode>>, AStarNode::CompareFunBackward> open;
+  unordered_set<shared_ptr<AStarNode>, AStarNode::HashFun> open_set;
   unordered_set<AleaGame, AleaGame::HashFun> closed;
-  AStarNode* start_node = new AStarNode(game, 0);
+  shared_ptr<AStarNode> start_node(new AStarNode(game, 0));
   open.push(start_node);
   open_set.insert(start_node);
   int evaluated_moves = 0;
@@ -89,7 +88,7 @@ pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int
   int branched_nodes = 0;
   while (open.size() > 0) {
     ++branched_nodes;
-    AStarNode* current_node = open.top();
+    shared_ptr<AStarNode> current_node = open.top();
     open.pop();
     open_set.erase(current_node);
     closed.insert(current_node->game);
@@ -116,7 +115,7 @@ pair<string, vector<Action>> AStarNode::astar_backward_search(AleaGame game, int
         continue;
       }
       ++evaluated_moves;
-      AStarNode* neighbor = new AStarNode(new_game, action, current_node, current_node->f, action.weight); //(double)value
+      shared_ptr<AStarNode> neighbor(new AStarNode(new_game, action, current_node, current_node->f, action.weight));
       if (open_set.find(neighbor) == open_set.end()) {
         open.push(neighbor);
         open_set.insert(neighbor);
@@ -289,21 +288,22 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   return res;
 }*/
 
-int AStarNode::get_siblings(priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> &open, unordered_set<AStarNode*, AStarNode::HashFun> &open_set, int &evaluated_moves, /*int depth,*/ vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
-  while (!open.empty()) open.pop();
+int AStarNode::get_siblings(shared_ptr<AStarNode> current_node, priority_queue<shared_ptr<AStarNode>, vector<shared_ptr<AStarNode>>, AStarNode::CompareFunForward> &open, unordered_set<shared_ptr<AStarNode>, AStarNode::HashFun> &open_set, int &evaluated_moves, /*int depth,*/ vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
   open_set.clear();
+  while (!open.empty()) open.pop();
   
-  vector<Action> actions = this->game.possible_moves_forward(excluding_heuristic_possible_moves_activation);
+  vector<Action> actions = current_node->game.possible_moves_forward(excluding_heuristic_possible_moves_activation);
   int siblings_number = actions.size();
   //cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
   for (Action action : actions) {
-    AleaGame new_game = AleaGame(this->game);
+    AleaGame new_game = AleaGame(current_node->game);
     if(!new_game.move(action, false)){
       cout<<"\nastar.cpp:astar_forward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movement_type<<", head:"<<action.head<<"\nExiting.\n"; 
       exit(1);
     }
     evaluated_moves++;
-    AStarNode* neighbor = new AStarNode(new_game, action, this, this->f, action.weight, action.distance_from_closer_terminal); 
+    
+    shared_ptr<AStarNode> neighbor(new AStarNode(new_game, action, current_node, current_node->f, action.weight, action.distance_from_closer_terminal)); 
     if (open_set.find(neighbor) == open_set.end()) {
       open.push(neighbor);
       open_set.insert(neighbor);
@@ -312,22 +312,23 @@ int AStarNode::get_siblings(priority_queue<AStarNode*, vector<AStarNode*>, AStar
   return siblings_number;
 }
 
-void AStarNode::backtrace(AStarNode *parent_node, int &sequentially_skipped_nodes, int &depth, int &siblings_number, priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> &open, unordered_set<AStarNode*, AStarNode::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
+void AStarNode::backtrace(shared_ptr<AStarNode> parent_node, int &sequentially_skipped_nodes, int &depth, int &siblings_number, priority_queue<shared_ptr<AStarNode>, vector<shared_ptr<AStarNode>>, AStarNode::CompareFunForward> &open, unordered_set<shared_ptr<AStarNode>, AStarNode::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
   sequentially_skipped_nodes = 0;
   depth-=DEPTH_DECREASING_INDEX;
   //cout << "BACKTRACKING, NEW DEEP="<<depth<<endl;
-  siblings_number = parent_node->get_siblings(open, open_set, evaluated_moves, /*depth+1,*/ excluding_heuristic_possible_moves_activation);
+  //cancellare tutti i fratelli del current node..
+  siblings_number = get_siblings(parent_node, open, open_set, evaluated_moves, /*depth+1,*/ excluding_heuristic_possible_moves_activation);
   depth++;
 }
 
 priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> AStarNode::astar_forward(AleaGame game, int limit, double *difficulty, double upper_bound, pair<AleaGame, vector<Action>> banal_search){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> res;
-  priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> open;
-  unordered_set<AStarNode*, AStarNode::HashFun> open_set;
-  unordered_set<int> closed;
+  priority_queue<shared_ptr<AStarNode>, vector<shared_ptr<AStarNode>>, AStarNode::CompareFunForward> open;
+  unordered_set<shared_ptr<AStarNode>, AStarNode::HashFun> open_set;
+  unordered_set<int> closed;  
   unordered_set<int> siblings_closed;
-
-  AStarNode *parent_node;
+  
+  shared_ptr<AStarNode> parent_node;
   int depth=0;
   int siblings_number = 1;
   int sequentially_skipped_nodes = 0;
@@ -337,8 +338,8 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
 
   vector<pair<int, int>> excluding_heuristic_possible_moves_activation = {make_pair(0,0), make_pair(0,0), make_pair(0,0), make_pair(0,0)};
   
-  AStarNode* current_node;
-  AStarNode* start_node = new AStarNode(game, *difficulty, 0.00);
+  shared_ptr<AStarNode> current_node;
+  shared_ptr<AStarNode> start_node(new AStarNode(game, *difficulty, 0.00));
   open.push(start_node);
   open_set.insert(start_node);
   //cout<<"Root DEEP=0\n\n";
@@ -363,7 +364,8 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       if(siblings_number == 0 || sequentially_skipped_nodes == siblings_number){//BACKTRACKING internal nodes and leafs
         if(current_node->parent){
           
-          if(sequentially_skipped_nodes==siblings_number) closed.insert(AleaGame::HashFun()(current_node->parent->game));
+          if(sequentially_skipped_nodes==siblings_number) 
+            closed.insert(AleaGame::HashFun()(current_node->parent->game));
           siblings_closed.clear();
           
           if(current_node->parent->parent){ 
@@ -375,6 +377,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
         }
       } 
       closed.insert(AleaGame::HashFun()(current_node->game));
+      //delete current_node;
       continue;  
     }
 
@@ -383,7 +386,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     depth++;
     siblings_closed.insert(AleaGame::HashFun()(current_node->game));
     //cout<<"\n\tsibling found and added to sibling_closed, DEEP="<<depth-1<<endl;
-    siblings_number = current_node->get_siblings(open, open_set, evaluated_moves, /*depth,*/ excluding_heuristic_possible_moves_activation);
+    siblings_number = get_siblings(current_node, open, open_set, evaluated_moves, /*depth,*/ excluding_heuristic_possible_moves_activation);
       
     if (current_node->game.is_valid_ending_configuration_forward_search()){
       pair<vector<Action>, double> solution;
@@ -413,6 +416,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
           closed.insert(AleaGame::HashFun()(current_node->game));
           depth--;
           current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+          //delete current_node;
         }
       }
     }
@@ -450,6 +454,8 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   if(excluding_heuristic_possible_moves_activation[3].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[3].first/(double)excluding_heuristic_possible_moves_activation[3].second)*100 << "%" << endl<<endl;
   else cout << " -> 0%" << endl;
 
+  cout << "Open size: "<< sizeof(open) << "\nOpen_set size: " << sizeof(open_set) << endl;
+  cout << "Closed size: "<< sizeof(closed) << "\nSibling Closed size: " << sizeof(siblings_closed) << endl;
   return res;
 }
 

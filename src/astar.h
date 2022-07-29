@@ -22,7 +22,7 @@ class AStarNode {
   public:
     AleaGame game;
     Action action = Action::null_action; 
-    AStarNode* parent = NULL;
+    shared_ptr<AStarNode> parent = NULL;
     double g = 0.00;
     double h = 0.00;
     double distance_from_closer_terminal_weight = 0.00;
@@ -32,24 +32,24 @@ class AStarNode {
     AStarNode(AleaGame game, Action action);
     AStarNode(AleaGame game, double g);
     AStarNode(AleaGame game, double g, double h);
-    AStarNode(AleaGame game, Action action, AStarNode* parent);
-    AStarNode(AleaGame game, Action action, AStarNode* parent, double g, double h, double distance_from_closer_terminal_weight = 0.00);
+    AStarNode(AleaGame game, Action action, shared_ptr<AStarNode> parent);
+    AStarNode(AleaGame game, Action action, shared_ptr<AStarNode> parent, double g, double h, double distance_from_closer_terminal_weight = 0.00);
 
     bool operator==(const AStarNode& other) const;
-    AStarNode& operator=(AStarNode *);
+    AStarNode& operator=(shared_ptr<AStarNode>);
     bool operator<(const AStarNode& other) const;
-    friend ostream& operator<<(ostream& out, AStarNode *node);
+    friend ostream& operator<<(ostream& out, shared_ptr<AStarNode> node);
 
     struct CompareFunBackward {
-      bool operator() (AStarNode* n1, AStarNode* n2);
+      bool operator() (shared_ptr<AStarNode> n1, shared_ptr<AStarNode> n2);
     };
 
     struct CompareFunForward {
-      bool operator() (AStarNode* n1, AStarNode* n2);
+      bool operator() (shared_ptr<AStarNode> n1, shared_ptr<AStarNode> n2);
     };
 
     struct HashFun {
-      size_t operator()(AStarNode* const&n) const;
+      size_t operator()(shared_ptr<AStarNode> const&n) const;
     }; 
 
     struct CompareFunSolutionsForward{
@@ -61,8 +61,8 @@ class AStarNode {
     static string printLevel(AleaGame map_configuration, double difficulty);
 
   private:
-    void backtrace(AStarNode *parent_node, int &sequentially_skipped_nodes, int &depth, int &siblings_number, priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> &open, unordered_set<AStarNode*, AStarNode::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation);
-    int get_siblings(priority_queue<AStarNode*, vector<AStarNode*>, AStarNode::CompareFunForward> &open, unordered_set<AStarNode*, AStarNode::HashFun> &open_set, int &evaluated_moves, /*int depth,*/ vector<pair<int, int>> &excluding_heuristic_possible_moves_activation);
+    void backtrace(shared_ptr<AStarNode> parent_node, int &sequentially_skipped_nodes, int &depth, int &siblings_number, priority_queue<shared_ptr<AStarNode>, vector<shared_ptr<AStarNode>>, AStarNode::CompareFunForward> &open, unordered_set<shared_ptr<AStarNode>, AStarNode::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation);
+    static int get_siblings(shared_ptr<AStarNode> current_node, priority_queue<shared_ptr<AStarNode>, vector<shared_ptr<AStarNode>>, AStarNode::CompareFunForward> &open, unordered_set<shared_ptr<AStarNode>, AStarNode::HashFun> &open_set, int &evaluated_moves, /*int depth,*/ vector<pair<int, int>> &excluding_heuristic_possible_moves_activation);
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> astar_forward(AleaGame game, int limit, double *difficulty, double upper_bound, pair<AleaGame, vector<Action>> banal_search = make_pair(AleaGame(), vector<Action>()));
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> merge_priority_queues(priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source1, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> source2);
 };

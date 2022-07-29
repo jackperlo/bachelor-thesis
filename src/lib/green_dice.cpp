@@ -206,15 +206,25 @@ pair<bool, int> GreenDice::reverse_move_down(int x, int y, unordered_map<P2D, Di
   return res;
 }
 
-pair<bool, int> GreenDice::move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int movement_type){
+pair<bool, int> GreenDice::move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int movement_type){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(movement_type == PUSHED_MOVE || this->get_n_moves() == 0){ //moving when pushed
-    while(x-i >= 0 && check_arrival_cell_is_empty(x-i, y, dices)){ //arrival cell is not out of map bounds and empty
-      res.first = true;
-      res.second ++;
-      i++;
+    if(x-1 >= 0){
+      if(check_arrival_cell_is_empty(x-1, y, dices))
+        return MOVE_BY_1;
+      else{
+        string actualType = dices.at(P2D(x-1, y))->get_actual_type();
+        if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
+          if(dices.at(P2D(x-1, y))->move("left", dices, __func__, is_a_simulation, movement_type).first) //calls recursevely the move on left for the dice on his left (if it can be done moves in turn)
+            return MOVE_BY_1;
+          else 
+            return NO_MOVE;
+        }
+        return NO_MOVE;
+      }
     }
+    return NO_MOVE;
   }else{ //moving actively
     while(x-i >= 0 && check_arrival_cell_is_empty(x-i, y, dices) && this->get_n_moves()-res.second > 0){ //arrival cell is not out of map bounds, is empty and there are moves available
       res.first = true;
@@ -225,15 +235,25 @@ pair<bool, int> GreenDice::move_left(int x, int y, unordered_map<P2D, Dice *, P2
   return res;
 }
 
-pair<bool, int> GreenDice::move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int movement_type){
+pair<bool, int> GreenDice::move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int movement_type){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(movement_type == PUSHED_MOVE || this->get_n_moves() == 0){ //moving when pushed
-    while(x+i < MAP_WIDTH && check_arrival_cell_is_empty(x+i, y, dices)){ //arrival cell is not out of map bounds and empty
-      res.first = true;
-      res.second ++;
-      i++;
+     if(x+1 < MAP_HEIGHT){
+      if(check_arrival_cell_is_empty(x+1, y, dices))
+        return MOVE_BY_1;
+      else{
+        string actualType = dices.at(P2D(x+1, y))->get_actual_type();
+        if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
+          if(dices.at(P2D(x+1, y))->move("right", dices, __func__, is_a_simulation, movement_type).first) //calls recursevely the move on right for the dice on his right (if it can be done moves in turn)
+            return MOVE_BY_1;
+          else 
+            return NO_MOVE;
+        }
+        return NO_MOVE;
+      }
     }
+    return NO_MOVE;
   }else{ //moving actively
     while(x+i < MAP_WIDTH && check_arrival_cell_is_empty(x+i, y, dices) && this->get_n_moves()-res.second > 0){ //arrival cell is not out of map bounds, is empty and there are moves available
       res.first = true;
@@ -244,15 +264,25 @@ pair<bool, int> GreenDice::move_right(int x, int y, unordered_map<P2D, Dice *, P
   return res;
 }
 
-pair<bool, int> GreenDice::move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int movement_type){
+pair<bool, int> GreenDice::move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int movement_type){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(movement_type == PUSHED_MOVE || this->get_n_moves() == 0){ //moving when pushed
-    while(y-i >= 0 && check_arrival_cell_is_empty(x, y-i, dices)){ //arrival cell is not out of map bounds and empty
-      res.first = true;
-      res.second ++;
-      i++;
+     if(y-1 >= 0){
+      if(check_arrival_cell_is_empty(x, y-1, dices))
+        return MOVE_BY_1;
+      else{
+        string actualType = dices.at(P2D(x, y-1))->get_actual_type();
+        if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
+          if(dices.at(P2D(x, y-1))->move("up", dices, __func__, is_a_simulation, movement_type).first) //calls recursevely the move up (if it can be done moves in turn)
+            return MOVE_BY_1;
+          else 
+            return NO_MOVE;
+        }
+        return NO_MOVE;
+      }
     }
+    return NO_MOVE;
   }else{ //moving actively
     while(y-i >= 0 && check_arrival_cell_is_empty(x, y-i, dices) && this->get_n_moves()-res.second > 0){ //arrival cell is not out of map bounds, is empty and there are moves available
       res.first = true;
@@ -263,15 +293,25 @@ pair<bool, int> GreenDice::move_up(int x, int y, unordered_map<P2D, Dice *, P2D:
   return res;
 }
 
-pair<bool, int> GreenDice::move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int movement_type){
+pair<bool, int> GreenDice::move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int movement_type){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   if(movement_type == PUSHED_MOVE || this->get_n_moves() == 0){ //moving when pushed
-    while(y+i < MAP_HEIGHT && check_arrival_cell_is_empty(x, y+i, dices)){ //arrival cell is not out of map bounds and empty
-      res.first = true;
-      res.second ++;
-      i++;
+     if(y+1 >= 0){
+      if(check_arrival_cell_is_empty(x, y+1, dices))
+        return MOVE_BY_1;
+      else{
+        string actualType = dices.at(P2D(x, y+1))->get_actual_type();
+        if(actualType.compare("RedDice") != 0 && actualType.compare("Dice") != 0){ //redDices cannot be pushed  
+          if(dices.at(P2D(x, y+1))->move("down", dices, __func__, is_a_simulation, movement_type).first) //calls recursevely the move down (if it can be done moves in turn)
+            return MOVE_BY_1;
+          else 
+            return NO_MOVE;
+        }
+        return NO_MOVE;
+      }
     }
+    return NO_MOVE;
   }else{ //moving actively
     while(y+i < MAP_HEIGHT && check_arrival_cell_is_empty(x, y+i, dices) && this->get_n_moves()-res.second > 0){ //arrival cell is not out of map bounds, is empty and there are moves available
       res.first = true;

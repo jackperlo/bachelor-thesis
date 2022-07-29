@@ -1424,9 +1424,10 @@ TEST(WhiteDicePushingGreenDice, move_left){
       WhiteDice wd(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
-      EXPECT_TRUE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
+      EXPECT_TRUE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, false).first);
       ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_x(), i);
-      ASSERT_EQ(dices.at(P2D(i-2, j))->get_position().get_x(), i-2);
+      ASSERT_EQ(dices.at(P2D(i-1, j))->get_position().get_x(), i-1);
+      ASSERT_EQ(dices.at(P2D(i-1, j))->get_n_moves(), 2);
       dices.clear();
     }
   }
@@ -1468,7 +1469,8 @@ TEST(RedDicePushingGreenDice, move_left){
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_x(), i);
-      ASSERT_EQ(dices.at(P2D(i-2, j))->get_position().get_x(), i-2);
+      ASSERT_EQ(dices.at(P2D(i-1, j))->get_position().get_x(), i-1);
+      ASSERT_EQ(dices.at(P2D(i-1, j))->get_n_moves(), 2);
       dices.clear();
     }
   }
@@ -1605,7 +1607,8 @@ TEST(WhiteDicePushingGreenDice, move_right){
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
-      ASSERT_EQ(dices.at(P2D(i+3, j))->get_position().get_x(), i+3);
+      ASSERT_EQ(dices.at(P2D(i+2, j))->get_position().get_x(), i+2);
+      ASSERT_EQ(dices.at(P2D(i+2, j))->get_n_moves(), 2);
       dices.clear();
     }
   }
@@ -1647,7 +1650,8 @@ TEST(RedDicePushingGreenDice, move_right){
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
-      ASSERT_EQ(dices.at(P2D(i+3, j))->get_position().get_x(), i+3);
+      ASSERT_EQ(dices.at(P2D(i+2, j))->get_position().get_x(), i+2);
+      ASSERT_EQ(dices.at(P2D(i+2, j))->get_n_moves(), 2);
       dices.clear();
     }
   }
@@ -1784,7 +1788,8 @@ TEST(WhiteDicePushingGreenDice, move_down){
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
-      ASSERT_EQ(dices.at(P2D(i, j+3))->get_position().get_y(), j+3);
+      ASSERT_EQ(dices.at(P2D(i, j+2))->get_position().get_y(), j+2);
+      ASSERT_EQ(dices.at(P2D(i, j+2))->get_n_moves(), 2);
       dices.clear();
     }
   }
@@ -1826,7 +1831,8 @@ TEST(RedDicePushingGreenDice, move_down){
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
-      ASSERT_EQ(dices.at(P2D(i, j+3))->get_position().get_y(), j+3);
+      ASSERT_EQ(dices.at(P2D(i, j+2))->get_position().get_y(), j+2);
+      ASSERT_EQ(dices.at(P2D(i, j+2))->get_n_moves(), 2);
       dices.clear();
     }
   }
@@ -1963,7 +1969,8 @@ TEST(WhiteDicePushingGreenDice, move_up){
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_y(), j);
-      ASSERT_EQ(dices.at(P2D(i, j-2))->get_position().get_y(), j-2);
+      ASSERT_EQ(dices.at(P2D(i, j-1))->get_position().get_y(), j-1);
+      ASSERT_EQ(dices.at(P2D(i, j-1))->get_n_moves(), 2);
       dices.clear();
     }
   }
@@ -2005,7 +2012,8 @@ TEST(RedDicePushingGreenDice, move_up){
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_y(), j);
-      ASSERT_EQ(dices.at(P2D(i, j-2))->get_position().get_y(), j-2);
+      ASSERT_EQ(dices.at(P2D(i, j-1))->get_position().get_y(), j-1);
+      ASSERT_EQ(dices.at(P2D(i, j-1))->get_n_moves(), 2);
       dices.clear();
     }
   }

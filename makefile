@@ -45,13 +45,13 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 	cd src; \
 	$(CXX) -c $(CXXFLAGS) alea_game.cpp -o ../build/alea_game.o;
 
-./build/astar.o: ./src/astar.cpp ./src/astar.h 
+./build/search_algorithms.o: ./src/search_algorithms.cpp ./src/search_algorithms.h 
 	cd src; \
-	$(CXX) -c $(CXXFLAGS) astar.cpp -o ../build/astar.o;
+	$(CXX) -c $(CXXFLAGS) search_algorithms.cpp -o ../build/search_algorithms.o;
 
-level_solver: ./build/p2d.o ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o ./build/alea_game.o ./build/astar.o
+level_solver: ./build/p2d.o ./build/cell.o ./build/dice.o ./build/white_dice.o ./build/red_dice.o ./build/yellow_dice.o ./build/green_dice.o ./build/alea_game.o ./build/search_algorithms.o
 	cd src; \
-	$(CXX) $(CXXFLAGS) level_solver.cpp -o level_solver ../build/p2d.o ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o ../build/green_dice.o ../build/alea_game.o ../build/astar.o
+	$(CXX) $(CXXFLAGS) level_solver.cpp -o level_solver ../build/p2d.o ../build/cell.o ../build/dice.o ../build/white_dice.o ../build/red_dice.o ../build/yellow_dice.o ../build/green_dice.o ../build/alea_game.o ../build/search_algorithms.o
 
 
 #---------------TESTS-------------

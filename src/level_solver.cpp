@@ -1,10 +1,10 @@
 /**
-  Generates a starting level config using A* Backward. Tries to resolve the level using A* forward
+  Generates a starting level config using A* Backward. Tries to resolve the level using RBFS forward
   @file level_solver.cpp
   @author Giacomo Perlo
 */
 #include "alea_game.h"
-#include "astar.h"
+#include "search_algorithms.h"
 #include <string>
 
 pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_name);
@@ -43,11 +43,11 @@ pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_na
   AleaGame *backward_game = new AleaGame(level_name, true);
   cout<<"Starting Configuration (user end)"<<endl;
 	backward_game->print(true);
-  return AStarNode::astar_backward_search(*backward_game, BRANCHED_NODES_LIMIT);
+  return Node::astar_backward_search(*backward_game, BRANCHED_NODES_LIMIT);
 }
 
 /**
-  Prints the number of solution found using A* forward(starting config->ending config, user pov) and show the moves of the easiest one(first position, being a priority queue)
+  Prints the number of solution found using RBFS forward(starting config->ending config, user pov) and show the moves of the easiest one(first position, being a priority queue)
   @param starting_config_file_name .json file name which contains the starting configuration(user pov) which A* backwards computed
 */
 void get_solution_number_and_related_difficulty(string starting_config_file_name){
@@ -57,7 +57,7 @@ void get_solution_number_and_related_difficulty(string starting_config_file_name
   double upper_bound = tokenizing_to_get_level_difficulty(starting_config_file_name, "_");
   cout<<"\nUPPERBOUND: "<<upper_bound<<endl;
   //list of the solutions (seen as list of moves to reach solution), and solution difficulty
-  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, AStarNode::CompareFunSolutionsForward> solutions_queue = AStarNode::astar_forward_search(*starting_config_analyzed_game, upper_bound, BRANCHED_NODES_LIMIT);
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(*starting_config_analyzed_game, upper_bound, BRANCHED_NODES_LIMIT);
   
   cout<<"\nNumber of Solutions Found: "<<solutions_queue.size();
   if(solutions_queue.size()>0){

@@ -44,7 +44,11 @@ pair<bool, int> Dice::move(string direction, unordered_map<P2D, Dice *, P2D::Has
 
   if(this->nMoves > 0 || pushedMove){
     if(direction.compare("left") == 0){
-      res = move_left(x, y, dices, is_a_simulation, movement_type);
+      if(this->get_actual_type().compare("GreenDice") == 0 && pushedMove)
+        res = move_left(x, y, dices, is_a_simulation, PUSHED_MOVE);
+      else
+        res = move_left(x, y, dices, is_a_simulation, movement_type);
+        
       if(res.first && !pushedMove && !is_a_simulation){
         if(this->get_actual_type().compare("YellowDice") == 0)
           return make_pair(make_move(x-res.second, y, 1, dices), res.second);
@@ -56,7 +60,11 @@ pair<bool, int> Dice::move(string direction, unordered_map<P2D, Dice *, P2D::Has
       else if(is_a_simulation)
         return res;
     }else if(direction.compare("right") == 0){
-      res = move_right(x, y, dices, is_a_simulation, movement_type);
+      if(this->get_actual_type().compare("GreenDice") == 0 && pushedMove)
+        res = move_right(x, y, dices, is_a_simulation, PUSHED_MOVE);
+      else
+        res = move_right(x, y, dices, is_a_simulation, movement_type);
+
       if(res.first && !pushedMove && !is_a_simulation){
         if(this->get_actual_type().compare("YellowDice") == 0)
           return make_pair(make_move(x+res.second, y, 1, dices), res.second);
@@ -68,7 +76,11 @@ pair<bool, int> Dice::move(string direction, unordered_map<P2D, Dice *, P2D::Has
       else if(is_a_simulation)
         return res;
     }else if(direction.compare("up") == 0){
-      res = move_up(x, y, dices, is_a_simulation, movement_type);
+      if(this->get_actual_type().compare("GreenDice") == 0 && pushedMove)
+        res = move_up(x, y, dices, is_a_simulation, PUSHED_MOVE);
+      else
+        res = move_up(x, y, dices, is_a_simulation, movement_type);
+      
       if(res.first && !pushedMove && !is_a_simulation){
         if(this->get_actual_type().compare("YellowDice") == 0)
           return make_pair(make_move(x, y-res.second, 1, dices), res.second);
@@ -80,7 +92,11 @@ pair<bool, int> Dice::move(string direction, unordered_map<P2D, Dice *, P2D::Has
       else if(is_a_simulation)
         return res;
     }else if(direction.compare("down") == 0){
-      res = move_down(x, y, dices, is_a_simulation, movement_type);
+      if(this->get_actual_type().compare("GreenDice") == 0 && pushedMove)
+        res = move_down(x, y, dices, is_a_simulation, PUSHED_MOVE);
+      else
+        res = move_down(x, y, dices, is_a_simulation, movement_type);
+      
       if(res.first && !pushedMove && !is_a_simulation){
         if(this->get_actual_type().compare("YellowDice") == 0)
           return make_pair(make_move(x, y+res.second, 1, dices), res.second);

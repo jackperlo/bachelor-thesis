@@ -67,70 +67,53 @@ pair<bool, int> GreenDice::reverse_move(string direction, unordered_map<P2D, Dic
   int x = this->get_position().get_x();
   int y = this->get_position().get_y();
   pair<bool, int> res = NO_MOVE;
-  int i = 1;
   if(movement_type == PUSHED_MOVE){
     if(direction.compare("left") == 0){
-      while(x-i>=0){
-        if(dices.find(P2D::cellToP2D(Cell(x-i, y))) != dices.end() && (x == MAP_WIDTH-1 || dices.find(P2D::cellToP2D(Cell(x+1, y))) != dices.end())){ //if there's a right side or is a boundary cell 
-          if(dices.at(P2D::cellToP2D(Cell(x-i, y)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x-i, y)))->get_actual_type().compare("RedDice") == 0){
-            res = dices.at(P2D::cellToP2D(Cell(x-i, y)))->reverse_move("left", dices, __func__, is_a_simulation, movement_type);
-            if(res.first){
-              res.second += i;
-              if(!is_a_simulation)
-                this->make_move(x-i, y, 0, dices);
-            } 
-          }
-          break;
+      if(dices.find(P2D::cellToP2D(Cell(x-1, y))) != dices.end()){ //if there's a right side or is a boundary cell 
+        if(dices.at(P2D::cellToP2D(Cell(x-1, y)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x-1, y)))->get_actual_type().compare("RedDice") == 0){
+          res = dices.at(P2D::cellToP2D(Cell(x-1, y)))->reverse_move("left", dices, __func__, is_a_simulation, movement_type);
+          if(res.first){
+            res.second = 1;
+            if(!is_a_simulation)
+              this->make_move(x-1, y, 0, dices);
+          } 
         }
-        i++;
       }
     }
     else if(direction.compare("right") == 0){
-      while(x+i<MAP_WIDTH){
-        if(dices.find(P2D::cellToP2D(Cell(x+i, y))) != dices.end() && (x == 0 || dices.find(P2D::cellToP2D(Cell(x-1, y))) != dices.end())){ //if there's a left side or is a boundary cell 
-          if(dices.at(P2D::cellToP2D(Cell(x+i, y)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x+i, y)))->get_actual_type().compare("RedDice") == 0){
-            res = dices.at(P2D::cellToP2D(Cell(x+i, y)))->reverse_move("right", dices, __func__, is_a_simulation, movement_type);
-            if(res.first){
-              res.second += i;
-              if(!is_a_simulation)
-                this->make_move(x+i, y, 0, dices);
-            } 
-          }
-          break;
+      if(dices.find(P2D::cellToP2D(Cell(x+1, y))) != dices.end()){ //if there's a left side or is a boundary cell 
+        if(dices.at(P2D::cellToP2D(Cell(x+1, y)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x+1, y)))->get_actual_type().compare("RedDice") == 0){
+          res = dices.at(P2D::cellToP2D(Cell(x+1, y)))->reverse_move("right", dices, __func__, is_a_simulation, movement_type);
+          if(res.first){
+            res.second = 1;
+            if(!is_a_simulation)
+              this->make_move(x+1, y, 0, dices);
+          } 
         }
-        i++;
       }
     }
     else if(direction.compare("up") == 0){
-      while(y-i>=0){
-        if(dices.find(P2D::cellToP2D(Cell(x, y-i))) != dices.end() && (y == MAP_HEIGHT-1 || dices.find(P2D::cellToP2D(Cell(x, y+1))) != dices.end())){ //if there's a down side or is a boundary cell          
-          if(dices.at(P2D::cellToP2D(Cell(x, y-i)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y-i)))->get_actual_type().compare("RedDice") == 0){
-            res = dices.at(P2D::cellToP2D(Cell(x, y-i)))->reverse_move("up", dices, __func__, is_a_simulation, movement_type);
-            if(res.first){
-              res.second += i;
-              if(!is_a_simulation)
-                this->make_move(x, y-i, 0, dices);
-            } 
-          }
-          break;
+      if(dices.find(P2D::cellToP2D(Cell(x, y-1))) != dices.end()){ //if there's a down side or is a boundary cell          
+        if(dices.at(P2D::cellToP2D(Cell(x, y-1)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y-1)))->get_actual_type().compare("RedDice") == 0){
+          res = dices.at(P2D::cellToP2D(Cell(x, y-1)))->reverse_move("up", dices, __func__, is_a_simulation, movement_type);
+          if(res.first){
+            res.second = 1;
+            if(!is_a_simulation)
+              this->make_move(x, y-1, 0, dices);
+          } 
         }
-        i++;
       }
     }
     else if(direction.compare("down") == 0){
-      while(y+i<MAP_HEIGHT){
-        if(dices.find(P2D::cellToP2D(Cell(x, y+i))) != dices.end() && (y == 0 || dices.find(P2D::cellToP2D(Cell(x, y-1))) != dices.end())){ //if there's an up side or is a boundary cell 
-          if(dices.at(P2D::cellToP2D(Cell(x, y+i)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y+i)))->get_actual_type().compare("RedDice") == 0){
-            res = dices.at(P2D::cellToP2D(Cell(x, y+i)))->reverse_move("down", dices, __func__, is_a_simulation, movement_type);
-            if(res.first){
-              res.second += i;
-              if(!is_a_simulation)
-                this->make_move(x, y+i, 0, dices);
-            } 
-          }
-          break;
+      if(dices.find(P2D::cellToP2D(Cell(x, y+1))) != dices.end()){ //if there's an up side or is a boundary cell 
+        if(dices.at(P2D::cellToP2D(Cell(x, y+1)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y+1)))->get_actual_type().compare("RedDice") == 0){
+          res = dices.at(P2D::cellToP2D(Cell(x, y+1)))->reverse_move("down", dices, __func__, is_a_simulation, movement_type);
+          if(res.first){
+            res.second = 1;
+            if(!is_a_simulation)
+              this->make_move(x, y+1, 0, dices);
+          } 
         }
-        i++;
       }
     }
   }else{ //dice moving by itself

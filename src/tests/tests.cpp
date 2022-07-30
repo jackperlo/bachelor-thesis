@@ -3947,22 +3947,22 @@ TEST(GreenDicePushingWhiteDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 0, 0);
+      GreenDice gd1(c1, 1, 1);
       WhiteDice wd1(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
-      pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false, true);
-      if(c1.get_x() == MAP_WIDTH-1){
+      pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false, PUSHED_MOVE);
+      if(c2.get_x() > 0){
         EXPECT_TRUE(res.first);
-        ASSERT_EQ(res.second, 1+c1.get_x()-c2.get_x());
-        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 0);
+        ASSERT_EQ(res.second, 1);
+        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i-1, j))->get_n_moves(), 0);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_x(), i);
         ASSERT_EQ(dices.at(P2D(i-1, j))->get_position().get_x(), i-1);
       }else{
         EXPECT_FALSE(res.first);
         ASSERT_EQ(res.second, 0);
-        ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 0);
+        ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_x(), i);
@@ -3981,22 +3981,22 @@ TEST(GreenDicePushingWhiteDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd1(c1, 0, 0);
+      GreenDice gd1(c1, 1, 1);
       WhiteDice wd1(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
-      pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false, true);
-      if(c1.get_x() == 0){
+      pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false, PUSHED_MOVE);
+      if(c2.get_x() < MAP_WIDTH-1){
         EXPECT_TRUE(res.first);
-        ASSERT_EQ(res.second, 1+c2.get_x()-c1.get_x());
-        ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 0);
+        ASSERT_EQ(res.second, 1);
+        ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i+2, j))->get_n_moves(), 0);
         ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
         ASSERT_EQ(dices.at(P2D(i+2, j))->get_position().get_x(), i+2);
       }else{
         EXPECT_FALSE(res.first);
         ASSERT_EQ(res.second, 0);
-        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 0);
+        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_x(), i);
         ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
@@ -4015,22 +4015,22 @@ TEST(GreenDicePushingWhiteDice, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 0, 0);
+      GreenDice gd1(c1, 1, 1);
       WhiteDice wd1(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
-      pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false, true);
-      if(c1.get_y() == MAP_HEIGHT-1){
+      pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false, PUSHED_MOVE);
+      if(c2.get_y() > 0){
         EXPECT_TRUE(res.first);
-        ASSERT_EQ(res.second, 1+c1.get_y()-c2.get_y());
-        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 0);
+        ASSERT_EQ(res.second, 1);
+        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j-1))->get_n_moves(), 0);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_y(), j);
         ASSERT_EQ(dices.at(P2D(i, j-1))->get_position().get_y(), j-1);
       }else{
         EXPECT_FALSE(res.first);
         ASSERT_EQ(res.second, 0);
-        ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 0);
+        ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_y(), j);
@@ -4049,22 +4049,22 @@ TEST(GreenDicePushingWhiteDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd1(c1, 0, 0);
+      GreenDice gd1(c1, 1, 1);
       WhiteDice wd1(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
-      pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false, true);
-      if(c1.get_y() == 0){
+      pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false, PUSHED_MOVE);
+      if(c2.get_y() < MAP_HEIGHT-1){
         EXPECT_TRUE(res.first);
-        ASSERT_EQ(res.second, 1+c2.get_y()-c1.get_y());
-        ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 0);
+        ASSERT_EQ(res.second, 1);
+        ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j+2))->get_n_moves(), 0);
         ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
         ASSERT_EQ(dices.at(P2D(i, j+2))->get_position().get_y(), j+2);
       }else{
         EXPECT_FALSE(res.first);
         ASSERT_EQ(res.second, 0);
-        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 0);
+        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_y(), j);
         ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
@@ -4083,22 +4083,22 @@ TEST(GreenDicePushingRedDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 0, 0);
+      GreenDice gd1(c1, 1, 1);
       RedDice rd1(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd1));
-      pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false, true);
-      if(c1.get_x() == MAP_WIDTH-1){
+      pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false, PUSHED_MOVE);
+      if(c2.get_x() > 0){
         EXPECT_TRUE(res.first);
-        ASSERT_EQ(res.second, 1+c1.get_x()-c2.get_x());
-        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 0);
+        ASSERT_EQ(res.second, 1);
+        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i-1, j))->get_n_moves(), 0);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_x(), i);
         ASSERT_EQ(dices.at(P2D(i-1, j))->get_position().get_x(), i-1);
       }else{
         EXPECT_FALSE(res.first);
         ASSERT_EQ(res.second, 0);
-        ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 0);
+        ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_x(), i);
@@ -4117,22 +4117,22 @@ TEST(GreenDicePushingRedDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd1(c1, 0, 0);
+      GreenDice gd1(c1, 1, 1);
       RedDice rd1(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd1));
-      pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false, true);
-      if(c1.get_x() == 0){
+      pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false, PUSHED_MOVE);
+      if(c2.get_x() < MAP_WIDTH-1){
         EXPECT_TRUE(res.first);
-        ASSERT_EQ(res.second, 1+c2.get_x()-c1.get_x());
-        ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 0);
+        ASSERT_EQ(res.second, 1);
+        ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i+2, j))->get_n_moves(), 0);
         ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
         ASSERT_EQ(dices.at(P2D(i+2, j))->get_position().get_x(), i+2);
       }else{
         EXPECT_FALSE(res.first);
         ASSERT_EQ(res.second, 0);
-        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 0);
+        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i+1, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_x(), i);
         ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
@@ -4151,22 +4151,22 @@ TEST(GreenDicePushingRedDice, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 0, 0);
+      GreenDice gd1(c1, 1, 1);
       RedDice rd1(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd1));
-      pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false, true);
-      if(c1.get_y() == MAP_HEIGHT-1){
+      pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false, PUSHED_MOVE);
+      if(c2.get_y() > 0){
         EXPECT_TRUE(res.first);
-        ASSERT_EQ(res.second, 1+c1.get_y()-c2.get_y());
-        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 0);
+        ASSERT_EQ(res.second, 1);
+        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j-1))->get_n_moves(), 0);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_y(), j);
         ASSERT_EQ(dices.at(P2D(i, j-1))->get_position().get_y(), j-1);
       }else{
         EXPECT_FALSE(res.first);
         ASSERT_EQ(res.second, 0);
-        ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 0);
+        ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_y(), j);
@@ -4177,7 +4177,7 @@ TEST(GreenDicePushingRedDice, reverse_move_up){
 }
 
 TEST(GreenDicePushingRedDice, reverse_move_down){
-  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+   unordered_map<P2D, Dice*, P2D::HashFun> dices;
   Cell c1, c2;
   for (int j = 0; j < MAP_HEIGHT-2; j++){
     for (int i = 0; i < MAP_WIDTH; i++){
@@ -4185,22 +4185,22 @@ TEST(GreenDicePushingRedDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd1(c1, 0, 0);
+      GreenDice gd1(c1, 1, 1);
       RedDice rd1(c2, 1, 1);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd1));
-      pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false, true);
-      if(c1.get_y() == 0){
+      pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false, PUSHED_MOVE);
+      if(c2.get_y() < MAP_HEIGHT-1){
         EXPECT_TRUE(res.first);
-        ASSERT_EQ(res.second, 1+c2.get_y()-c1.get_y());
-        ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 0);
+        ASSERT_EQ(res.second, 1);
+        ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j+2))->get_n_moves(), 0);
         ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
         ASSERT_EQ(dices.at(P2D(i, j+2))->get_position().get_y(), j+2);
       }else{
         EXPECT_FALSE(res.first);
         ASSERT_EQ(res.second, 0);
-        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 0);
+        ASSERT_EQ(dices.at(P2D(i, j))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j+1))->get_n_moves(), 1);
         ASSERT_EQ(dices.at(P2D(i, j))->get_position().get_y(), j);
         ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);

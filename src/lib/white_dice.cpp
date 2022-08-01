@@ -108,7 +108,7 @@ pair<bool, int> WhiteDice::call4reverse_move(string direction, unordered_map<P2D
   return res;
 }
 
-pair<bool, int> WhiteDice::reverse_move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation){
+pair<bool, int> WhiteDice::reverse_move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int /* movement_type unused*/){
   pair<bool, int> res = NO_MOVE;
   if(x-1>=0){
     if(check_arrival_cell_is_empty(x-1, y, dices))
@@ -123,7 +123,7 @@ pair<bool, int> WhiteDice::reverse_move_left(int x, int y, unordered_map<P2D, Di
   return res;
 }
 
-pair<bool, int> WhiteDice::reverse_move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation){
+pair<bool, int> WhiteDice::reverse_move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int /* movement_type unused*/){
   pair<bool, int> res = NO_MOVE;
   if(x+1<MAP_WIDTH){
     if(check_arrival_cell_is_empty(x+1, y, dices))
@@ -138,7 +138,7 @@ pair<bool, int> WhiteDice::reverse_move_right(int x, int y, unordered_map<P2D, D
   return res;
 }
 
-pair<bool, int> WhiteDice::reverse_move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation){
+pair<bool, int> WhiteDice::reverse_move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int /* movement_type unused*/){
   pair<bool, int> res = NO_MOVE;
   if(y-1>=0){
     if(check_arrival_cell_is_empty(x, y-1, dices))
@@ -153,7 +153,7 @@ pair<bool, int> WhiteDice::reverse_move_up(int x, int y, unordered_map<P2D, Dice
   return res;
 }
 
-pair<bool, int> WhiteDice::reverse_move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation){
+pair<bool, int> WhiteDice::reverse_move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool is_a_simulation, int /* movement_type unused*/){
   pair<bool, int> res = NO_MOVE;
   if(y+1<MAP_HEIGHT){
     if(check_arrival_cell_is_empty(x, y+1, dices))

@@ -141,7 +141,7 @@ pair<bool, int> GreenDice::reverse_move(string direction, unordered_map<P2D, Dic
   return res;
 }
 
-pair<bool, int> GreenDice::reverse_move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */){
+pair<bool, int> GreenDice::reverse_move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int /* movement_type unused */){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   while(x-i >= 0 && this->get_n_moves()-res.second > 0 && check_arrival_cell_is_empty(x-i, y, dices)){ 
@@ -153,7 +153,7 @@ pair<bool, int> GreenDice::reverse_move_left(int x, int y, unordered_map<P2D, Di
   return res;
 }
 
-pair<bool, int> GreenDice::reverse_move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */){
+pair<bool, int> GreenDice::reverse_move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int /* movement_type unused*/){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   while(x+i < MAP_WIDTH && this->get_n_moves()-res.second > 0 && check_arrival_cell_is_empty(x+i, y, dices)){ 
@@ -165,7 +165,7 @@ pair<bool, int> GreenDice::reverse_move_right(int x, int y, unordered_map<P2D, D
   return res;
 }
 
-pair<bool, int> GreenDice::reverse_move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */){
+pair<bool, int> GreenDice::reverse_move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int /* movement_type unused*/){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   while(y-i >= 0 && this->get_n_moves()-res.second > 0 && check_arrival_cell_is_empty(x, y-i, dices)){ 
@@ -177,7 +177,7 @@ pair<bool, int> GreenDice::reverse_move_up(int x, int y, unordered_map<P2D, Dice
   return res;
 }
 
-pair<bool, int> GreenDice::reverse_move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */){
+pair<bool, int> GreenDice::reverse_move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int /* movement_type unused*/){
   int i = 1;
   pair<bool, int> res = NO_MOVE;
   while(y+i < MAP_HEIGHT && this->get_n_moves()-res.second > 0 && check_arrival_cell_is_empty(x, y+i, dices)){ 

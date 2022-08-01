@@ -95,25 +95,25 @@ pair<bool, int> RedDice::call4reverse_move(string direction, unordered_map<P2D, 
   return res;
 }
 
-pair<bool, int> RedDice::reverse_move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */){
+pair<bool, int> RedDice::reverse_move_left(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int /* movement_type unused*/){
   if(x-1>=0 && check_arrival_cell_is_empty(x-1, y, dices)) 
     return MOVE_BY_1;
   return NO_MOVE;
 }
 
-pair<bool, int> RedDice::reverse_move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */){
+pair<bool, int> RedDice::reverse_move_right(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int /* movement_type unused*/){
   if(x+1<MAP_WIDTH && check_arrival_cell_is_empty(x+1, y, dices)) 
     return MOVE_BY_1;
   return NO_MOVE;
 }
 
-pair<bool, int> RedDice::reverse_move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */){
+pair<bool, int> RedDice::reverse_move_up(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /* is_a_simulation unused */, int /* movement_type unused*/){
   if(y-1>=0 && check_arrival_cell_is_empty(x, y-1, dices)) 
     return MOVE_BY_1;
   return NO_MOVE;
 }
 
-pair<bool, int> RedDice::reverse_move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /*is_a_simulation unused*/){
+pair<bool, int> RedDice::reverse_move_down(int x, int y, unordered_map<P2D, Dice *, P2D::HashFun> &dices, bool /*is_a_simulation unused*/, int /* movement_type unused*/){
   if(y+1<MAP_HEIGHT && check_arrival_cell_is_empty(x, y+1, dices))
     return MOVE_BY_1;
   return NO_MOVE;

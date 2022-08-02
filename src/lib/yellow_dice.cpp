@@ -82,6 +82,7 @@ pair<bool, int> YellowDice::call4reverse_move(string direction, unordered_map<P2
       res = reverse_move_left(x, y, dices, is_a_simulation, movement_type);
       if(res.first && !is_a_simulation){
         if(is_moving_actively && movement_type!=PUSHED_MOVE) this->make_move(x-res.second, y, 1, dices);
+        else if(movement_type==PUSHED_MOVE) this->make_move(x-1, y, 0, dices);
         else this->make_move(x-res.second, y, 0, dices);
       }
     } 
@@ -91,6 +92,7 @@ pair<bool, int> YellowDice::call4reverse_move(string direction, unordered_map<P2
       res = reverse_move_right(x, y, dices, is_a_simulation, movement_type);
       if(res.first && !is_a_simulation){
         if(is_moving_actively && movement_type!=PUSHED_MOVE) this->make_move(x+res.second, y, 1, dices);
+        else if(movement_type==PUSHED_MOVE) this->make_move(x+1, y, 0, dices);
         else this->make_move(x+res.second, y, 0, dices);      
       }
     }
@@ -100,6 +102,7 @@ pair<bool, int> YellowDice::call4reverse_move(string direction, unordered_map<P2
       res = reverse_move_up(x, y, dices, is_a_simulation, movement_type);
       if(res.first && !is_a_simulation){
         if(is_moving_actively && movement_type!=PUSHED_MOVE) this->make_move(x, y-res.second, 1, dices);
+        else if(movement_type==PUSHED_MOVE) this->make_move(x, y-1, 0, dices);
         else this->make_move(x, y-res.second, 0, dices);
       }
     }
@@ -109,6 +112,7 @@ pair<bool, int> YellowDice::call4reverse_move(string direction, unordered_map<P2
        res = reverse_move_down(x, y, dices, is_a_simulation, movement_type);
       if(res.first && !is_a_simulation){
         if(is_moving_actively && movement_type!=PUSHED_MOVE) this->make_move(x, y+res.second, 1, dices);
+        else if(movement_type==PUSHED_MOVE) this->make_move(x, y+1, 0, dices);
         else this->make_move(x, y+res.second, 0, dices);
       }
     }

@@ -302,7 +302,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
   if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
-    if(c.get_x() == x-1 && last_action_performed.dir != P2D::RIGHT && last_action_performed.dir != P2D::JUMPING_RIGHT){
+    if(c.get_x() == x-1 && last_action_performed.dir.x > 0){
       res = dice->reverse_move("left", dices, __func__, true, PUSHED_MOVE);
       if(res.first)
         moves.push_back(Action(P2D(x, y), P2D::LEFT, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x-(res.second+1), y)));
@@ -316,7 +316,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
         }
       }
     }
-    if(c.get_x() == x+1 && last_action_performed.dir != P2D::LEFT && last_action_performed.dir != P2D::JUMPING_LEFT){
+    if(c.get_x() == x+1 && last_action_performed.dir.x < 0){
       res = dice->reverse_move("right", dices, __func__, true, PUSHED_MOVE);
       if(res.first){
         moves.push_back(Action(P2D(x, y), P2D::RIGHT, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x+(res.second+1), y)));
@@ -331,7 +331,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
         }    
       } 
     }
-    if(c.get_y() == y-1  && last_action_performed.dir != P2D::DOWN  && last_action_performed.dir != P2D::JUMPING_DOWN){
+    if(c.get_y() == y-1  && last_action_performed.dir.y > 0){
       res = dice->reverse_move("up", dices, __func__, true, PUSHED_MOVE);
       if(res.first)
         moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x, y-(res.second+1))));
@@ -345,7 +345,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
         } 
       }
     }
-    if(c.get_y() == y+1  && last_action_performed.dir != P2D::UP && last_action_performed.dir != P2D::JUMPING_UP){
+    if(c.get_y() == y+1  && last_action_performed.dir.y < 0){
       res = dice->reverse_move("down", dices, __func__, true, PUSHED_MOVE);
       if(res.first)
         moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x, (y+res.second+1))));

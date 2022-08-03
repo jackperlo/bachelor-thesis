@@ -992,12 +992,12 @@ void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
 
 bool AleaGame::check_dice_could_be_pushed(Dice *dice){
   P2D dice_position(dice->get_position().get_x(), dice->get_position().get_y());
-  for(pair<P2D, Dice *> pair : dices){
-    if(pair.second->get_actual_type().compare("RedDice") == 0 || pair.second->get_actual_type().compare("WhiteDice") == 0){
-      if((pair.second->get_n_moves()+dice->get_n_moves())>(calculate_distance_from_closer_terminal(dice_position)+dice_position.manatthan(pair.first)))
-        return true;
-    }
-  }
+  for(pair<P2D, Dice *> pair : dices)
+    if(pair.first != dice_position)
+      if(pair.second->get_actual_type().compare("RedDice") == 0 || pair.second->get_actual_type().compare("WhiteDice") == 0)
+        if((pair.second->get_n_moves()+dice->get_n_moves())>(calculate_distance_from_closer_terminal(dice_position)+dice_position.manatthan(pair.first)))
+          return true;
+          
   return false;
 }
 

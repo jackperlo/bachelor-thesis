@@ -73,7 +73,7 @@ class AleaGame{
     bool is_valid_ending_configuration_backward_search();
     bool has_dice(const P2D& pos) const;
     int calculate_distance_from_closer_terminal(P2D dice_position);
-    bool find_banal_start_calculate_route(vector<Action> &moves, P2D dice_position, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
+    bool find_banal_start_calculate_route(vector<Action> &moves, pair<P2D, Dice*> dice, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static bool terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static vector<pair<P2D, Dice *>> disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static bool disputed_is_assigned(P2D terminal, vector<std::pair<P2D, Dice *>> disputer_dices);

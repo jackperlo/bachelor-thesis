@@ -201,6 +201,7 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
       cout<<"\nastar.cpp:astar_forward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movement_type<<", head:"<<action.head<<"\nExiting.\n"; 
       exit(1);
     }
+
     evaluated_moves++;
     
     shared_ptr<Node> neighbor(new Node(new_game, action, current_node, current_node->f, action.weight, action.distance_from_closer_terminal)); 
@@ -300,7 +301,6 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
         }
       } 
       closed.insert(AleaGame::HashFun()(current_node->game));
-      //delete current_node;
       continue;  
     }
 

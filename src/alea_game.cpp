@@ -662,13 +662,14 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       res = dice->move("left", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x-1, y));
-        if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
+        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
+          white_heuristic_stats.first++; //heuristic activates
+        else{
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
             moves.push_back(Action(P2D(x, y), P2D::LEFT, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));
           else
             moves.push_back(Action(P2D(x, y), P2D::LEFT, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE));       
-        }else
-          white_heuristic_stats.first++; //heuristic activates
+        }
         white_heuristic_stats.second++;
       } 
     }
@@ -676,13 +677,14 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       res = dice->move("right", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x+1, y));
-        if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
+        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
+          white_heuristic_stats.first++; //heuristic activates
+        else{
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
             moves.push_back(Action(P2D(x, y), P2D::RIGHT, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));
           else
             moves.push_back(Action(P2D(x, y), P2D::RIGHT, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE));           
-        }else
-          white_heuristic_stats.first++; //heuristic activates
+        }
         white_heuristic_stats.second++;
       }
     }
@@ -690,13 +692,14 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       res = dice->move("up", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y-1));
-        if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
+        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
+          white_heuristic_stats.first++; //heuristic activates
+        else{
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
             moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));
           else
             moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE));
-        }else
-          white_heuristic_stats.first++; //heuristic activates   
+        }
         white_heuristic_stats.second++;      
       }
     }
@@ -704,13 +707,14 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       res = dice->move("down", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y+1));
-        if(distance_from_closer_terminal_after_move <= WHITE_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
+        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
+          white_heuristic_stats.first++; //heuristic activates
+        else{
           if(dices.find(P2D::cellToP2D(c)) == dices.end())
             moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));
           else
             moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE)); 
-        }else
-          white_heuristic_stats.first++; //heuristic activates       
+        }
         white_heuristic_stats.second++;
       }
     }
@@ -942,10 +946,10 @@ void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       res = dice->move("left", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x-res.second, y));
-        if(distance_from_closer_terminal_after_move <= GREEN_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-          moves.push_back(Action(P2D(x, y), P2D::LEFT, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
-        else
+        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
           green_heuristic_stats.first++; //heuristic activates
+        else
+          moves.push_back(Action(P2D(x, y), P2D::LEFT, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
         green_heuristic_stats.second++;
       }
     }
@@ -953,10 +957,10 @@ void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       res = dice->move("right", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x+res.second, y));
-        if(distance_from_closer_terminal_after_move <= GREEN_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-          moves.push_back(Action(P2D(x, y), P2D::RIGHT, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
-        else
+        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
           green_heuristic_stats.first++; //heuristic activates
+        else
+          moves.push_back(Action(P2D(x, y), P2D::RIGHT, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
         green_heuristic_stats.second++;
       }
     }
@@ -964,10 +968,10 @@ void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       res = dice->move("up", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y-res.second));
-        if(distance_from_closer_terminal_after_move <= GREEN_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-          moves.push_back(Action(P2D(x, y), P2D::UP, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));              
-        else
+        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
           green_heuristic_stats.first++; //heuristic activates
+        else
+          moves.push_back(Action(P2D(x, y), P2D::UP, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));              
         green_heuristic_stats.second++;
       }
     }
@@ -975,14 +979,26 @@ void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
       res = dice->move("down", dices, __func__, true);
       if(res.first){
         distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y+res.second));
-        if(distance_from_closer_terminal_after_move <= GREEN_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-          moves.push_back(Action(P2D(x, y), P2D::DOWN, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));             
-        else
+        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
           green_heuristic_stats.first++; //heuristic activates
+        else
+          moves.push_back(Action(P2D(x, y), P2D::DOWN, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));             
         green_heuristic_stats.second++;
       }
     }
   }
+}
+
+
+bool AleaGame::check_dice_could_be_pushed(Dice *dice){
+  P2D dice_position(dice->get_position().get_x(), dice->get_position().get_y());
+  for(pair<P2D, Dice *> pair : dices){
+    if(pair.second->get_actual_type().compare("RedDice") == 0 || pair.second->get_actual_type().compare("WhiteDice") == 0){
+      if((pair.second->get_n_moves()+dice->get_n_moves())>(calculate_distance_from_closer_terminal(dice_position)+dice_position.manatthan(pair.first)))
+        return true;
+    }
+  }
+  return false;
 }
 
 bool AleaGame::move(const Action& action, bool is_moving_backward) {

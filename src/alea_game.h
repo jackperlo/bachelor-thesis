@@ -78,6 +78,7 @@ class AleaGame{
     static vector<pair<P2D, Dice *>> disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static bool disputed_is_assigned(P2D terminal, vector<std::pair<P2D, Dice *>> disputer_dices);
     pair<AleaGame, vector<Action>> find_banal_starts_forward_search(pair<AleaGame, vector<Action>> previous_game_actions);
+    bool check_dice_could_be_pushed(Dice *dice);
 };
 
 #endif

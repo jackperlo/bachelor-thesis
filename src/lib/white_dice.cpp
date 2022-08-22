@@ -7,6 +7,8 @@
 #include <typeinfo>
 #include <typeindex>
 
+WhiteDice::~WhiteDice(){}
+
 WhiteDice::WhiteDice(Cell position, int nMoves, int initial_moves) : Dice(position, nMoves, initial_moves){}
 
 WhiteDice::WhiteDice() : Dice(){}

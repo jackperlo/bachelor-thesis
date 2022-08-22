@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <fstream>
 
+Node::~Node(){}
 Node::Node(AleaGame game) : game(game) { }
 Node::Node(AleaGame game, Action action) : game(game), action(action) { }
 Node::Node(AleaGame game, double g) : game(game), g(g) { }

@@ -1,6 +1,8 @@
 #include "dice.h"
 #include "common.h"
 
+Dice::~Dice(){}
+
 Dice::Dice(Cell position, int nMoves, int initial_moves){
   this->position = position;
   this->nMoves = nMoves;

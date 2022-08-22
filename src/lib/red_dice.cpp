@@ -7,6 +7,8 @@
 #include <typeinfo>
 #include <typeindex>
 
+RedDice::~RedDice(){}
+
 RedDice::RedDice(Cell position, int nMoves, int initial_moves) : Dice(position, nMoves, initial_moves){}
 
 RedDice::RedDice() : Dice(){}

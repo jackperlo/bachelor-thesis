@@ -7,6 +7,8 @@
 #include <typeinfo>
 #include <typeindex>
 
+YellowDice::~YellowDice(){}
+
 YellowDice::YellowDice(Cell position, int nMoves, int initial_moves) : Dice(position, nMoves, initial_moves){}
 
 YellowDice::YellowDice() : Dice(){}

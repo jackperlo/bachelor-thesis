@@ -8,6 +8,7 @@
 
 class WhiteDice : public Dice{
   public:
+    ~WhiteDice();
     WhiteDice(Cell position, int nMoves, int initial_moves);
     WhiteDice();
     WhiteDice(const WhiteDice &wd1); //copying constructor, invoked in situation as: WhiteDice wd1 = wd2.

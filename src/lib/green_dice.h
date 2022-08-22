@@ -7,6 +7,7 @@
 
 class GreenDice : public Dice{
   public:
+    ~GreenDice();
     GreenDice(Cell position, int nMoves, int initial_moves);
     GreenDice();
     string print_dice_to_string (bool print_with_initial_moves) override;

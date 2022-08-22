@@ -7,6 +7,7 @@
 
 class YellowDice : public Dice{
   public:
+    ~YellowDice();
     YellowDice(Cell position, int nMoves, int initial_moves);
     YellowDice();
     YellowDice(const YellowDice &yd1); //copying constructor, invoked in situation as: YellowDice yd1 = yd2.

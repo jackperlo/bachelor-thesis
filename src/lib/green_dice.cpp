@@ -11,6 +11,8 @@ int MAP_WIDTH;
 int MAP_HEIGHT;
 int TOTAL_MOVES;
 
+GreenDice::~GreenDice(){}
+
 GreenDice::GreenDice(Cell position, int nMoves, int initial_moves) : Dice(position, nMoves, initial_moves){}
 
 GreenDice::GreenDice() : Dice(){}

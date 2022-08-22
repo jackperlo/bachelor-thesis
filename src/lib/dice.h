@@ -23,6 +23,7 @@ class Dice{
     string string_to_lower(string input_string);
 
   public:
+    virtual ~Dice();
     Dice(Cell position, int nMoves, int initial_moves);
     Dice();
     string virtual print_dice_to_string (bool print_with_initial_moves) = 0;

@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
   }
   
   solution = start_backward_analysis(argv[1]);
-  
+
   if(solution.first.compare("") != 0){
     get_solution_number_and_related_difficulty(solution.first);
     print_expected_forward_solution(solution);  
@@ -40,10 +40,10 @@ int main(int argc, char *argv[]){
 pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_name){
   string level_name = "./custom_level_config/";
   level_name.append(ending_config_file_name);
-  AleaGame *backward_game = new AleaGame(level_name, true);
+  AleaGame backward_game(level_name, true);
   cout<<"Starting Configuration (user end)"<<endl;
-	backward_game->print(true);
-  return Node::astar_backward_search(*backward_game, BRANCHED_NODES_LIMIT);
+	backward_game.print(true);
+  return Node::astar_backward_search(backward_game, BRANCHED_NODES_LIMIT);
 }
 
 /**
@@ -51,18 +51,18 @@ pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_na
   @param starting_config_file_name .json file name which contains the starting configuration(user pov) which A* backwards computed
 */
 void get_solution_number_and_related_difficulty(string starting_config_file_name){
-  cout<<starting_config_file_name<<endl;
-  AleaGame *starting_config_analyzed_game = new AleaGame(starting_config_file_name, false, "ANALYZED");
+  cout<<endl<<starting_config_file_name<<endl;
+  AleaGame starting_config_analyzed_game(starting_config_file_name, false, "ANALYZED");
   
   double upper_bound = tokenizing_to_get_level_difficulty(starting_config_file_name, "_");
   cout<<"\nUPPERBOUND: "<<upper_bound<<endl;
   //list of the solutions (seen as list of moves to reach solution), and solution difficulty
-  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(*starting_config_analyzed_game, upper_bound, BRANCHED_NODES_LIMIT);
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(starting_config_analyzed_game, upper_bound, BRANCHED_NODES_LIMIT);
   
   cout<<"\nNumber of Solutions Found: "<<solutions_queue.size();
   if(solutions_queue.size()>0){
     cout<<"\nEasiest Solution Difficulty: "<<solutions_queue.top().second<<"\n";
-    playGamePrinter(*starting_config_analyzed_game, solutions_queue.top().first);
+    playGamePrinter(starting_config_analyzed_game, solutions_queue.top().first);
   }
   cout<<"\n";
 }

@@ -28,6 +28,7 @@ class Node{
     double f = 0.00;
     double distance_from_closer_terminal_weight = 0.00;
 
+    ~Node();
     Node(AleaGame game);
     Node(AleaGame game, Action action);
     Node(AleaGame game, double g);

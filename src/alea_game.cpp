@@ -17,6 +17,10 @@
 #include <list>
 #include <limits>
 
+AleaGame::~AleaGame(){
+  for(pair<P2D, Dice *> pair : dices) delete pair.second;
+}
+
 //empty constructor
 AleaGame::AleaGame(){}
 

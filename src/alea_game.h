@@ -21,6 +21,7 @@ class AleaGame{
     unordered_map<P2D, Dice*, P2D::HashFun> dices;
     Action last_action_performed;
 
+    ~AleaGame();
     AleaGame();
     AleaGame(json json_dict, bool is_backward, string type);
     AleaGame(string filename, bool is_backward, string type = "");

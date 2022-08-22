@@ -18,6 +18,7 @@
 #define FGREDSTART "\033[31m"
 #define FGYELLOWSTART "\033[33m"
 #define FGGREENSTART "\033[32m"
+#define FGMAGENTASTART "\033[35m"
 #define FGRESET "\033[0m"
 
 #define MAX(a, b) a > b ? a : b

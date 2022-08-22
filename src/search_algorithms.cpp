@@ -7,7 +7,11 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
+#include <thread>
+#include <future>
+#include <mutex>
 
+mutex mtx;
 Node::~Node(){}
 Node::Node(AleaGame game) : game(game) { }
 Node::Node(AleaGame game, Action action) : game(game), action(action) { }
@@ -158,36 +162,57 @@ pair<string, vector<Action>> Node::astar_backward_search(AleaGame game, int limi
 */
 priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::rbfs_forward_search(AleaGame original_game, double upper_bound, int limit) {
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res;
-  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> tmp;
-  double difficulty = 0.00;
   
   vector<pair<AleaGame, vector<Action>>> banal_search_results = original_game.find_banal_starts_forward_search_wrapper();
-  int i=1;
-  for(pair<AleaGame, vector<Action>> banal_search : banal_search_results){
-    AleaGame new_game = original_game;
-    difficulty = 0.00;
-    if(new_game.setting_up_banal_configuration(banal_search, &difficulty, i, banal_search_results.size()) && difficulty<upper_bound){
-      res.push(make_pair(banal_search.second, difficulty));
-      cout<<"\n\t"<< FGGREENSTART <<"New BANAL Solution Found!\n"<< FGRESET;
-    }else{
-      cout<<"Banal Starting Configuration Forward Analysis: (starting difficulty = "<<difficulty<<")\n";
-      tmp = rbfs_forward(new_game, limit, &difficulty, upper_bound, banal_search);
-      if(tmp.size() > 0) res = merge_priority_queues(res, tmp);
-    }
+  auto it = banal_search_results.begin();
+  
+  for(pair<AleaGame, vector<Action>> &banal_search : banal_search_results){
+    for(Action move : banal_search.second)
+      banal_search.first.difficulty += move.weight;
     
-    if(res.size() > 0) return res;
-    
-    i++;
+    if(banal_search.first.is_valid_ending_configuration_forward_search()){
+      cout<<"\nBanal Starting Configuration Found. (Difficulty = "<<banal_search.first.difficulty<<")\n";
+      if(banal_search.first.difficulty<upper_bound){
+        res.push(make_pair(banal_search.second, banal_search.first.difficulty));
+        cout<<"\n\t"<< FGGREENSTART <<"New BANAL Solution Found!\n"<< FGRESET;
+        banal_search_results.erase(it);
+      }
+    }    
+    it++;
   }
+  if(res.size() > 0) return res;
+  else return start_multi_threading(original_game, banal_search_results, res, upper_bound, limit);
+}
+
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::start_multi_threading(AleaGame original_game, vector<pair<AleaGame, vector<Action>>> banal_search_results, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res, double upper_bound, int limit){
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> tmp;
+  vector<future<priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward>>> futures;
+  futures.reserve(banal_search_results.size());
+  int i=1;
+
+  cout<<"Banal Configurations Found: "<<banal_search_results.size()<<endl<<endl;
+  cout<<"Loading..."<<endl<<endl;
+  for(pair<AleaGame, vector<Action>> banal_search : banal_search_results){
+    futures.push_back(async(launch::async, rbfs_forward, banal_search, limit, upper_bound, i));
+    i++;    
+  }
+
+  i=0;
+  for (size_t i = 0; i < futures.size(); ++i){
+    auto tmp = futures[i].get();
+    if(tmp.size() > 0) res = merge_priority_queues(res, tmp);
+  }
+    
   if(res.size() == 0){
-    difficulty=0.00;
     cout<<"\nOriginal Starting Configuration Analysis:\n";
-    tmp = rbfs_forward(original_game, limit, &difficulty, upper_bound);
+    tmp = rbfs_forward(make_pair(original_game, vector<Action>()), limit, upper_bound);
     res = merge_priority_queues(res, tmp);
   }
-  
+
   return res;
 }
+    
+  
 
 int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, /*int depth,*/ vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
   open_set.clear();
@@ -246,7 +271,7 @@ void Node::backtrace(shared_ptr<Node> parent_node, int &sequentially_skipped_nod
           a vector of moves (to get from starting config->ending config(=solution)) 
           and the difficulty calculated for that solution
 */
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::rbfs_forward(AleaGame game, int limit, double *difficulty, double upper_bound, pair<AleaGame, vector<Action>> banal_search){
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::rbfs_forward(pair<AleaGame, vector<Action>> banal_search, int limit, double upper_bound, int thread_name){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res;
   priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> open;
   unordered_set<shared_ptr<Node>, Node::HashFun> open_set;
@@ -264,7 +289,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   best_solution_found.second = 0.00;
   
   shared_ptr<Node> current_node;
-  shared_ptr<Node> start_node(new Node(game, *difficulty, 0.00));
+  shared_ptr<Node> start_node(new Node(banal_search.first, banal_search.first.difficulty, 0.00));
   open.push(start_node);
   open_set.insert(start_node);
   //cout<<"Root DEEP=0\n\n";
@@ -319,7 +344,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
         solution.second += current_node->f;
         current_node = current_node->parent;
       }
-      if(solution.first.size() > 0) cout<< FGGREENSTART <<"\nAStar Forward: New Solution Found!\n"<< FGRESET;
+      if(solution.first.size() > 0) cout<<"\n"<< FGMAGENTASTART << "THREAD " << thread_name << "~:" << FGRESET << FGGREENSTART <<"RBFS Forward: New Solution Found!\n"<< FGRESET;
       reverse(solution.first.begin(), solution.first.end());
       int offset = 0;
       for(Action move : banal_search.second){
@@ -351,22 +376,22 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     }
 
     if (branched_nodes > limit){
-      cout << FGREDSTART << "BRANCHED_NODES LIMIT REACHED. EXIT.\n\n" << FGRESET;
+      cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << FGREDSTART << "BRANCHED_NODES LIMIT REACHED. EXIT.\n" << FGRESET;
       break;
     }
-    if(branched_nodes % 10000 == 0){
+    /* if(branched_nodes % 10000 == 0){
       cout << "Branched:" << branched_nodes << endl;
       cout << "Interactions Threshold: "<<current_node->f<<endl;
-    }
+    } */
   }
 
   if (branched_nodes <= limit)
-    cout << FGYELLOWSTART << "TREE TOTALLY EXPLORED. EXIT.\n\n" << FGRESET;
+    cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << FGYELLOWSTART << "TREE TOTALLY EXPLORED. EXIT.\n" << FGRESET;
 
-  cout << "Evaluated:" << evaluated_moves << endl;
+  /* cout << "Evaluated:" << evaluated_moves << endl;
   cout << "Skipped:"<< skipped_moves << endl;
   cout << "Branched:"<< branched_nodes << endl<<endl;
-  
+
   cout << "White Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[0].first << "/" << excluding_heuristic_possible_moves_activation[0].second << ") ";
   if(excluding_heuristic_possible_moves_activation[0].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[0].first/(double)excluding_heuristic_possible_moves_activation[0].second)*100 << "%" << endl;
   else cout << " -> 0%" << endl;
@@ -382,9 +407,10 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   cout << "Green Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[3].first << "/" << excluding_heuristic_possible_moves_activation[3].second << ") ";
   if(excluding_heuristic_possible_moves_activation[3].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[3].first/(double)excluding_heuristic_possible_moves_activation[3].second)*100 << "%" << endl<<endl;
   else cout << " -> 0%" << endl;
-
+  */
+  
   if(res.size() == 0){
-    cout << "Deeper solution found (value="<<best_solution_found.second<<"):\n";
+    cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Deeper solution found (value="<<best_solution_found.second<<"):\n";
     best_solution_found.first.print(true, false);
     cout<<endl;
   }
@@ -440,9 +466,11 @@ string Node::printLevel(AleaGame map_configuration, double difficulty){
           containing pairs of moves and related difficulty(for each one)
 */
 priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::merge_priority_queues(priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> source1, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> source2){
+  mtx.lock();
   while (!source2.empty()){
     source1.push(source2.top());
     source2.pop();
   }
+  mtx.unlock();
   return source1;
 }

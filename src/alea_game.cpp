@@ -26,6 +26,7 @@ AleaGame::AleaGame(){}
 
 //copying constructor
 AleaGame::AleaGame(const AleaGame& game) {
+  difficulty = game.difficulty;
   last_action_performed = game.last_action_performed;
   for (const auto& elem: game.terminals) {
     terminals.insert(P2D(elem));
@@ -57,6 +58,7 @@ AleaGame::AleaGame(json json_dict, bool is_backward, string type) {
 }
 
 void AleaGame::generateMapForBackwardMovements(json json_dict){
+  difficulty = 0.00;
   last_action_performed = Action::null_action;
   int cols = json_dict["columns"];
   int max_row = 0;
@@ -100,6 +102,7 @@ void AleaGame::generateMapForBackwardMovements(json json_dict){
 }
 
 void AleaGame::generateMapForExpectedForwardMovements(json json_dict, string type){
+  difficulty = 0.00;
   last_action_performed = Action::null_action;
   for (auto& e : json_dict["terminals"].items()) {
     json terminal_j = e.value();
@@ -155,6 +158,8 @@ bool AleaGame::operator==(const AleaGame& other) const {
 }
 
 AleaGame& AleaGame::operator=(const AleaGame& game){
+  this->difficulty = game.difficulty;
+
   this->dices.clear();
 
   this->last_action_performed = game.last_action_performed;
@@ -1160,28 +1165,6 @@ pair<AleaGame, vector<Action>> AleaGame::find_banal_starts_forward_search(pair<A
     }
   }
   return moves;
-}
-
-/**
-  This methods executes the moves specified to reach the banal configuration previously found
-  @param banal_configuration a pair containing the starting configuration and the moves found for the 
-                            considered banal cofiguration
-  @param difficulty banal configuration difficulty (will be obtained doing moves specified
-                    by @banal_configuration.second)
-  @param counter i-th banal configuration
-  @param banal_search_number total number of banal configuration found
-  @return true if the banal configuration found is already a solution (no A* search needed), false otherwise
-*/  
-bool AleaGame::setting_up_banal_configuration(pair<AleaGame, vector<Action>> banal_configuration, double *difficulty, int counter, int banal_search_number){
-  *this = banal_configuration.first;
-  cout<<"\nBanal Starting Configuration Found: ("<<counter<<"/"<<banal_search_number<<")\n";
-  for(Action move : banal_configuration.second){
-    *difficulty += move.weight;
-    cout<<move<<endl;
-  }
-  if(this->is_valid_ending_configuration_forward_search())
-    return true;
-  return false;
 }
 
 /**

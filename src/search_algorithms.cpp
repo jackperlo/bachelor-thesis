@@ -408,6 +408,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   if(excluding_heuristic_possible_moves_activation[3].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[3].first/(double)excluding_heuristic_possible_moves_activation[3].second)*100 << "%" << endl<<endl;
   else cout << " -> 0%" << endl;
   */
+ cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Total Branched nodes:" << branched_nodes << endl;
   if(res.size() == 0){
     cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Deeper solution found (value="<<best_solution_found.second<<"):\n";
     best_solution_found.first.print(true, false);

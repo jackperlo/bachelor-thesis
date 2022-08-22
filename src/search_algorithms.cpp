@@ -379,10 +379,10 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << FGREDSTART << "BRANCHED_NODES LIMIT REACHED. EXIT.\n" << FGRESET;
       break;
     }
-    /* if(branched_nodes % 10000 == 0){
-      cout << "Branched:" << branched_nodes << endl;
-      cout << "Interactions Threshold: "<<current_node->f<<endl;
-    } */
+    if(branched_nodes % 50000 == 0){
+      cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Branched:" << branched_nodes << endl;
+      cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Interactions Threshold: "<<current_node->f<<endl;
+    }
   }
 
   if (branched_nodes <= limit)
@@ -408,7 +408,6 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   if(excluding_heuristic_possible_moves_activation[3].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[3].first/(double)excluding_heuristic_possible_moves_activation[3].second)*100 << "%" << endl<<endl;
   else cout << " -> 0%" << endl;
   */
-  
   if(res.size() == 0){
     cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Deeper solution found (value="<<best_solution_found.second<<"):\n";
     best_solution_found.first.print(true, false);

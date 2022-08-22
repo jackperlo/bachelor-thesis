@@ -57,7 +57,7 @@ void get_solution_number_and_related_difficulty(string starting_config_file_name
   double upper_bound = tokenizing_to_get_level_difficulty(starting_config_file_name, "_");
   cout<<"\nUPPERBOUND: "<<upper_bound<<endl;
   //list of the solutions (seen as list of moves to reach solution), and solution difficulty
-  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(starting_config_analyzed_game, upper_bound, BRANCHED_NODES_LIMIT);
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(starting_config_analyzed_game, upper_bound/*, BRANCHED_NODES_LIMIT*/);
   if(solutions_queue.size()>0) cout<<FGGREENSTART<<"\n=================SOLUTION=====================\n"<<FGRESET;
   cout<<"Number of Solutions Found: "<<solutions_queue.size();
   if(solutions_queue.size()>0){

@@ -60,20 +60,20 @@ AleaGame::AleaGame(json json_dict, bool is_backward, string type) {
 void AleaGame::generateMapForBackwardMovements(json json_dict){
   difficulty = 0.00;
   last_action_performed = Action::null_action;
-  int cols = json_dict["columns"];
   int max_row = 0;
+  int max_col = 0;
 
   for (auto& e : json_dict["terminals"].items()) {
     json terminal_j = e.value();
     terminals.insert(P2D((int)terminal_j["x"]+1, (int)terminal_j["y"]+1));
     max_row = MAX((int)terminal_j["y"]+1, max_row);
+    max_col = MAX((int)terminal_j["x"]+1, max_col);
   }
 
   for (auto& e : json_dict["dice"].items()) {
     json dice_j = e.value();
     int x = dice_j["x"];
     int y = dice_j["y"];
-    max_row = MAX(y + 1, max_row);
     Dice *dice;
     Cell c(x+1, y+1);
     switch ((int)dice_j["type"]){
@@ -84,7 +84,7 @@ void AleaGame::generateMapForBackwardMovements(json json_dict){
     }
     dices.insert(pair<P2D, Dice *>(P2D(x + 1, y + 1), dice));
   }
-  MAP_WIDTH = cols + 2;
+  MAP_WIDTH = max_col + 2;
   MAP_HEIGHT = max_row + 2;
   TOTAL_MOVES = remaining_moves();
 

@@ -31,6 +31,7 @@ class Dice{
     void set_position(Cell position);
     Cell get_position() const;
     int get_n_moves();
+    void set_n_moves(int n_moves);
     int get_initial_moves();
     void print_dice();
     pair<bool, int> move(string direction, unordered_map<P2D, Dice *, P2D::HashFun> &dices, char const * caller_name, bool is_a_simulation, int movement_type = SIMPLE_MOVE);

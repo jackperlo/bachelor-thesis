@@ -617,6 +617,17 @@ void AleaGame::green_dice_possible_moves_being_pushed_backward(Dice *dice, vecto
   }
 }
 
+P2D AleaGame::get_new_dice_position(P2D old_position, P2D dir, int n_cells){
+  P2D new_position = old_position;
+
+  if(dir == P2D::LEFT) new_position += P2D(-n_cells, 0);
+  if(dir == P2D::RIGHT) new_position += P2D(n_cells, 0);
+  if(dir == P2D::UP) new_position += P2D(0, -n_cells);
+  if(dir == P2D::DOWN) new_position += P2D(0, n_cells);
+
+  return new_position;
+}
+
 /**
   this analyzes, for each dice, the possible moves which could be done Forward
   @param excluding_heuristic_possible_moves it's a pair which gives the number of times the heuristic
@@ -624,22 +635,17 @@ void AleaGame::green_dice_possible_moves_being_pushed_backward(Dice *dice, vecto
   @return a vector of legal action formed by:
          <from_position, to_position, move_weight, move_type>
 */
-vector<Action> AleaGame::possible_moves_forward(vector<pair<int, int>> &excluding_heuristic_possible_moves_activation) {
-  vector<Action> moves;
-  for (auto const& pair: dices) {
-    Dice *dice = pair.second;
-    if(dice->get_n_moves() > 0){
-      if(dice->get_actual_type().compare("WhiteDice") == 0)
-        white_dice_possible_moves_forward(dice, moves, excluding_heuristic_possible_moves_activation[0]);
-      else if(dice->get_actual_type().compare("RedDice") == 0)
-        red_dice_possible_moves_forward(dice, moves, excluding_heuristic_possible_moves_activation[1]);
-      else if(dice->get_actual_type().compare("YellowDice") == 0)
-        yellow_dice_possible_moves_forward(dice, moves, excluding_heuristic_possible_moves_activation[2]);
-      else if(dice->get_actual_type().compare("GreenDice") == 0)
-        green_dice_possible_moves_forward(dice, moves, excluding_heuristic_possible_moves_activation[3]);
-    }
-  }
-  return moves;
+Action AleaGame::move_forward_stats(vector<pair<int, int>> &excluding_heuristic_possible_moves_activation, P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<bool, int> move_results, int movement_type) {
+  if(dice.second->get_actual_type().compare("WhiteDice") == 0)
+    return white_dice_move_forward_stats(from_pos, dice, dir, excluding_heuristic_possible_moves_activation[0], movement_type);
+  else if(dice.second->get_actual_type().compare("RedDice") == 0)
+    return red_dice_move_forward_stats(from_pos, dice, dir, excluding_heuristic_possible_moves_activation[1], movement_type);
+  else if(dice.second->get_actual_type().compare("YellowDice") == 0)
+    return yellow_dice_move_forward_stats(from_pos, dice, dir, move_results, excluding_heuristic_possible_moves_activation[2]);
+  else if(dice.second->get_actual_type().compare("GreenDice") == 0)
+    return green_dice_move_forward_stats(from_pos, dice, dir, move_results, excluding_heuristic_possible_moves_activation[3]);
+  
+  return Action::null_action;
 }
 
 /**
@@ -657,77 +663,18 @@ vector<Action> AleaGame::possible_moves_forward(vector<pair<int, int>> &excludin
   @param moves vector of actions passed by reference 
   @param white_heuristic_stats pair<#times heuristic activates, #total times>
 */  
-void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &moves, pair<int, int> &white_heuristic_stats){
-  int x = dice->get_position().get_x(), y = dice->get_position().get_y();
-  double distance_from_closer_terminal_after_move = 0.00;
-  vector<Cell> cells;
-  if(x>0) cells.push_back(Cell(x-1, y));
-  if(x<MAP_WIDTH-1) cells.push_back(Cell(x+1, y));
-  if(y>0) cells.push_back(Cell(x, y-1));
-  if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
-  for(Cell c : cells){
-    pair<bool, int> res = NO_MOVE;
-    if(c.get_x() == x-1){
-      res = dice->move("left", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x-1, y));
-        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
-          white_heuristic_stats.first++; //heuristic activates
-        else{
-          if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::LEFT, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));
-          else
-            moves.push_back(Action(P2D(x, y), P2D::LEFT, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE));       
-        }
-        white_heuristic_stats.second++;
-      } 
-    }
-    if(c.get_x() == x+1){
-      res = dice->move("right", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x+1, y));
-        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
-          white_heuristic_stats.first++; //heuristic activates
-        else{
-          if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::RIGHT, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));
-          else
-            moves.push_back(Action(P2D(x, y), P2D::RIGHT, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE));           
-        }
-        white_heuristic_stats.second++;
-      }
-    }
-    if(c.get_y() == y-1){
-      res = dice->move("up", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y-1));
-        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
-          white_heuristic_stats.first++; //heuristic activates
-        else{
-          if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));
-          else
-            moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE));
-        }
-        white_heuristic_stats.second++;      
-      }
-    }
-    if(c.get_y() == y+1){
-      res = dice->move("down", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y+1));
-        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
-          white_heuristic_stats.first++; //heuristic activates
-        else{
-          if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));
-          else
-            moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE)); 
-        }
-        white_heuristic_stats.second++;
-      }
-    }
+Action AleaGame::white_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<int, int> &white_heuristic_stats, int movement_type){
+  white_heuristic_stats.second++;
+  double distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
+  if(distance_from_closer_terminal_after_move > dice.second->get_n_moves() && !check_dice_could_be_pushed(dice.first, dice.second->get_n_moves())){
+    white_heuristic_stats.first++; //heuristic activates
+    return Action::null_action;
   }
+  
+  if(movement_type == SIMPLE_MOVE)
+    return Action(from_pos, dir, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE);
+  else
+    return Action(from_pos, dir, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE);       
 }
 
 /**
@@ -745,73 +692,17 @@ void AleaGame::white_dice_possible_moves_forward(Dice *dice, vector<Action> &mov
   @param moves vector of actions passed by reference 
   @param red_heuristic_stats pair<#times heuristic activates, #total times>
 */  
-void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves, pair<int, int> &red_heuristic_stats){
-  int x = dice->get_position().get_x(), y = dice->get_position().get_y();
-  double distance_from_closer_terminal_after_move = 0.00;
-  vector<Cell> cells;
-  if(x>0) cells.push_back(Cell(x-1, y));
-  if(x<MAP_WIDTH-1) cells.push_back(Cell(x+1, y));
-  if(y>0) cells.push_back(Cell(x, y-1));
-  if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
-  for(Cell c : cells){
-    pair<bool, int> res = NO_MOVE;
-    if(c.get_x() == x-1){
-      res = dice->move("left", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x-1, y));
-        if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
-          if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::LEFT, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));      
-          else
-            moves.push_back(Action(P2D(x, y), P2D::LEFT, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE));      
-        }else
-          red_heuristic_stats.first++; //heuristic activates
-        red_heuristic_stats.second++;
-      } 
-    }
-    if(c.get_x() == x+1){
-      res = dice->move("right", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x+1, y));
-        if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
-          if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::RIGHT, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));      
-          else
-            moves.push_back(Action(P2D(x, y), P2D::RIGHT, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE));       
-        }else
-          red_heuristic_stats.first++; //heuristic activates
-        red_heuristic_stats.second++;
-      } 
-    }
-    if(c.get_y() == y-1){
-      res = dice->move("up", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y-1));
-        if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
-          if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE));      
-          else
-            moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE));      
-        }else
-          red_heuristic_stats.first++; //heuristic activates
-        red_heuristic_stats.second++;
-      }
-    }
-    if(c.get_y() == y+1){
-      res = dice->move("down", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y+1));
-        if(distance_from_closer_terminal_after_move <= RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves())){
-          if(dices.find(P2D::cellToP2D(c)) == dices.end())
-            moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE)); 
-          else
-            moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE)); 
-        }else
-          red_heuristic_stats.first++; //heuristic activates
-        red_heuristic_stats.second++;
-      }      
-    }
+Action AleaGame::red_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<int, int> &red_heuristic_stats, int movement_type){  
+  red_heuristic_stats.second++;
+  double distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
+  if(distance_from_closer_terminal_after_move > RED_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice.second->get_n_moves())){
+    red_heuristic_stats.first++; //heuristic activates
+    return Action::null_action;
   }
+  if(movement_type == SIMPLE_MOVE)
+    return Action(from_pos, dir, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE);      
+  else
+    return Action(from_pos, dir, PUSHED_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, PUSHED_MOVE);      
 }
 
 
@@ -830,99 +721,21 @@ void AleaGame::red_dice_possible_moves_forward(Dice *dice, vector<Action> &moves
   @param moves vector of actions passed by reference 
   @param yellow_heuristic_stats pair<#times heuristic activates, #total times>
 */  
-void AleaGame::yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &moves, pair<int, int> &yellow_heuristic_stats){
-  int x = dice->get_position().get_x(), y = dice->get_position().get_y();
-  double distance_from_closer_terminal_after_move = 0.00;
-  vector<Cell> cells;
-  if(x>0) cells.push_back(Cell(x-1, y));
-  if(x<MAP_WIDTH-1) cells.push_back(Cell(x+1, y));
-  if(y>0) cells.push_back(Cell(x, y-1));
-  if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
-  for(Cell c : cells){
-    pair<bool, int> res = NO_MOVE;
-    if(c.get_x() == x-1){
-      res = dice->move("left", dices, __func__, true);
-      if(res.first){
-        if(res.second == 1){
-          distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x-1, y));
-          if(distance_from_closer_terminal_after_move <= YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-            moves.push_back(Action(P2D(x, y), P2D::LEFT, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE)); 
-          else
-            yellow_heuristic_stats.first++; //heuristic activates
-          yellow_heuristic_stats.second++;
-        } 
-        else{
-          distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x-2, y));
-          if(distance_from_closer_terminal_after_move <= YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-            moves.push_back(Action(P2D(x, y), P2D(-2, 0), JUMPING_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, JUMP_MOVE)); 
-          else
-            yellow_heuristic_stats.first++; //heuristic activates
-          yellow_heuristic_stats.second++;
-        }
-        
-      }      
-    }
-    if(c.get_x() == x+1){
-      res = dice->move("right", dices, __func__, true);
-      if(res.first){
-        if(res.second == 1){
-          distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x+1, y));
-          if(distance_from_closer_terminal_after_move <= YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-            moves.push_back(Action(P2D(x, y), P2D::RIGHT, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE)); 
-          else
-            yellow_heuristic_stats.first++; //heuristic activates
-          yellow_heuristic_stats.second++;
-        }
-        else{ 
-          distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x+2, y));
-          if(distance_from_closer_terminal_after_move <= YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-            moves.push_back(Action(P2D(x, y), P2D(2, 0), JUMPING_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, JUMP_MOVE)); 
-          else
-            yellow_heuristic_stats.first++; //heuristic activates
-          yellow_heuristic_stats.second++;
-        }
-      }      
-    }
-    if(c.get_y() == y-1){
-      res = dice->move("up", dices, __func__, true);
-      if(res.first){
-        if(res.second == 1){
-          distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x-1, y));
-          if(distance_from_closer_terminal_after_move <= YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-            moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE)); 
-          else
-            yellow_heuristic_stats.first++; //heuristic activates
-          yellow_heuristic_stats.second++;
-        }else{
-          distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x-2, y));
-          if(distance_from_closer_terminal_after_move <= YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-            moves.push_back(Action(P2D(x, y), P2D(0, -2), JUMPING_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, JUMP_MOVE)); 
-          else
-            yellow_heuristic_stats.first++; //heuristic activates
-          yellow_heuristic_stats.second++;
-        }
-      }      
-    }
-    if(c.get_y() == y+1){
-      res = dice->move("down", dices, __func__, true);
-      if(res.first){
-        if(res.second == 1){
-          distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y+1));
-          if(distance_from_closer_terminal_after_move <= YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-            moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE)); 
-          else
-            yellow_heuristic_stats.first++; //heuristic activates
-          yellow_heuristic_stats.second++;
-        }else{
-          distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y+2));
-          if(distance_from_closer_terminal_after_move <= YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice->get_n_moves()))
-            moves.push_back(Action(P2D(x, y), P2D(0, 2), JUMPING_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, JUMP_MOVE)); 
-          else
-            yellow_heuristic_stats.first++; //heuristic activates
-          yellow_heuristic_stats.second++;
-        }
-      }      
-    }
+Action AleaGame::yellow_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<bool, int> move_results, pair<int, int> &yellow_heuristic_stats){
+  yellow_heuristic_stats.second++;      
+  double distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
+  if(distance_from_closer_terminal_after_move > YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice.second->get_n_moves())){
+    yellow_heuristic_stats.first++; //heuristic activates
+    return Action::null_action;
+  }
+  if(move_results.second == 1)
+    return Action(from_pos, dir, SIMPLE_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, SIMPLE_MOVE);
+  else{
+    if(dir == P2D::LEFT) dir = P2D(-move_results.second, 0);
+    if(dir == P2D::RIGHT) dir = P2D(move_results.second, 0);
+    if(dir == P2D::UP) dir = P2D(0, -move_results.second);
+    if(dir == P2D::DOWN) dir = P2D(0, move_results.second);
+    return Action(from_pos, dir, JUMPING_MOVE_FORWARD_WEIGHT, distance_from_closer_terminal_after_move, JUMP_MOVE);  
   }
 }
 
@@ -941,77 +754,29 @@ void AleaGame::yellow_dice_possible_moves_forward(Dice *dice, vector<Action> &mo
   @param moves vector of actions passed by reference 
   @param green_heuristic_stats pair<#times heuristic activates, #total times>
 */  
-void AleaGame::green_dice_possible_moves_forward(Dice *dice, vector<Action> &moves, pair<int, int> &green_heuristic_stats){
-  int x = dice->get_position().get_x(), y = dice->get_position().get_y();
-  double distance_from_closer_terminal_after_move = 0.00;
-  vector<Cell> cells;
-  if(x>0) cells.push_back(Cell(x-1, y));
-  if(x<MAP_WIDTH-1) cells.push_back(Cell(x+1, y));
-  if(y>0) cells.push_back(Cell(x, y-1));
-  if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
-  for(Cell c : cells){
-    pair<bool, int> res = NO_MOVE;
-    if(c.get_x() == x-1){
-      res = dice->move("left", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x-res.second, y));
-        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
-          green_heuristic_stats.first++; //heuristic activates
-        else
-          moves.push_back(Action(P2D(x, y), P2D::LEFT, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
-        green_heuristic_stats.second++;
-      }
-    }
-    if(c.get_x() == x+1){
-      res = dice->move("right", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x+res.second, y));
-        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
-          green_heuristic_stats.first++; //heuristic activates
-        else
-          moves.push_back(Action(P2D(x, y), P2D::RIGHT, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));       
-        green_heuristic_stats.second++;
-      }
-    }
-    if(c.get_y() == y-1){
-      res = dice->move("up", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y-res.second));
-        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
-          green_heuristic_stats.first++; //heuristic activates
-        else
-          moves.push_back(Action(P2D(x, y), P2D::UP, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));              
-        green_heuristic_stats.second++;
-      }
-    }
-    if(c.get_y() == y+1){
-      res = dice->move("down", dices, __func__, true);
-      if(res.first){
-        distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(P2D(x, y+res.second));
-        if(distance_from_closer_terminal_after_move > dice->get_n_moves() && !check_dice_could_be_pushed(dice))
-          green_heuristic_stats.first++; //heuristic activates
-        else
-          moves.push_back(Action(P2D(x, y), P2D::DOWN, (SIMPLE_MOVE_FORWARD_WEIGHT*res.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE));             
-        green_heuristic_stats.second++;
-      }
-    }
-  }
+Action AleaGame::green_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<bool, int> move_results, pair<int, int> &green_heuristic_stats){
+  green_heuristic_stats.second++;
+  double distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
+  if(distance_from_closer_terminal_after_move > dice.second->get_n_moves() && !check_dice_could_be_pushed(dice.first, dice.second->get_n_moves())){
+    green_heuristic_stats.first++; //heuristic activates
+    return Action::null_action;
+  }else
+    return Action(from_pos, dir, (SIMPLE_MOVE_FORWARD_WEIGHT*move_results.second), distance_from_closer_terminal_after_move, SIMPLE_MOVE);       
 }
 
 
-bool AleaGame::check_dice_could_be_pushed(Dice *dice){
-  P2D dice_position(dice->get_position().get_x(), dice->get_position().get_y());
+bool AleaGame::check_dice_could_be_pushed(P2D dice_position, int dice_moves){
   for(pair<P2D, Dice *> pair : dices)
     if(pair.first != dice_position)
       if(pair.second->get_actual_type().compare("RedDice") == 0 || pair.second->get_actual_type().compare("WhiteDice") == 0)
-        if((pair.second->get_n_moves()+dice->get_n_moves())>(calculate_distance_from_closer_terminal(dice_position)+dice_position.manatthan(pair.first)))
+        if((pair.second->get_n_moves()+dice_moves)>(calculate_distance_from_closer_terminal(dice_position)+dice_position.manatthan(pair.first)))
           return true;
           
   return false;
 }
 
 bool AleaGame::move(const Action& action, bool is_moving_backward) {
-  return move(action.from, action.dir, action.movement_type, is_moving_backward);
+  return move(action.from, action.dir, action.movement_type, is_moving_backward).first;
 }
 
 /**
@@ -1022,30 +787,30 @@ bool AleaGame::move(const Action& action, bool is_moving_backward) {
   @param is_moving_backward if the move is backward (true), or forward (false)
   @return true, if the move has been successful
 */  
-bool AleaGame::move(const P2D pos, const P2D dir, const int movement_type, bool is_moving_backward) {
+pair<bool, int> AleaGame::move(const P2D pos, const P2D dir, const int movement_type, bool is_moving_backward) {
   if(dices.find(pos) != dices.end()){
     Dice *dice = dices[pos];
     if(is_moving_backward){
       if(dir.x<0)
-        return dice->reverse_move("left", dices, __func__, false, movement_type).first;
+        return dice->reverse_move("left", dices, __func__, false, movement_type);
       else if(dir.x>0)
-        return dice->reverse_move("right", dices, __func__, false, movement_type).first;
+        return dice->reverse_move("right", dices, __func__, false, movement_type);
       else if(dir.y>0)
-        return dice->reverse_move("down", dices, __func__, false, movement_type).first;
+        return dice->reverse_move("down", dices, __func__, false, movement_type);
       else if(dir.y<0)
-        return dice->reverse_move("up", dices, __func__, false, movement_type).first;
+        return dice->reverse_move("up", dices, __func__, false, movement_type);
     }else{
       if(dir.x<0)
-        return dice->move("left", dices, __func__, false, movement_type).first;
+        return dice->move("left", dices, __func__, false, movement_type);
       else if(dir.x>0)
-        return dice->move("right", dices, __func__, false, movement_type).first;
+        return dice->move("right", dices, __func__, false, movement_type);
       else if(dir.y>0)
-        return dice->move("down", dices, __func__, false, movement_type).first;
+        return dice->move("down", dices, __func__, false, movement_type);
       else if(dir.y<0)
-        return dice->move("up", dices, __func__, false, movement_type).first;
+        return dice->move("up", dices, __func__, false, movement_type);
     }
   }
-  return false;
+  return NO_MOVE;
 }
 
 /**

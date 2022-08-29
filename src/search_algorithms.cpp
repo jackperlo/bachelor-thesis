@@ -218,6 +218,45 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
   open_set.clear();
   while (!open.empty()) open.pop();
   
+  int siblings_number = 0;
+  for(pair<P2D, Dice*> pair : current_node->game.dices){
+    if(pair.second->get_n_moves() > 0){
+      for(P2D dir : {P2D::LEFT, P2D::RIGHT, P2D::DOWN, P2D::UP}){
+        P2D from_pos = pair.first;
+        AleaGame new_game = AleaGame(current_node->game);
+        std::pair<bool, int> movement_result;
+        int movement_type = SIMPLE_MOVE;
+        if(new_game.dices.find(pair.first+dir) != new_game.dices.end()){
+          if(pair.second->get_actual_type().compare("YellowDice") == 0) movement_type = JUMP_MOVE;
+          else movement_type = PUSHED_MOVE;
+        }
+        movement_result = new_game.move(pair.first, dir, SIMPLE_MOVE, false);
+        P2D new_dice_position = new_game.get_new_dice_position(pair.first, dir, movement_result.second);
+        std::pair<P2D, Dice *> new_dice = make_pair(new_dice_position, pair.second);
+        
+        //cancellare
+        /* new_game.print(true, false);
+          cout<<movement_result.first;
+        */
+        
+        if(movement_result.first){
+          Action action_result = new_game.move_forward_stats(excluding_heuristic_possible_moves_activation, from_pos, new_dice, dir, movement_result, movement_type);
+          if(!(action_result == Action::null_action)){
+            siblings_number++;
+            shared_ptr<Node> neighbor(new Node(new_game, action_result, current_node, current_node->f, action_result.weight, action_result.distance_from_closer_terminal)); 
+            if (open_set.find(neighbor) == open_set.end()) {
+              open.push(neighbor);
+              open_set.insert(neighbor);
+            }
+          }
+        }
+
+        evaluated_moves++;
+      }
+    }
+  }
+  //cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
+  /*
   vector<Action> actions = current_node->game.possible_moves_forward(excluding_heuristic_possible_moves_activation);
   int siblings_number = actions.size();
   //cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
@@ -237,13 +276,14 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
     }
   }
   return siblings_number;
+  */
+  return siblings_number;
 }
 
 void Node::backtrace(shared_ptr<Node> parent_node, int &sequentially_skipped_nodes, int &depth, int &siblings_number, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
   sequentially_skipped_nodes = 0;
   depth-=DEPTH_DECREASING_INDEX;
-  //cout << "BACKTRACKING, NEW DEEP="<<depth<<endl;
-  //cancellare tutti i fratelli del current node..
+  //cout << "BACKTRACKING, NEW DEEP="<<depth<<endl; 
   siblings_number = get_siblings(parent_node, open, open_set, evaluated_moves, /*depth+1,*/ excluding_heuristic_possible_moves_activation);
   depth++;
 }
@@ -299,11 +339,31 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     open.pop();
     open_set.erase(current_node);
 
+    if (current_node->game.is_valid_ending_configuration_forward_search() && current_node->f <= upper_bound){
+      pair<vector<Action>, double> solution;
+      solution.second = current_node->f;
+      while (current_node->parent != NULL) {
+        solution.first.push_back(current_node->action);
+        current_node = current_node->parent;
+      }
+      if(solution.first.size() > 0) cout<<"\n"<< FGMAGENTASTART << "THREAD " << thread_name << "~:" << FGRESET << FGGREENSTART <<"RBFS Forward: New Solution Found!\n"<< FGRESET;
+      reverse(solution.first.begin(), solution.first.end());
+      int offset = 0;
+      for(Action move : banal_search.second){
+        solution.first.insert(solution.first.begin()+offset, move);
+        offset++;
+      }
+      
+      res.push(solution);
+      closed.insert(AleaGame::HashFun()(current_node->game));
+      continue;
+    }
+
     if(siblings_number == 0 || siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end() || closed.find(AleaGame::HashFun()(current_node->game)) != closed.end() || current_node->f > upper_bound) {
       if(siblings_number != 0){
         skipped_moves++;
         sequentially_skipped_nodes++;
-        /*if(siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end())
+        /* if(siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end())
           cout<<"\tsibling skipped: found in siblings_closed\n\tsequentially skipped siblings"<<sequentially_skipped_nodes<<endl;
         else if(closed.find(AleaGame::HashFun()(current_node->game)) != closed.end())
           cout<<"\tsibling skipped: found in closed\n\tsequentially skipped siblings"<<sequentially_skipped_nodes<<endl;
@@ -336,33 +396,15 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     siblings_closed.insert(AleaGame::HashFun()(current_node->game));
     //cout<<"\n\tsibling found and added to sibling_closed, DEEP="<<depth-1<<endl;
     siblings_number = get_siblings(current_node, open, open_set, evaluated_moves, /*depth,*/ excluding_heuristic_possible_moves_activation);
-      
-    if (current_node->game.is_valid_ending_configuration_forward_search()){
-      pair<vector<Action>, double> solution;
-      while (current_node->parent != NULL) {
-        solution.first.push_back(current_node->action);
-        solution.second += current_node->f;
-        current_node = current_node->parent;
-      }
-      if(solution.first.size() > 0) cout<<"\n"<< FGMAGENTASTART << "THREAD " << thread_name << "~:" << FGRESET << FGGREENSTART <<"RBFS Forward: New Solution Found!\n"<< FGRESET;
-      reverse(solution.first.begin(), solution.first.end());
-      int offset = 0;
-      for(Action move : banal_search.second){
-        solution.first.insert(solution.first.begin()+offset, move);
-        solution.second += move.weight;
-        offset++;
-      }
-      
-      res.push(solution);
-      continue;
-    }
+  
+    //cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << endl;
+    //current_node->game.print(true, false); 
 
     if(current_node->f > best_solution_found.second){
       best_solution_found.first = current_node->game;
-      best_solution_found.second = current_node->f;
+      best_solution_found.second = current_node->f;        
     }
-      
-
+       
     if(siblings_number==0){
       if(current_node->parent != start_node){ //backtracking to grandfather
         if(current_node->parent->parent){ 
@@ -372,6 +414,11 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
           depth--;
           current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
         }
+      }else{
+        parent_node = start_node;
+        //cout<<"Sibling 0->bracktracking to ROOT\n";
+        closed.insert(AleaGame::HashFun()(current_node->game));
+        current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
       }
     }
 
@@ -388,27 +435,26 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   if (branched_nodes <= limit)
     cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << FGYELLOWSTART << "TREE TOTALLY EXPLORED. EXIT.\n" << FGRESET;
 
-  /* cout << "Evaluated:" << evaluated_moves << endl;
-  cout << "Skipped:"<< skipped_moves << endl;
-  cout << "Branched:"<< branched_nodes << endl<<endl;
+  cout << "\tEvaluated:" << evaluated_moves << endl;
+  cout << "\tSkipped:"<< skipped_moves << endl;
+  cout << "\tBranched:"<< branched_nodes << endl<<endl;
 
-  cout << "White Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[0].first << "/" << excluding_heuristic_possible_moves_activation[0].second << ") ";
+  cout << "\tWhite Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[0].first << "/" << excluding_heuristic_possible_moves_activation[0].second << ") ";
   if(excluding_heuristic_possible_moves_activation[0].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[0].first/(double)excluding_heuristic_possible_moves_activation[0].second)*100 << "%" << endl;
   else cout << " -> 0%" << endl;
   
-  cout << "Red Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[1].first << "/" << excluding_heuristic_possible_moves_activation[1].second << ") ";
+  cout << "\tRed Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[1].first << "/" << excluding_heuristic_possible_moves_activation[1].second << ") ";
   if(excluding_heuristic_possible_moves_activation[1].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[1].first/(double)excluding_heuristic_possible_moves_activation[1].second)*100 << "%" << endl;
   else cout << " -> 0%" << endl;
   
-  cout << "Yellow Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[2].first << "/" << excluding_heuristic_possible_moves_activation[2].second << ") ";
+  cout << "\tYellow Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[2].first << "/" << excluding_heuristic_possible_moves_activation[2].second << ") ";
   if(excluding_heuristic_possible_moves_activation[2].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[2].first/(double)excluding_heuristic_possible_moves_activation[2].second)*100 << "%" << endl;
   else cout << " -> 0%" << endl;
   
-  cout << "Green Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[3].first << "/" << excluding_heuristic_possible_moves_activation[3].second << ") ";
+  cout << "\tGreen Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[3].first << "/" << excluding_heuristic_possible_moves_activation[3].second << ") ";
   if(excluding_heuristic_possible_moves_activation[3].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[3].first/(double)excluding_heuristic_possible_moves_activation[3].second)*100 << "%" << endl<<endl;
   else cout << " -> 0%" << endl;
-  */
- cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Total Branched nodes:" << branched_nodes << endl;
+  
   if(res.size() == 0){
     cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Deeper solution found (value="<<best_solution_found.second<<"):\n";
     best_solution_found.first.print(true, false);

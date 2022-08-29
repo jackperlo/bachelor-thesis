@@ -28,6 +28,10 @@ int Dice::get_n_moves(){
   return nMoves;
 }
 
+void Dice::set_n_moves(int n_moves){
+  this->nMoves = n_moves;
+}
+
 int Dice::get_initial_moves(){
   return initial_moves;
 }

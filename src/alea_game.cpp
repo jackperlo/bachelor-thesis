@@ -63,9 +63,14 @@ void AleaGame::generateMapForBackwardMovements(json json_dict){
   int max_row = 0;
   int max_col = 0;
 
+  int centroid_x_accumulator = 0;
+  int centroid_y_accumulator = 0;
+
   for (auto& e : json_dict["terminals"].items()) {
     json terminal_j = e.value();
     terminals.insert(P2D((int)terminal_j["x"]+1, (int)terminal_j["y"]+1));
+    centroid_x_accumulator += (int)terminal_j["x"]+1;
+    centroid_y_accumulator += (int)terminal_j["y"]+1;
     max_row = MAX((int)terminal_j["y"]+1, max_row);
     max_col = MAX((int)terminal_j["x"]+1, max_col);
   }
@@ -84,20 +89,24 @@ void AleaGame::generateMapForBackwardMovements(json json_dict){
     }
     dices.insert(pair<P2D, Dice *>(P2D(x + 1, y + 1), dice));
   }
+
   MAP_WIDTH = max_col + 2;
   MAP_HEIGHT = max_row + 2;
   TOTAL_MOVES = remaining_moves();
+  CENTROID_X = centroid_x_accumulator / terminals.size();
+  CENTROID_Y = centroid_y_accumulator / terminals.size();
 
   if(!is_valid_ending_configuration_backward_search()){
     cout << "\n\nPlease insert a valid Final Configuration of the Map.\nMismatches between Dices and Terminals positions.\n\n\n";
     exit(1);
   }
   
-  cout << "\n"<< FGREDSTART <<"===== Alea Level Solver Backward =====" << endl;
-	cout << "           MAP_WIDTH : " << MAP_WIDTH << endl;
-	cout << "           MAP_HEIGHT: " << MAP_HEIGHT << endl;
-	cout << "           #dice : " << terminals.size() << endl;
-	cout << "========================================"<< FGRESET << endl;
+  cout << "\n"<< FGREDSTART <<"======= Alea Level Solver Backward =======" << endl;
+	cout << "             MAP_WIDTH : " << MAP_WIDTH << endl;
+	cout << "             MAP_HEIGHT: " << MAP_HEIGHT << endl;
+	cout << "             #dice : " << terminals.size() << endl;
+  cout << "     centroid_x : " << CENTROID_X << " | centroid_y : " << CENTROID_Y << endl;
+	cout << "==========================================="<< FGRESET << endl;
 	cout << endl;
 }
 

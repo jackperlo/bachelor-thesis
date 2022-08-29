@@ -49,6 +49,8 @@ using json = nlohmann::json;
 extern int TOTAL_MOVES;
 extern int MAP_WIDTH;
 extern int MAP_HEIGHT;
+extern int CENTROID_X;
+extern int CENTROID_Y;
 
 enum {
   SIMPLE_MOVE,

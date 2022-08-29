@@ -7,9 +7,7 @@
 #include <typeinfo>
 #include <typeindex>
 
-int MAP_WIDTH;
-int MAP_HEIGHT;
-int TOTAL_MOVES;
+
 
 GreenDice::~GreenDice(){}
 

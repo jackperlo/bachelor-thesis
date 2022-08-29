@@ -1,6 +1,12 @@
 #include "dice.h"
 #include "common.h"
 
+int MAP_WIDTH;
+int MAP_HEIGHT;
+int TOTAL_MOVES;
+int CENTROID_X;
+int CENTROID_Y;
+
 Dice::~Dice(){}
 
 Dice::Dice(Cell position, int nMoves, int initial_moves){

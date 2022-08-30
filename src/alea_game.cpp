@@ -160,16 +160,17 @@ void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
   
   for (auto& e : json_dict["terminals"]) {
     int x = floor((int)e%(int)cols);
-    rows = MAX(rows, x);
     int y = floor((int)e/(int)cols);
+    rows = MAX(rows, y+1);
     terminals.insert(P2D(x+1, y+1));
+    cout<<P2D(x+1, y+1)<<endl;
   }
   
   for (auto& e : json_dict["dice"].items()) {
     json dice_j = e.value();
     int x = floor((int)dice_j["pos"]%(int)cols);
-    rows = MAX(rows, x);
     int y = floor((int)dice_j["pos"]/(int)cols);
+    rows = MAX(rows, y+1);
     Dice *dice;
     Cell c(x+1, y+1);
     switch ((int)dice_j["type"]){
@@ -180,7 +181,9 @@ void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
     }
     dices.insert(pair<P2D, Dice *>(P2D(x+1, y+1), dice));
   }
+  cout<<"ROWS value:"<<rows<<endl;
   MAP_WIDTH = cols+2;
+  if(rows)
   MAP_HEIGHT = rows+2;
   TOTAL_MOVES = remaining_moves();
   

@@ -10,6 +10,8 @@
 #include <thread>
 #include <future>
 #include <mutex>
+#include <chrono>
+#include <ctime>
 
 mutex mtx;
 Node::~Node(){}
@@ -301,12 +303,15 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   int branched_nodes = 0;
   vector<pair<int, int>> excluding_heuristic_possible_moves_activation = {make_pair(0,0), make_pair(0,0), make_pair(0,0), make_pair(0,0)};
   best_solution_found.second = 0.00;
-  
+  chrono::time_point<chrono::system_clock> start, end;
+
   shared_ptr<Node> current_node;
   shared_ptr<Node> start_node(new Node(banal_search.first, banal_search.first.difficulty, 0.00));
   open.push(start_node);
   open_set.insert(start_node);
   //cout<<"Root DEEP=0\n\n";
+  
+  start = std::chrono::system_clock::now();
   while (open.size() > 0) {
     //cout<<"NSiblings: "<<siblings_number<<" | Open.size(): "<<open.size()<<" | Current Depth: "<<depth<<endl;
     current_node = open.top();
@@ -405,10 +410,13 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Interactions Threshold: "<<current_node->f<<endl;
     }
   }
+  end = std::chrono::system_clock::now();
+  chrono::duration<double> elapsed_seconds = end - start;
 
   if (branched_nodes <= limit)
     cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << FGYELLOWSTART << "TREE TOTALLY EXPLORED. EXIT.\n" << FGRESET;
 
+  cout << "\tTime Elapsed: " << elapsed_seconds.count() << " sec" << endl;
   cout << "\tEvaluated:" << evaluated_moves << endl;
   cout << "\tSkipped:"<< skipped_moves << endl;
   cout << "\tBranched:"<< branched_nodes << endl<<endl;

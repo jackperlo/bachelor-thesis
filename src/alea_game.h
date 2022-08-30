@@ -78,6 +78,7 @@ class AleaGame{
     bool has_dice(const P2D& pos) const;
     
     int calculate_distance_from_closer_terminal(P2D dice_position);
+    int calculate_distance_from_centroid(P2D old_dice_position, P2D new_dice_position);
     bool find_banal_start_calculate_route(vector<Action> &moves, pair<P2D, Dice*> dice, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static bool terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static vector<pair<P2D, Dice *>> disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);

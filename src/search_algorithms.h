@@ -26,7 +26,7 @@ class Node{
     double g = 0.00;
     double h = 0.00;
     double f = 0.00;
-    double distance_from_closer_terminal_weight = 0.00;
+    double mixed_distance_weights = 0.00;
 
     ~Node();
     Node(AleaGame game);
@@ -34,7 +34,7 @@ class Node{
     Node(AleaGame game, double g);
     Node(AleaGame game, double g, double h);
     Node(AleaGame game, Action action, shared_ptr<Node> parent);
-    Node(AleaGame game, Action action, shared_ptr<Node> parent, double g, double h, double distance_from_closer_terminal_weight = 0.00);
+    Node(AleaGame game, Action action, shared_ptr<Node> parent, double g, double h, double mixed_distance_weights = 0.00);
 
     bool operator==(const Node& other) const;
     Node& operator=(shared_ptr<Node>);

@@ -18,7 +18,7 @@ Node::Node(AleaGame game, Action action) : game(game), action(action) { }
 Node::Node(AleaGame game, double g) : game(game), g(g) { }
 Node::Node(AleaGame game, double g, double h) : game(game), g(g), h(h) { f = g + h; }
 Node::Node(AleaGame game, Action action, shared_ptr<Node> parent) : game(game), action(action), parent(parent) { }
-Node::Node(AleaGame game, Action action, shared_ptr<Node> parent, double g, double h, double distance_from_closer_terminal_weight) : game(game), action(action), parent(parent), g(g), h(h), distance_from_closer_terminal_weight(distance_from_closer_terminal_weight) { 
+Node::Node(AleaGame game, Action action, shared_ptr<Node> parent, double g, double h, double mixed_distance_weights) : game(game), action(action), parent(parent), g(g), h(h), mixed_distance_weights(mixed_distance_weights) { 
   f = g + h;
 }
 
@@ -50,7 +50,7 @@ bool Node::CompareFunBackward::operator() (shared_ptr<Node> n1, shared_ptr<Node>
 }
 
 bool Node::CompareFunForward::operator() (shared_ptr<Node> n1, shared_ptr<Node> n2) {
-  return n1->f+n1->distance_from_closer_terminal_weight > n2->f+n2->distance_from_closer_terminal_weight; //ordering priority queue as a min-heap
+  return n1->f+n1->mixed_distance_weights > n2->f+n2->mixed_distance_weights; //ordering priority queue as a min-heap
 }
 
 size_t Node::HashFun::operator()(shared_ptr<Node> const&n) const{
@@ -234,16 +234,11 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
         P2D new_dice_position = new_game.get_new_dice_position(pair.first, dir, movement_result.second);
         std::pair<P2D, Dice *> new_dice = make_pair(new_dice_position, pair.second);
         
-        //cancellare
-        /* new_game.print(true, false);
-          cout<<movement_result.first;
-        */
-        
         if(movement_result.first){
           Action action_result = new_game.move_forward_stats(excluding_heuristic_possible_moves_activation, from_pos, new_dice, dir, movement_result, movement_type);
           if(!(action_result == Action::null_action)){
             siblings_number++;
-            shared_ptr<Node> neighbor(new Node(new_game, action_result, current_node, current_node->f, action_result.weight, action_result.distance_from_closer_terminal)); 
+            shared_ptr<Node> neighbor(new Node(new_game, action_result, current_node, current_node->f, action_result.weight, action_result.mixed_distance_weights)); 
             if (open_set.find(neighbor) == open_set.end()) {
               open.push(neighbor);
               open_set.insert(neighbor);
@@ -256,27 +251,6 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
     }
   }
   //cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
-  /*
-  vector<Action> actions = current_node->game.possible_moves_forward(excluding_heuristic_possible_moves_activation);
-  int siblings_number = actions.size();
-  //cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
-  for (Action action : actions) {
-    AleaGame new_game = AleaGame(current_node->game);
-    if(!new_game.move(action, false)){
-      cout<<"\nastar.cpp:astar_forward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movement_type<<", head:"<<action.head<<"\nExiting.\n"; 
-      exit(1);
-    }
-
-    evaluated_moves++;
-    
-    shared_ptr<Node> neighbor(new Node(new_game, action, current_node, current_node->f, action.weight, action.distance_from_closer_terminal)); 
-    if (open_set.find(neighbor) == open_set.end()) {
-      open.push(neighbor);
-      open_set.insert(neighbor);
-    }
-  }
-  return siblings_number;
-  */
   return siblings_number;
 }
 

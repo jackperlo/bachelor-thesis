@@ -75,15 +75,15 @@ Action::Action(P2D from, P2D dir, double weight, int movement_type, P2D head)
     : from(from), dir(dir), head(head), weight(weight), movement_type(movement_type) {}
 
 
-Action::Action(P2D from, P2D dir, double weight, double distance_from_closer_terminal, int movement_type, P2D head)
-    : from(from), dir(dir), head(head), weight(weight), distance_from_closer_terminal(distance_from_closer_terminal), movement_type(movement_type) {}
+Action::Action(P2D from, P2D dir, double weight, double mixed_distance_weights, int movement_type, P2D head)
+    : from(from), dir(dir), head(head), weight(weight), mixed_distance_weights(mixed_distance_weights), movement_type(movement_type) {}
 
 ostream& operator<<(ostream& out, Action act) {
   return out << "From " << act.from << " direction " << act.dir << " moveType " << act.movement_type << " weight " << act.weight;
 }
 
 bool Action::operator==(const Action& other) const {
-  return from == other.from && dir == other.dir && weight == other.weight && distance_from_closer_terminal == other.distance_from_closer_terminal && movement_type == other.movement_type;
+  return from == other.from && dir == other.dir && weight == other.weight && mixed_distance_weights == other.mixed_distance_weights && movement_type == other.movement_type;
 }
 
 P2D P2D::cellToP2D(Cell c){

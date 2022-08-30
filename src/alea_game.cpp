@@ -855,7 +855,7 @@ vector<pair<AleaGame, vector<Action>>> AleaGame::find_banal_starts_forward_searc
   vector<pair<AleaGame, vector<Action>>> banal_games;
   for(pair<P2D, Dice*> pair : this->dices){
     for(P2D terminal : this->terminals){
-      if(pair.first.manatthan(terminal) == pair.second->get_n_moves() && pair.first!=terminal){
+      if((pair.first.manatthan(terminal) == pair.second->get_n_moves() && pair.first!=terminal) || (pair.second->get_n_moves() > pair.first.manatthan(terminal) && pair.second->get_n_moves()%2 == pair.first.manatthan(terminal)%2)){
         if(terminal_is_disputed(terminal, this->dices)){
           vector<std::pair<P2D, Dice *>> disputer_dices_result = disputer_dices(terminal, this->dices);
           if(!disputed_is_assigned(terminal, disputer_dices_result)){
@@ -914,7 +914,7 @@ pair<AleaGame, vector<Action>> AleaGame::find_banal_starts_forward_search(pair<A
   pair<AleaGame, vector<Action>> moves = previous_game_actions;
   for(pair<P2D, Dice*> pair : previous_game_actions.first.dices){
     for(P2D terminal : previous_game_actions.first.terminals){ 
-      if(pair.first.manatthan(terminal) == pair.second->get_n_moves() && pair.first!=terminal){
+      if((pair.first.manatthan(terminal) == pair.second->get_n_moves() && pair.first!=terminal) || (pair.second->get_n_moves() > pair.first.manatthan(terminal) && pair.second->get_n_moves()%2 == pair.first.manatthan(terminal)%2)){
         if(terminal_is_disputed(terminal, previous_game_actions.first.dices)){
           vector<std::pair<P2D, Dice *>> disputer_dices_result = disputer_dices(terminal, moves.first.dices);
           if(!disputed_is_assigned(terminal, disputer_dices_result)){
@@ -1019,9 +1019,6 @@ bool AleaGame::disputed_is_assigned(P2D terminal, vector<std::pair<P2D, Dice *>>
 //tells me if the dice (which has manhattan distance from terminal = 0) can move up to the terminal in practical (imagine if there is an obstacles in between and the dice has not
 //enough moves to avoid the obstacle and reach the terminal)
 bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, pair<P2D, Dice*> dice, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices){
-  // if(dices.find(dice.first) == dices.end())
-  //   return false;
-  
   if(dice_moves==0){
     if(dice.first.x == terminal_position.x && dice.first.y == terminal_position.y)
       return true;
@@ -1146,6 +1143,27 @@ bool AleaGame::find_banal_start_calculate_route(vector<Action> &moves, pair<P2D,
         }else
           return false;
       }
+    }
+  }else if(dice.first == terminal_position){
+    if(dices.find(dice.first+P2D::DOWN) == dices.end() && (dice.first+P2D::DOWN).y < MAP_HEIGHT){
+      moves.push_back(Action(dice.first, P2D::DOWN, SIMPLE_MOVE_FORWARD_WEIGHT, (calculate_distance_from_closer_terminal(dice.first+P2D::DOWN)*DISTANCE_CLOSER_TERMINAL_WEIGHT)+calculate_distance_from_centroid(dice.first, dice.first+P2D::DOWN), SIMPLE_MOVE)); 
+      dice.first=dice.first+P2D::DOWN;
+      return find_banal_start_calculate_route(moves, dice, dice_moves-1, terminal_position, dices);
+    }else 
+    if(dices.find(dice.first+P2D::LEFT) == dices.end() && (dice.first+P2D::LEFT).x >= 0){ 
+      moves.push_back(Action(dice.first, P2D::LEFT, SIMPLE_MOVE_FORWARD_WEIGHT, (calculate_distance_from_closer_terminal(dice.first+P2D::LEFT)*DISTANCE_CLOSER_TERMINAL_WEIGHT)+calculate_distance_from_centroid(dice.first, dice.first+P2D::LEFT), SIMPLE_MOVE)); 
+      dice.first=dice.first+P2D::LEFT;
+      return find_banal_start_calculate_route(moves, dice, dice_moves-1, terminal_position, dices);
+    }else 
+    if(dices.find(dice.first+P2D::RIGHT) == dices.end() && (dice.first+P2D::RIGHT).x < MAP_WIDTH){
+      moves.push_back(Action(dice.first, P2D::RIGHT, SIMPLE_MOVE_FORWARD_WEIGHT, (calculate_distance_from_closer_terminal(dice.first+P2D::RIGHT)*DISTANCE_CLOSER_TERMINAL_WEIGHT)+calculate_distance_from_centroid(dice.first, dice.first+P2D::RIGHT), SIMPLE_MOVE));
+      dice.first=dice.first+P2D::RIGHT;
+      return find_banal_start_calculate_route(moves, dice, dice_moves-1, terminal_position, dices);
+    }else
+    if(dices.find(dice.first+P2D::UP) == dices.end() && (dice.first+P2D::UP).y >= 0){
+      moves.push_back(Action(dice.first, P2D::UP, SIMPLE_MOVE_FORWARD_WEIGHT, (calculate_distance_from_closer_terminal(dice.first+P2D::UP)*DISTANCE_CLOSER_TERMINAL_WEIGHT)+calculate_distance_from_centroid(dice.first, dice.first+P2D::UP), SIMPLE_MOVE)); 
+      dice.first=dice.first+P2D::UP;
+      return find_banal_start_calculate_route(moves, dice, dice_moves-1, terminal_position, dices);
     }
   }
   

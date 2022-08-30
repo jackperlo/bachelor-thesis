@@ -149,7 +149,6 @@ pair<bool, int> GreenDice::reverse_move_left(int x, int y, unordered_map<P2D, Di
     res.second ++;
     i++;
   }
-  
   return res;
 }
 
@@ -161,7 +160,6 @@ pair<bool, int> GreenDice::reverse_move_right(int x, int y, unordered_map<P2D, D
     res.second ++;
     i++;
   }
-  
   return res;
 }
 
@@ -173,7 +171,6 @@ pair<bool, int> GreenDice::reverse_move_up(int x, int y, unordered_map<P2D, Dice
     res.second ++;
     i++;
   }
-  
   return res;
 }
 
@@ -185,7 +182,6 @@ pair<bool, int> GreenDice::reverse_move_down(int x, int y, unordered_map<P2D, Di
     res.second ++;
     i++;
   }
-  
   return res;
 }
 

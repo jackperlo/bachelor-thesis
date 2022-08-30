@@ -24,8 +24,8 @@ class AleaGame{
 
     ~AleaGame();
     AleaGame();
-    AleaGame(json json_dict, bool is_backward, string type);
-    AleaGame(string filename, bool is_backward, string type = "");
+    AleaGame(json json_dict, bool is_backward, string type, bool calculate_x_y = false);
+    AleaGame(string filename, bool is_backward, string type = "", bool calculate_x_y = false);
     AleaGame(const AleaGame& game);
 
 		friend ostream& operator<<(ostream& out, pair<bool, AleaGame> pair);
@@ -68,8 +68,9 @@ class AleaGame{
 		};
 
   private:
-    void generateMapForBackwardMovements(json json_dict);
-    void generateMapForExpectedForwardMovements(json json_dict, string type);
+    void generate_map_for_backward_movements(json json_dict);
+    void generate_map_for_expected_forward_movements_given_x_y(json json_dict, string type);
+    void generate_map_for_expected_forward_movements(json json_dict);
     
     static string print_aleagame_to_string (pair<bool, AleaGame> pair);
     

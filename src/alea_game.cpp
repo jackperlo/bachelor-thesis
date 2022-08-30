@@ -9,6 +9,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <map>
 #include <unordered_set>
 #include <string>
@@ -45,19 +46,24 @@ AleaGame::AleaGame(const AleaGame& game) {
 }
 
 //constructor 
-AleaGame::AleaGame(string filename, bool is_backward, string type) : AleaGame(json::parse(read_json(filename)), is_backward, type) { }
+AleaGame::AleaGame(string filename, bool is_backward, string type, bool calculate_x_y) : AleaGame(json::parse(read_json(filename)), is_backward, type, calculate_x_y) { }
 
 //generates the game instance starting from the .json file
-AleaGame::AleaGame(json json_dict, bool is_backward, string type) {
+AleaGame::AleaGame(json json_dict, bool is_backward, string type, bool calculate_x_y) {
   /* the parameters needed from the .json file are different 
   according to the analysis we want to make (forward) */
   if(is_backward)
-    generateMapForBackwardMovements(json_dict);
-  else
-    generateMapForExpectedForwardMovements(json_dict, type);
+    generate_map_for_backward_movements(json_dict);
+  else{
+    if(!calculate_x_y)
+      generate_map_for_expected_forward_movements_given_x_y(json_dict, type);
+    else
+      generate_map_for_expected_forward_movements(json_dict);
+  }
+    
 }
 
-void AleaGame::generateMapForBackwardMovements(json json_dict){
+void AleaGame::generate_map_for_backward_movements(json json_dict){
   difficulty = 0.00;
   last_action_performed = Action::null_action;
   int max_row = 0;
@@ -110,9 +116,10 @@ void AleaGame::generateMapForBackwardMovements(json json_dict){
 	cout << endl;
 }
 
-void AleaGame::generateMapForExpectedForwardMovements(json json_dict, string type){
+void AleaGame::generate_map_for_expected_forward_movements_given_x_y(json json_dict, string type){
   difficulty = 0.00;
   last_action_performed = Action::null_action;
+
   for (auto& e : json_dict["terminals"].items()) {
     json terminal_j = e.value();
     terminals.insert(P2D((int)terminal_j["x"], (int)terminal_j["y"]));
@@ -143,6 +150,48 @@ void AleaGame::generateMapForExpectedForwardMovements(json json_dict, string typ
   cout << "                #total_moves : " << TOTAL_MOVES << endl;
 	cout << "================================================" << FGRESET << endl;
 }
+
+void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
+  difficulty = 0.00;
+  last_action_performed = Action::null_action;
+
+  int rows = 0;
+  int cols = json_dict["columns"];
+  
+  for (auto& e : json_dict["terminals"]) {
+    int x = floor((int)e%(int)cols);
+    rows = MAX(rows, x);
+    int y = floor((int)e/(int)cols);
+    terminals.insert(P2D(x+1, y+1));
+  }
+  
+  for (auto& e : json_dict["dice"].items()) {
+    json dice_j = e.value();
+    int x = floor((int)dice_j["pos"]%(int)cols);
+    rows = MAX(rows, x);
+    int y = floor((int)dice_j["pos"]/(int)cols);
+    Dice *dice;
+    Cell c(x+1, y+1);
+    switch ((int)dice_j["type"]){
+      case 0: dice = new WhiteDice(c, dice_j["num"], dice_j["num"]); break;
+      case 1: dice = new RedDice(c, dice_j["num"], dice_j["num"]); break;
+      case 2: dice = new YellowDice(c, dice_j["num"], dice_j["num"]); break;
+      case 3: dice = new GreenDice(c, dice_j["num"], dice_j["num"]); break;
+    }
+    dices.insert(pair<P2D, Dice *>(P2D(x+1, y+1), dice));
+  }
+  MAP_WIDTH = cols+2;
+  MAP_HEIGHT = rows+2;
+  TOTAL_MOVES = remaining_moves();
+  
+  cout << "\n" << FGREDSTART << "===== Alea Level Solver Analyzed Forward =====" << endl;
+	cout << "                MAP_WIDTH : " << MAP_WIDTH << endl;
+	cout << "                MAP_HEIGHT: " << MAP_HEIGHT << endl;
+	cout << "                #dice : " << terminals.size() << endl;
+  cout << "                #total_moves : " << TOTAL_MOVES << endl;
+	cout << "================================================" << FGRESET << endl;
+}
+
 
 int AleaGame::HashFun::operator()(const AleaGame& game) const {
   int type_map[] = {17, 31, 47, 97};

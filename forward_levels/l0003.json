@@ -1,0 +1,25 @@
+{
+    "level": 3,
+    "level_set": 1,
+    "columns": 3,
+    "terminals": [
+        1,
+        8
+    ],
+    "dice": [
+        {
+            "type": 0,
+            "pos": 3,
+            "num": 2
+        },
+        {
+            "type": 0,
+            "pos": 4,
+            "num": 1
+        }
+    ],
+    "hint": {
+        "it": "I dadi possono spingere altri dadi... ;)",
+        "en": "Dice may push other dice... ;)"
+    }
+}

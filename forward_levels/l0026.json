@@ -1,0 +1,31 @@
+{
+    "level": 26,
+    "level_set": 1,
+    "columns": 3,
+    "terminals": [
+        2,
+        4,
+        6
+    ],
+    "dice": [
+        {
+            "type": 0,
+            "pos": 1,
+            "num": 2
+        },
+        {
+            "type": 1,
+            "pos": 0,
+            "num": 2
+        },
+        {
+            "type": 1,
+            "pos": 4,
+            "num": 2
+        }
+    ],
+    "hint": {
+        "it": "Che dire dei dadi rossi? Beh... Non possono essere spinti! :O",
+        "en": "What about red dice? Well... You can't push them! :O"
+    }
+}

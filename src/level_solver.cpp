@@ -50,7 +50,6 @@ int main(){
         cin.clear();
         cin >> level_name;
         level_path.append(level_name);
-        cout<<endl<<level_path;
         start_forward_analysis(level_path, numeric_limits<int>::max());
         break;
       case 3:
@@ -104,7 +103,7 @@ pair<string, vector<Action>> start_backward_analysis(string ending_config_file_n
   @param starting_config_file_name .json file name which contains the starting configuration(user pov) which A* backwards computed
 */
 void start_forward_analysis(string starting_config_file_name, double upperbound){
-  AleaGame starting_config_analyzed_game(starting_config_file_name, false, "ANALYZED");
+  AleaGame starting_config_analyzed_game(starting_config_file_name, false, "ANALYZED", true);
   starting_config_analyzed_game.print(true, true);
   
   //list of the solutions (seen as list of moves to reach solution), and solution difficulty

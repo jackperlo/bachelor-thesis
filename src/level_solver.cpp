@@ -7,29 +7,82 @@
 #include "search_algorithms.h"
 #include <string>
 
-pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_name);
-void get_solution_number_and_related_difficulty(string starting_config_file_name);
+void print_menu();
+pair<string, vector<Action>> start_backward_analysis(string ending_config_file_name);
+void start_forward_analysis(string starting_config_file_name, double upperbound);
 void print_expected_forward_solution(pair<string, vector<Action>> solution);
 void playGamePrinter(AleaGame game, vector<Action> actions);
 double tokenizing_to_get_level_difficulty(string s, string del = " ");
 
 //controls operation of the program
-int main(int argc, char *argv[]){ 
-  pair<string, vector<Action>> solution;
-  if(argc != 2){
-    cout<<"\nlevel_solver.cpp:main: please insert level file name.\n\n"; 
-    exit(1);
-  }
-  
-  solution = start_backward_analysis(argv[1]);
+int main(){ 
+  int choice = -1;
+  double upper_bound = 0.00;
+  pair<string, vector<Action>> res;
+  string level_name = "";
+  string level_path = "";
 
-  if(solution.first.compare("") != 0){
-    get_solution_number_and_related_difficulty(solution.first);
-    print_expected_forward_solution(solution);  
-  }else
-    cout << "\nlevel_solver:main: level_generated file has not been created. astar_backward_search failed.\n";  
+  cout<<FGCYANSTART<<"\nWelcome to Alea Game Level Generator & Solver.\n"<<FGRESET;
+  do{
+    print_menu();
+
+    choice = -1;
+    cin.clear();
+    cin >> choice;
+    switch(choice){
+      case 0:
+        cout<<"\nByee! x\n\n"; 
+        exit(0);
+      case 1:
+        level_name = "";
+        cout<<"\n./backward_levels/";
+        cin.clear();
+        cin >> level_name;
+        res = start_backward_analysis(level_name);
+        if(res.first.compare("") != 0)
+          cout<<endl<<res.first<<endl;
+        print_expected_forward_solution(res);  
+        break;
+      case 2:
+        level_path = "./forward_levels/";
+        level_name = "";
+        cout<<"\n./forward_levels/";
+        cin.clear();
+        cin >> level_name;
+        level_path.append(level_name);
+        cout<<endl<<level_path;
+        start_forward_analysis(level_path, numeric_limits<int>::max());
+        break;
+      case 3:
+        level_name = "";
+        cout<<"\n./backward_levels/";
+        cin.clear();
+        cin >> level_name;
+        res = start_backward_analysis(level_name);
+        if(res.first.compare("") != 0){
+          cout<<endl<<res.first<<endl;
+          upper_bound = tokenizing_to_get_level_difficulty(res.first, "_");
+          cout<<"\nUPPERBOUND: "<<upper_bound<<endl;
+          start_forward_analysis(res.first, upper_bound);
+          print_expected_forward_solution(res);  
+        }
+        break;
+      default:
+        cout<<endl<<"Selection not valid. Try Again."<<endl;
+        break;
+    }
+  }while(choice != 0);
 
   return 0;
+}
+
+void print_menu(){
+  cout<<FGCYANSTART<<"================Menu================"<<endl;
+  cout<<"\t0. Exit"<<endl;
+  cout<<"\t1. GENERATE a Level from an Ending Configuration"<<endl;
+  cout<<"\t2. SOLVE a Level from a Starting Configuration"<<endl;
+  cout<<"\t3. GENERATE & SOLVE a Level"<<endl;
+  cout<<"\tMake your choice: "<<FGRESET;
 }
 
 /**
@@ -37,8 +90,8 @@ int main(int argc, char *argv[]){
   @param ending_config_file_name .json file name which contains the ending configuration(user pov) from which A* starts 
   @return starting configuration file name, moves (A* used on the contrary) to get from starting config->ending config
 */
-pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_name){
-  string level_name = "./custom_level_config/";
+pair<string, vector<Action>> start_backward_analysis(string ending_config_file_name){
+  string level_name = "./backward_levels/";
   level_name.append(ending_config_file_name);
   AleaGame backward_game(level_name, true);
   cout<<"Starting Configuration (user end)"<<endl;
@@ -50,14 +103,12 @@ pair<string, vector<Action>> start_backward_analysis(char *ending_config_file_na
   Prints the number of solution found using RBFS forward(starting config->ending config, user pov) and show the moves of the easiest one(first position, being a priority queue)
   @param starting_config_file_name .json file name which contains the starting configuration(user pov) which A* backwards computed
 */
-void get_solution_number_and_related_difficulty(string starting_config_file_name){
-  cout<<endl<<starting_config_file_name<<endl;
+void start_forward_analysis(string starting_config_file_name, double upperbound){
   AleaGame starting_config_analyzed_game(starting_config_file_name, false, "ANALYZED");
+  starting_config_analyzed_game.print(true, true);
   
-  double upper_bound = tokenizing_to_get_level_difficulty(starting_config_file_name, "_");
-  cout<<"\nUPPERBOUND: "<<upper_bound<<endl;
   //list of the solutions (seen as list of moves to reach solution), and solution difficulty
-  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(starting_config_analyzed_game, upper_bound/*, BRANCHED_NODES_LIMIT*/);
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(starting_config_analyzed_game, upperbound/*, BRANCHED_NODES_LIMIT*/);
   if(solutions_queue.size()>0) cout<<FGGREENSTART<<"\n=================SOLUTION=====================\n"<<FGRESET;
   cout<<"Number of Solutions Found: "<<solutions_queue.size();
   if(solutions_queue.size()>0){

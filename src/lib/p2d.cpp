@@ -13,7 +13,7 @@ const P2D P2D::JUMPING_RIGHT(2, 0);
 const P2D P2D::JUMPING_DOWN(0, 2);
 const P2D P2D::JUMPING_LEFT(-2, 0);
 const P2D P2D::null_p2d(-1, -1);
-const Action Action::null_action(P2D::null_p2d, P2D::null_p2d, -1, -1, -1, P2D::null_p2d);
+const Action Action::null_action(P2D::null_p2d, P2D::null_p2d, -1, -1, P2D::null_p2d);
 
 P2D::P2D(){}
 P2D::P2D(int x, int y) : x(x), y(y) { }
@@ -71,19 +71,15 @@ bool P2D::CompareFun::operator() (const P2D& lhs, const P2D& rhs) const {
 
 Action::Action(){}
 
-Action::Action(P2D from, P2D dir, double weight, int movement_type, P2D head)
-    : from(from), dir(dir), head(head), weight(weight), movement_type(movement_type) {}
-
-
-Action::Action(P2D from, P2D dir, double weight, double mixed_distance_weights, int movement_type, P2D head)
-    : from(from), dir(dir), head(head), weight(weight), mixed_distance_weights(mixed_distance_weights), movement_type(movement_type) {}
+Action::Action(P2D from, P2D dir, double heuristic_value, int movement_type, P2D head)
+    : from(from), dir(dir), head(head), heuristic_value(heuristic_value), movement_type(movement_type) {}
 
 ostream& operator<<(ostream& out, Action act) {
-  return out << "From " << act.from << " direction " << act.dir << " moveType " << act.movement_type << " weight " << act.weight;
+  return out << "From " << act.from << " direction " << act.dir << " moveType " << act.movement_type << " weight " << act.heuristic_value;
 }
 
 bool Action::operator==(const Action& other) const {
-  return from == other.from && dir == other.dir && weight == other.weight && mixed_distance_weights == other.mixed_distance_weights && movement_type == other.movement_type;
+  return from == other.from && dir == other.dir && heuristic_value == other.heuristic_value && movement_type == other.movement_type;
 }
 
 P2D P2D::cellToP2D(Cell c){

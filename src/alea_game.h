@@ -20,7 +20,7 @@ class AleaGame{
     unordered_set<P2D, P2D::HashFun> terminals;
     unordered_map<P2D, Dice*, P2D::HashFun> dices;
     Action last_action_performed;
-    double difficulty = 0.00;
+    double heuristic_value = 0.00;
 
     ~AleaGame();
     AleaGame();
@@ -45,6 +45,7 @@ class AleaGame{
     void red_dice_possible_moves_backward(Dice *dice, vector<Action> &moves);
     void yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &moves);
 
+    double calculate_heuristic_value();
     Action move_forward_stats(vector<pair<int, int>> &excluding_heuristic_possible_moves_activation, P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<bool, int> move_results, int movement_type);
     Action green_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<bool, int> move_results, pair<int, int> &green_heuristic_stats);
     Action white_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *>dice, P2D dir, pair<int, int> &white_heuristic_stats, int movement_type);
@@ -79,7 +80,6 @@ class AleaGame{
     bool has_dice(const P2D& pos) const;
     
     int calculate_distance_from_closer_terminal(P2D dice_position);
-    int calculate_distance_from_centroid(P2D old_dice_position, P2D new_dice_position);
     bool find_banal_start_calculate_route(vector<Action> &moves, pair<P2D, Dice*> dice, int dice_moves, P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static bool terminal_is_disputed(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);
     static vector<pair<P2D, Dice *>> disputer_dices(P2D terminal_position, unordered_map<P2D, Dice *, P2D::HashFun> dices);

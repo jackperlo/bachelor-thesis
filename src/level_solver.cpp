@@ -9,15 +9,13 @@
 
 void print_menu();
 pair<string, vector<Action>> start_backward_analysis(string ending_config_file_name);
-void start_forward_analysis(string starting_config_file_name, double upperbound);
+void start_forward_analysis(string starting_config_file_name, bool calculate_x_y);
 void print_expected_forward_solution(pair<string, vector<Action>> solution);
 void playGamePrinter(AleaGame game, vector<Action> actions);
-double tokenizing_to_get_level_difficulty(string s, string del = " ");
 
 //controls operation of the program
 int main(){ 
   int choice = -1;
-  double upper_bound = 0.00;
   pair<string, vector<Action>> res;
   string level_name = "";
   string level_path = "";
@@ -50,7 +48,7 @@ int main(){
         cin.clear();
         cin >> level_name;
         level_path.append(level_name);
-        start_forward_analysis(level_path, numeric_limits<int>::max());
+        start_forward_analysis(level_path, true);
         break;
       case 3:
         level_name = "";
@@ -60,9 +58,7 @@ int main(){
         res = start_backward_analysis(level_name);
         if(res.first.compare("") != 0){
           cout<<endl<<res.first<<endl;
-          upper_bound = tokenizing_to_get_level_difficulty(res.first, "_");
-          cout<<"\nUPPERBOUND: "<<upper_bound<<endl;
-          start_forward_analysis(res.first, upper_bound);
+          start_forward_analysis(res.first, false);
           print_expected_forward_solution(res);  
         }
         break;
@@ -102,12 +98,12 @@ pair<string, vector<Action>> start_backward_analysis(string ending_config_file_n
   Prints the number of solution found using RBFS forward(starting config->ending config, user pov) and show the moves of the easiest one(first position, being a priority queue)
   @param starting_config_file_name .json file name which contains the starting configuration(user pov) which A* backwards computed
 */
-void start_forward_analysis(string starting_config_file_name, double upperbound){
-  AleaGame starting_config_analyzed_game(starting_config_file_name, false, "ANALYZED", true);
+void start_forward_analysis(string starting_config_file_name, bool calculate_x_y){
+  AleaGame starting_config_analyzed_game(starting_config_file_name, false, "ANALYZED", calculate_x_y);
   starting_config_analyzed_game.print(true, true);
   
   //list of the solutions (seen as list of moves to reach solution), and solution difficulty
-  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(starting_config_analyzed_game, upperbound/*, BRANCHED_NODES_LIMIT*/);
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(starting_config_analyzed_game/*, BRANCHED_NODES_LIMIT*/);
   if(solutions_queue.size()>0) cout<<FGGREENSTART<<"\n=================SOLUTION=====================\n"<<FGRESET;
   cout<<"Number of Solutions Found: "<<solutions_queue.size();
   if(solutions_queue.size()>0){
@@ -136,22 +132,11 @@ void print_expected_forward_solution(pair<string, vector<Action>> solution){
 void playGamePrinter(AleaGame game, vector<Action> actions){
   game.print(true);
   for (Action action : actions) {
-    cout<<"moving from: "<<action.from<<" | dir: "<<action.dir<<" | weight: "<<action.weight<<" | moveType: "<<action.movement_type<<"\n\n"; 
+    cout<<"moving from: "<<action.from<<" | dir: "<<action.dir<<" | heuristic value: "<<action.heuristic_value<<" | moveType: "<<action.movement_type<<"\n\n"; 
     if(!game.move(action, false)){
       cout<<"\nlevel_solver.cpp:playGamePrinter: Error while moving from: "<<action.from<<" | dir: "<<action.dir<<"Exiting.\n"; 
       exit(1);
     }
     game.print(true);
   }
-}
-
-double tokenizing_to_get_level_difficulty(string s, string del)
-{
-  int start = 0;
-  int end = s.find(del);
-  start = end + del.size();
-  end = s.find(del, start);
-  start = end + del.size();
-  end = s.find(del, start);
-  return std::stod(s.substr(start, end - start));
 }

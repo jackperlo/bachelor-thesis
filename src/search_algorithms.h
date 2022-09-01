@@ -26,7 +26,6 @@ class Node{
     double g = 0.00;
     double h = 0.00;
     double f = 0.00;
-    double mixed_distance_weights = 0.00;
 
     ~Node();
     Node(AleaGame game);
@@ -34,7 +33,7 @@ class Node{
     Node(AleaGame game, double g);
     Node(AleaGame game, double g, double h);
     Node(AleaGame game, Action action, shared_ptr<Node> parent);
-    Node(AleaGame game, Action action, shared_ptr<Node> parent, double g, double h, double mixed_distance_weights = 0.00);
+    Node(AleaGame game, Action action, shared_ptr<Node> parent, double g, double h);
 
     bool operator==(const Node& other) const;
     Node& operator=(shared_ptr<Node>);
@@ -58,7 +57,7 @@ class Node{
     };
 
     static pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit=numeric_limits<int>::max());
-    static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> rbfs_forward_search(AleaGame original_game, double upper_bound, int limit=numeric_limits<int>::max());   
+    static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> rbfs_forward_search(AleaGame original_game, double upper_bound=numeric_limits<int>::max(), int limit=numeric_limits<int>::max());   
     static string printLevel(AleaGame map_configuration, double difficulty);
 
   private:

@@ -20,7 +20,7 @@ Node::Node(AleaGame game, Action action) : game(game), action(action) { }
 Node::Node(AleaGame game, double g) : game(game), g(g) { }
 Node::Node(AleaGame game, double g, double h) : game(game), g(g), h(h) { f = g + h; }
 Node::Node(AleaGame game, Action action, shared_ptr<Node> parent) : game(game), action(action), parent(parent) { }
-Node::Node(AleaGame game, Action action, shared_ptr<Node> parent, double g, double h, double mixed_distance_weights) : game(game), action(action), parent(parent), g(g), h(h), mixed_distance_weights(mixed_distance_weights) { 
+Node::Node(AleaGame game, Action action, shared_ptr<Node> parent, double g, double h) : game(game), action(action), parent(parent), g(g), h(h) { 
   f = g + h;
 }
 
@@ -52,7 +52,7 @@ bool Node::CompareFunBackward::operator() (shared_ptr<Node> n1, shared_ptr<Node>
 }
 
 bool Node::CompareFunForward::operator() (shared_ptr<Node> n1, shared_ptr<Node> n2) {
-  return n1->f+n1->mixed_distance_weights > n2->f+n2->mixed_distance_weights; //ordering priority queue as a min-heap
+  return n1->f > n2->f; //ordering priority queue as a min-heap
 }
 
 size_t Node::HashFun::operator()(shared_ptr<Node> const&n) const{
@@ -122,7 +122,7 @@ pair<string, vector<Action>> Node::astar_backward_search(AleaGame game, int limi
         continue;
       }
       ++evaluated_moves;
-      shared_ptr<Node> neighbor(new Node(new_game, action, current_node, current_node->f, action.weight));
+      shared_ptr<Node> neighbor(new Node(new_game, action, current_node, current_node->f, action.heuristic_value));
       if (open_set.find(neighbor) == open_set.end()) {
         open.push(neighbor);
         open_set.insert(neighbor);
@@ -169,13 +169,10 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   auto it = banal_search_results.begin();
   
   for(pair<AleaGame, vector<Action>> &banal_search : banal_search_results){
-    for(Action move : banal_search.second)
-      banal_search.first.difficulty += move.weight;
-    
     if(banal_search.first.is_valid_ending_configuration_forward_search()){
-      cout<<"\nBanal Starting Configuration Found. (Difficulty = "<<banal_search.first.difficulty<<")\n";
-      if(banal_search.first.difficulty<upper_bound){
-        res.push(make_pair(banal_search.second, banal_search.first.difficulty));
+      cout<<"\nBanal Starting Configuration Found. (Difficulty = "<<banal_search.first.heuristic_value<<")\n";
+      if(banal_search.first.heuristic_value<upper_bound){
+        res.push(make_pair(banal_search.second, banal_search.first.heuristic_value));
         cout<<"\n\t"<< FGGREENSTART <<"New BANAL Solution Found!\n"<< FGRESET;
         banal_search_results.erase(it);
       }
@@ -240,7 +237,7 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
           Action action_result = new_game.move_forward_stats(excluding_heuristic_possible_moves_activation, from_pos, new_dice, dir, movement_result, movement_type);
           if(!(action_result == Action::null_action)){
             siblings_number++;
-            shared_ptr<Node> neighbor(new Node(new_game, action_result, current_node, current_node->f, action_result.weight, action_result.mixed_distance_weights)); 
+            shared_ptr<Node> neighbor(new Node(new_game, action_result, current_node, current_node->f, new_game.calculate_heuristic_value())); 
             if (open_set.find(neighbor) == open_set.end()) {
               open.push(neighbor);
               open_set.insert(neighbor);
@@ -306,7 +303,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   chrono::time_point<chrono::system_clock> start, end;
 
   shared_ptr<Node> current_node;
-  shared_ptr<Node> start_node(new Node(banal_search.first, banal_search.first.difficulty, 0.00));
+  shared_ptr<Node> start_node(new Node(banal_search.first, banal_search.first.heuristic_value, 0.00));
   open.push(start_node);
   open_set.insert(start_node);
   //cout<<"Root DEEP=0\n\n";
@@ -335,6 +332,8 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       
       res.push(solution);
       closed.insert(AleaGame::HashFun()(current_node->game));
+
+      limit = BRANCHED_NODES_LIMIT; //to not waste too much time.. at least a solution has already been found
       continue;
     }
 
@@ -385,18 +384,17 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     }
        
     if(siblings_number==0){
+      closed.insert(AleaGame::HashFun()(current_node->game));
       if(current_node->parent != start_node){ //backtracking to grandfather
         if(current_node->parent->parent){ 
           parent_node = current_node->parent->parent;
           //cout<<"Sibling 0->bracktracking\n";
-          closed.insert(AleaGame::HashFun()(current_node->game));
           depth--;
           current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
         }
       }else{
         parent_node = start_node;
         //cout<<"Sibling 0->bracktracking to ROOT\n";
-        closed.insert(AleaGame::HashFun()(current_node->game));
         current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
       }
     }
@@ -407,7 +405,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     }
     if(branched_nodes % 50000 == 0){
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Branched:" << branched_nodes << endl;
-      cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Interactions Threshold: "<<current_node->f<<endl;
+      cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Current Heuristic Treshold: "<<best_solution_found.second<<endl;
     }
   }
   end = std::chrono::system_clock::now();
@@ -421,19 +419,19 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   cout << "\tSkipped:"<< skipped_moves << endl;
   cout << "\tBranched:"<< branched_nodes << endl<<endl;
 
-  cout << "\tWhite Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[0].first << "/" << excluding_heuristic_possible_moves_activation[0].second << ") ";
+  cout << "\tWhite Cutting Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[0].first << "/" << excluding_heuristic_possible_moves_activation[0].second << ") ";
   if(excluding_heuristic_possible_moves_activation[0].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[0].first/(double)excluding_heuristic_possible_moves_activation[0].second)*100 << "%" << endl;
   else cout << " -> 0%" << endl;
   
-  cout << "\tRed Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[1].first << "/" << excluding_heuristic_possible_moves_activation[1].second << ") ";
+  cout << "\tRed Cutting Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[1].first << "/" << excluding_heuristic_possible_moves_activation[1].second << ") ";
   if(excluding_heuristic_possible_moves_activation[1].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[1].first/(double)excluding_heuristic_possible_moves_activation[1].second)*100 << "%" << endl;
   else cout << " -> 0%" << endl;
   
-  cout << "\tYellow Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[2].first << "/" << excluding_heuristic_possible_moves_activation[2].second << ") ";
+  cout << "\tYellow Cutting Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[2].first << "/" << excluding_heuristic_possible_moves_activation[2].second << ") ";
   if(excluding_heuristic_possible_moves_activation[2].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[2].first/(double)excluding_heuristic_possible_moves_activation[2].second)*100 << "%" << endl;
   else cout << " -> 0%" << endl;
   
-  cout << "\tGreen Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[3].first << "/" << excluding_heuristic_possible_moves_activation[3].second << ") ";
+  cout << "\tGreen Cutting Heuristics [#triggered/#total]: (" << excluding_heuristic_possible_moves_activation[3].first << "/" << excluding_heuristic_possible_moves_activation[3].second << ") ";
   if(excluding_heuristic_possible_moves_activation[3].second != 0) cout << "-> " << ((double)excluding_heuristic_possible_moves_activation[3].first/(double)excluding_heuristic_possible_moves_activation[3].second)*100 << "%" << endl<<endl;
   else cout << " -> 0%" << endl;
   

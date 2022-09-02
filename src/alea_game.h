@@ -24,6 +24,7 @@ class AleaGame{
 
     ~AleaGame();
     AleaGame();
+    AleaGame(unordered_set<P2D, P2D::HashFun> terminals, unordered_map<P2D, Dice*, P2D::HashFun> dices);
     AleaGame(json json_dict, bool is_backward, string type, bool calculate_x_y = false);
     AleaGame(string filename, bool is_backward, string type = "", bool calculate_x_y = false);
     AleaGame(const AleaGame& game);

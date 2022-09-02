@@ -25,6 +25,24 @@ AleaGame::~AleaGame(){
 //empty constructor
 AleaGame::AleaGame(){}
 
+AleaGame::AleaGame(unordered_set<P2D, P2D::HashFun> terminals, unordered_map<P2D, Dice*, P2D::HashFun> dices){
+  for (const auto& elem: terminals) {
+    this->terminals.insert(P2D(elem));
+  }
+  for (auto const& elem : dices) {
+    Dice *dice;
+    Cell c(elem.second->get_position().get_x(), elem.second->get_position().get_y());
+    switch (elem.second->get_actual_type_int()){
+      case 0: dice = new WhiteDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
+      case 1: dice = new RedDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
+      case 2: dice = new YellowDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
+      case 3: dice = new GreenDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
+    }
+    this->dices.insert(pair<P2D, Dice *>(P2D(elem.first), dice));
+  }
+  heuristic_value = this->heuristic_value;
+}
+
 //copying constructor
 AleaGame::AleaGame(const AleaGame& game) {
   heuristic_value = game.heuristic_value;

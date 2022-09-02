@@ -201,7 +201,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     auto tmp = futures[i].get();
     if(tmp.size() > 0) res = merge_priority_queues(res, tmp);
   }
-    
+      
   if(res.size() == 0){
     cout<<"\nOriginal Starting Configuration Analysis:\n";
     tmp = rbfs_forward(make_pair(original_game, vector<Action>()), limit, upper_bound);
@@ -224,6 +224,7 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
         P2D from_pos = pair.first;
         AleaGame new_game = AleaGame(current_node->game);
         std::pair<bool, int> movement_result;
+
         int movement_type = SIMPLE_MOVE;
         if(new_game.dices.find(pair.first+dir) != new_game.dices.end()){
           if(pair.second->get_actual_type().compare("YellowDice") == 0) movement_type = JUMP_MOVE;
@@ -232,7 +233,7 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
         movement_result = new_game.move(pair.first, dir, SIMPLE_MOVE, false);
         P2D new_dice_position = new_game.get_new_dice_position(pair.first, dir, movement_result.second);
         std::pair<P2D, Dice *> new_dice = make_pair(new_dice_position, pair.second);
-        
+
         if(movement_result.first){
           Action action_result = new_game.move_forward_stats(excluding_heuristic_possible_moves_activation, from_pos, new_dice, dir, movement_result, movement_type);
           if(!(action_result == Action::null_action)){
@@ -253,12 +254,12 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
   return siblings_number;
 }
 
-void Node::backtrace(shared_ptr<Node> parent_node, int &sequentially_skipped_nodes, int &depth, int &siblings_number, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
+void Node::backtrace(shared_ptr<Node> parent_node, int &sequentially_skipped_nodes, /*int &depth,*/ int &siblings_number, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
   sequentially_skipped_nodes = 0;
-  depth-=DEPTH_DECREASING_INDEX;
-  //cout << "BACKTRACKING, NEW DEEP="<<depth<<endl; 
+  /* depth-=DEPTH_DECREASING_INDEX;
+  cout << "BACKTRACKING, NEW DEEP="<<depth<<endl; */
   siblings_number = get_siblings(parent_node, open, open_set, evaluated_moves, /*depth+1,*/ excluding_heuristic_possible_moves_activation);
-  depth++;
+  //depth++;
 }
 
 /**
@@ -292,7 +293,6 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   unordered_set<int> siblings_closed;
   pair<AleaGame, double> best_solution_found;
   shared_ptr<Node> parent_node;
-  int depth=0;
   int siblings_number = 1;
   int sequentially_skipped_nodes = 0;
   int evaluated_moves = 0;
@@ -306,16 +306,37 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   shared_ptr<Node> start_node(new Node(banal_search.first, banal_search.first.heuristic_value, 0.00));
   open.push(start_node);
   open_set.insert(start_node);
-  //cout<<"Root DEEP=0\n\n";
   
+  /*   
+  cout<<"Root DEEP=0\n\n";
+  int depth=0;
+  int i=1;
+  unordered_set<P2D, P2D::HashFun> terminals;
+  unordered_map<P2D, Dice*, P2D::HashFun> dices;
+  terminals.insert(P2D(2, 1));
+  terminals.insert(P2D(3, 3));
+  WhiteDice wd1(Cell(2, 1), 0, 2);
+  WhiteDice wd2(Cell(3, 2), 1, 1);
+  dices.insert(pair<P2D, Dice *>(P2D(2, 1), &wd1));
+  dices.insert(pair<P2D, Dice *>(P2D(3, 2), &wd2));
+  AleaGame my_game(terminals, dices); */
+
   start = std::chrono::system_clock::now();
   while (open.size() > 0) {
     //cout<<"NSiblings: "<<siblings_number<<" | Open.size(): "<<open.size()<<" | Current Depth: "<<depth<<endl;
+    
     current_node = open.top();
     open.pop();
     open_set.erase(current_node);
 
-    if (current_node->game.is_valid_ending_configuration_forward_search() && current_node->f <= upper_bound){
+    /* 
+    current_node->game.print(true, false);
+    cout<<"\nNode "<<i<<endl;
+    i++;
+     if(current_node->game == my_game)
+    cout<<"THAT'S HERE\n"; */
+
+    if(current_node->game.is_valid_ending_configuration_forward_search() && current_node->f <= upper_bound){
       pair<vector<Action>, double> solution;
       solution.second = current_node->f;
       while (current_node->parent != NULL) {
@@ -337,68 +358,73 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       continue;
     }
 
-    if(siblings_number == 0 || siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end() || closed.find(AleaGame::HashFun()(current_node->game)) != closed.end() || current_node->f > upper_bound) {
-      if(siblings_number != 0){
-        skipped_moves++;
-        sequentially_skipped_nodes++;
-        /* if(siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end())
-          cout<<"\tsibling skipped: found in siblings_closed\n\tsequentially skipped siblings"<<sequentially_skipped_nodes<<endl;
-        else if(closed.find(AleaGame::HashFun()(current_node->game)) != closed.end())
-          cout<<"\tsibling skipped: found in closed\n\tsequentially skipped siblings"<<sequentially_skipped_nodes<<endl;
-        else if(current_node->f >= upper_bound)
-          cout<<"\tsibling skipped: "<<current_node->f<<">="<<upper_bound<<"\n\tsequentially skipped siblings"<<sequentially_skipped_nodes<<endl;
-        */
-      }
-      if(siblings_number == 0 || sequentially_skipped_nodes == siblings_number){//BACKTRACKING internal nodes and leafs
-        if(current_node->parent){
-          
-          if(sequentially_skipped_nodes==siblings_number) 
-            closed.insert(AleaGame::HashFun()(current_node->parent->game));
+    if(siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end() || closed.find(AleaGame::HashFun()(current_node->game)) != closed.end() || current_node->f > upper_bound){
+      skipped_moves++;
+      sequentially_skipped_nodes++;
+
+      /*  cout<<FGREDSTART<<"^Skipped^\n"<<FGRESET;
+      if(siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end())
+        cout<<"\tsibling skipped: found in siblings_closed\n\tsequentially skipped siblings "<<sequentially_skipped_nodes<<endl;
+      else if(closed.find(AleaGame::HashFun()(current_node->game)) != closed.end())
+        cout<<"\tsibling skipped: found in closed\n\tsequentially skipped siblings "<<sequentially_skipped_nodes<<endl;
+      else if(current_node->f >= upper_bound)
+        cout<<"\tsibling skipped: "<<current_node->f<<">="<<upper_bound<<"\n\tsequentially skipped siblings "<<sequentially_skipped_nodes<<endl;
+       */
+
+      closed.insert(AleaGame::HashFun()(current_node->game));
+      if(sequentially_skipped_nodes == siblings_number){ //backtracking internal nodes
+        if(current_node->parent && current_node->parent != start_node){
+          closed.insert(AleaGame::HashFun()(current_node->parent->game));
           siblings_closed.clear();
           
-          if(current_node->parent->parent){ 
-            parent_node = current_node->parent->parent;
-            //cout<<"IF sibling 0->backtracking\n";
-            current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
-          }
-          
+          parent_node = current_node->parent->parent;
+          current_node->backtrace(parent_node, sequentially_skipped_nodes, /*depth,*/ siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+          /* cout<<"IF sibling 0->backtracking\n";
+          cout<<FGREDSTART<<"^Backtracked^\n"<<FGRESET; */
         }
       } 
-      closed.insert(AleaGame::HashFun()(current_node->game));
-      continue;  
+      continue;
     }
-
+    
     sequentially_skipped_nodes = 0;
     branched_nodes++;
-    depth++;
     siblings_closed.insert(AleaGame::HashFun()(current_node->game));
-    //cout<<"\n\tsibling found and added to sibling_closed, DEEP="<<depth-1<<endl;
+    /* depth++;
+    cout<<"\n\tsibling found and added to sibling_closed, DEEP="<<depth-1<<endl; 
+    cout<<"\n\tsibling found and added to sibling_closed"<<endl; */
     siblings_number = get_siblings(current_node, open, open_set, evaluated_moves, /*depth,*/ excluding_heuristic_possible_moves_activation);
   
-    //cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << endl;
-    //current_node->game.print(true, false); 
+     if(siblings_number==0){ //backtracking leaves
+      if(current_node->parent){ 
+        closed.insert(AleaGame::HashFun()(current_node->game));
+
+        parent_node = current_node->parent;
+        current_node->backtrace(parent_node, sequentially_skipped_nodes, /*depth,*/ siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+        /* cout<<"Sibling 0->bracktracking to father\n";
+        cout<<FGREDSTART<<"^Backtracked^\n"<<FGRESET; */
+      }
+    }
+
+    if(sequentially_skipped_nodes == siblings_number){ //backtracking internal nodes
+      if(current_node->parent && current_node->parent != start_node){
+        closed.insert(AleaGame::HashFun()(current_node->parent->game));
+        siblings_closed.clear();
+        
+        parent_node = current_node->parent->parent;
+        current_node->backtrace(parent_node, sequentially_skipped_nodes, /*depth,*/ siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+        /* cout<<"IF sibling 0->backtracking\n";
+        cout<<FGREDSTART<<"^Backtracked^\n"<<FGRESET; */
+      }
+    } 
+
+    /* cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << endl;
+    current_node->game.print(true, false); 
+    cout<<FGREDSTART<<"^Branched^, "<<siblings_number<<" siblings\n"<<FGRESET; */
 
     if(current_node->f > best_solution_found.second){
       best_solution_found.first = current_node->game;
       best_solution_found.second = current_node->f;        
     }
-       
-    if(siblings_number==0){
-      closed.insert(AleaGame::HashFun()(current_node->game));
-      if(current_node->parent != start_node){ //backtracking to grandfather
-        if(current_node->parent->parent){ 
-          parent_node = current_node->parent->parent;
-          //cout<<"Sibling 0->bracktracking\n";
-          depth--;
-          current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
-        }
-      }else{
-        parent_node = start_node;
-        //cout<<"Sibling 0->bracktracking to ROOT\n";
-        current_node->backtrace(parent_node, sequentially_skipped_nodes, depth, siblings_number, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
-      }
-    }
-
     if (branched_nodes > limit){
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << FGREDSTART << "BRANCHED_NODES LIMIT REACHED. EXIT.\n" << FGRESET;
       break;

@@ -14,6 +14,7 @@
 #include <ctime>
 
 mutex mtx;
+int search_limit = numeric_limits<int>::max();
 Node::~Node(){}
 Node::Node(AleaGame game) : game(game) { }
 Node::Node(AleaGame game, Action action) : game(game), action(action) { }
@@ -164,7 +165,8 @@ pair<string, vector<Action>> Node::astar_backward_search(AleaGame game, int limi
 */
 priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::rbfs_forward_search(AleaGame original_game, double upper_bound, int limit) {
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res;
-  
+  search_limit = limit;
+
   vector<pair<AleaGame, vector<Action>>> banal_search_results = original_game.find_banal_starts_forward_search_wrapper();
   auto it = banal_search_results.begin();
   
@@ -180,10 +182,10 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     it++;
   }
   if(res.size() > 0) return res;
-  else return start_multi_threading(original_game, banal_search_results, res, upper_bound, limit);
+  else return start_multi_threading(original_game, banal_search_results, res, upper_bound);
 }
 
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::start_multi_threading(AleaGame original_game, vector<pair<AleaGame, vector<Action>>> banal_search_results, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res, double upper_bound, int limit){
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::start_multi_threading(AleaGame original_game, vector<pair<AleaGame, vector<Action>>> banal_search_results, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res, double upper_bound){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> tmp;
   vector<future<priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward>>> futures;
   futures.reserve(banal_search_results.size());
@@ -192,7 +194,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   cout<<"Banal Configurations Found: "<<banal_search_results.size()<<endl<<endl;
   cout<<"Loading..."<<endl<<endl;
   for(pair<AleaGame, vector<Action>> banal_search : banal_search_results){
-    futures.push_back(async(launch::async, rbfs_forward, banal_search, limit, upper_bound, i));
+    futures.push_back(async(launch::async, rbfs_forward, banal_search, upper_bound, i));
     i++;    
   }
 
@@ -204,7 +206,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       
   if(res.size() == 0){
     cout<<"\nOriginal Starting Configuration Analysis:\n";
-    tmp = rbfs_forward(make_pair(original_game, vector<Action>()), limit, upper_bound);
+    tmp = rbfs_forward(make_pair(original_game, vector<Action>()), upper_bound);
     res = merge_priority_queues(res, tmp);
   }
 
@@ -285,7 +287,7 @@ void Node::backtrace(shared_ptr<Node> parent_node, int &sequentially_skipped_nod
           a vector of moves (to get from starting config->ending config(=solution)) 
           and the difficulty calculated for that solution
 */
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::rbfs_forward(pair<AleaGame, vector<Action>> banal_search, int limit, double upper_bound, int thread_name){
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::rbfs_forward(pair<AleaGame, vector<Action>> banal_search, double upper_bound, int thread_name){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res;
   priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> open;
   unordered_set<shared_ptr<Node>, Node::HashFun> open_set;
@@ -354,7 +356,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       res.push(solution);
       closed.insert(AleaGame::HashFun()(current_node->game));
 
-      limit = BRANCHED_NODES_LIMIT; //to not waste too much time.. at least a solution has already been found
+      search_limit = BRANCHED_NODES_LIMIT; //to not waste too much time.. at least a solution has already been found
       continue;
     }
 
@@ -425,7 +427,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       best_solution_found.first = current_node->game;
       best_solution_found.second = current_node->f;        
     }
-    if (branched_nodes > limit){
+    if (branched_nodes > search_limit){
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << FGREDSTART << "BRANCHED_NODES LIMIT REACHED. EXIT.\n" << FGRESET;
       break;
     }
@@ -437,7 +439,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   end = std::chrono::system_clock::now();
   chrono::duration<double> elapsed_seconds = end - start;
 
-  if (branched_nodes <= limit)
+  if (branched_nodes <= search_limit)
     cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << FGYELLOWSTART << "TREE TOTALLY EXPLORED. EXIT.\n" << FGRESET;
 
   cout << "\tTime Elapsed: " << elapsed_seconds.count() << " sec" << endl;

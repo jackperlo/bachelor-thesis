@@ -1,0 +1,31 @@
+{
+    "level": 1,
+    "level_set": 2,
+    "columns": 3,
+    "terminals": [
+        0,
+        6,
+        8
+    ],
+    "dice": [
+        {
+            "type": 0,
+            "pos": 3,
+            "num": 3
+        },
+        {
+            "type": 0,
+            "pos": 4,
+            "num": 3
+        },
+        {
+            "type": 3,
+            "pos": 5,
+            "num": 3
+        }
+    ],
+    "hint": {
+        "it": "I dadi verdi sono i pi\u00f9 leggeri. Fermano la loro corsa solo quando incontrano un altro dado...",
+        "en": "Green dice are lighter than the other. They will stop when encounter another dice..."
+    }
+}

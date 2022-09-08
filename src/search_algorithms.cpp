@@ -194,6 +194,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   cout<<"Banal Configurations Found: "<<banal_search_results.size()<<endl<<endl;
   cout<<"Loading..."<<endl<<endl;
   for(pair<AleaGame, vector<Action>> banal_search : banal_search_results){
+    search_limit = BRANCHED_NODES_LIMIT;
     futures.push_back(async(launch::async, rbfs_forward, banal_search, upper_bound, i));
     i++;    
   }
@@ -205,6 +206,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   }
       
   if(res.size() == 0){
+    search_limit = numeric_limits<int>::max();
     cout<<"\nOriginal Starting Configuration Analysis:\n";
     tmp = rbfs_forward(make_pair(original_game, vector<Action>()), upper_bound);
     res = merge_priority_queues(res, tmp);

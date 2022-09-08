@@ -1,0 +1,46 @@
+{
+    "level": 23,
+    "level_set": 2,
+    "columns": 5,
+    "terminals": [
+        7,
+        10,
+        12,
+        14,
+        17,
+        22
+    ],
+    "dice": [
+        {
+            "type": 2,
+            "pos": 2,
+            "num": 1
+        },
+        {
+            "type": 3,
+            "pos": 4,
+            "num": 4
+        },
+        {
+            "type": 3,
+            "pos": 10,
+            "num": 5
+        },
+        {
+            "type": 3,
+            "pos": 16,
+            "num": 3
+        },
+        {
+            "type": 0,
+            "pos": 23,
+            "num": 4
+        },
+        {
+            "type": 2,
+            "pos": 24,
+            "num": 3
+        }
+    ],
+    "hint": {}
+}

@@ -56,7 +56,7 @@ pair<bool, int> Dice::move(string direction, unordered_map<P2D, Dice *, P2D::Has
 
   if(this->nMoves > 0 || pushedMove){
     if(direction.compare("left") == 0){
-      if(this->get_actual_type().compare("GreenDice") == 0 && pushedMove)
+      if((this->get_actual_type().compare("GreenDice") == 0 || this->get_actual_type().compare("YellowDice") == 0) && pushedMove)
         res = move_left(x, y, dices, is_a_simulation, PUSHED_MOVE);
       else
         res = move_left(x, y, dices, is_a_simulation, movement_type);
@@ -72,7 +72,7 @@ pair<bool, int> Dice::move(string direction, unordered_map<P2D, Dice *, P2D::Has
       else if(is_a_simulation)
         return res;
     }else if(direction.compare("right") == 0){
-      if(this->get_actual_type().compare("GreenDice") == 0 && pushedMove)
+      if((this->get_actual_type().compare("GreenDice") == 0 || this->get_actual_type().compare("YellowDice") == 0) && pushedMove)
         res = move_right(x, y, dices, is_a_simulation, PUSHED_MOVE);
       else
         res = move_right(x, y, dices, is_a_simulation, movement_type);
@@ -88,7 +88,7 @@ pair<bool, int> Dice::move(string direction, unordered_map<P2D, Dice *, P2D::Has
       else if(is_a_simulation)
         return res;
     }else if(direction.compare("up") == 0){
-      if(this->get_actual_type().compare("GreenDice") == 0 && pushedMove)
+      if((this->get_actual_type().compare("GreenDice") == 0 || this->get_actual_type().compare("YellowDice") == 0) && pushedMove)
         res = move_up(x, y, dices, is_a_simulation, PUSHED_MOVE);
       else
         res = move_up(x, y, dices, is_a_simulation, movement_type);
@@ -104,7 +104,7 @@ pair<bool, int> Dice::move(string direction, unordered_map<P2D, Dice *, P2D::Has
       else if(is_a_simulation)
         return res;
     }else if(direction.compare("down") == 0){
-      if(this->get_actual_type().compare("GreenDice") == 0 && pushedMove)
+      if((this->get_actual_type().compare("GreenDice") == 0 || this->get_actual_type().compare("YellowDice") == 0) && pushedMove)
         res = move_down(x, y, dices, is_a_simulation, PUSHED_MOVE);
       else
         res = move_down(x, y, dices, is_a_simulation, movement_type);

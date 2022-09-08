@@ -210,6 +210,8 @@ pair<bool, int> GreenDice::move_left(int x, int y, unordered_map<P2D, Dice *, P2
       res.second ++;
       i++;
     }
+    if(this->get_n_moves()-res.second > 0 && x-res.second == 0)
+      return NO_MOVE;
   }
   return res;
 }
@@ -239,6 +241,8 @@ pair<bool, int> GreenDice::move_right(int x, int y, unordered_map<P2D, Dice *, P
       res.second ++;
       i++;
     }
+    if(this->get_n_moves()-res.second > 0 && x+res.second == MAP_WIDTH-1)
+      return NO_MOVE;
   }
   return res;
 }
@@ -268,6 +272,8 @@ pair<bool, int> GreenDice::move_up(int x, int y, unordered_map<P2D, Dice *, P2D:
       res.second ++;
       i++;
     }
+    if(this->get_n_moves()-res.second > 0 && y-res.second == 0)
+      return NO_MOVE;
   }
   return res;
 }
@@ -297,6 +303,8 @@ pair<bool, int> GreenDice::move_down(int x, int y, unordered_map<P2D, Dice *, P2
       res.second ++;
       i++;
     }
+    if(this->get_n_moves()-res.second > 0 && y+res.second == MAP_HEIGHT-1)
+      return NO_MOVE;
   }
   return res;
 }

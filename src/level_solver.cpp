@@ -15,12 +15,16 @@ void playGamePrinter(AleaGame game, vector<Action> actions);
 
 //controls operation of the program
 int main(){ 
+
   int choice = -1;
   pair<string, vector<Action>> res;
   string level_name = "";
   string level_path = "";
 
   cout<<FGCYANSTART<<"\nWelcome to Alea Game Level Generator & Solver.\n"<<FGRESET;
+  #ifdef DEBUG
+  cout<<FGCYANSTART<<"\nDEBUG MODE\n"<<FGRESET;
+  #endif
   do{
     print_menu();
 

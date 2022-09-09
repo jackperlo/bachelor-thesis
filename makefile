@@ -1,14 +1,15 @@
 # Points to the root of Google Test, relative to where this file is.
-GTEST_DIR= ./src/tests/googletest/googletest
+GTEST_DIR = ./src/tests/googletest/googletest
 # All Google Test headers.
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
+DEBUG = 
 # Flags passed to the preprocessor.
 # Set Google Test's header directory as a system directory, such that
 # the compiler doesn't generate warnings in Google Test headers.
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 # Flags passed to the C++ compiler.
-CXXFLAGS += -std=c++11 -g -Wall -Wextra -pthread
+CXXFLAGS += -std=c++11 -g $(DEBUG) -Wall -Wextra -pthread
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
 #---------------MAIN-------------
@@ -82,7 +83,7 @@ tests: ./src/tests/tests.o gtest_main.a
 
 #---------------COMMANDS-------------
 
-make all: level_solver
+all: level_solver
 
 run: level_solver ./src/level_solver
 	./src/level_solver 
@@ -92,3 +93,8 @@ run_tests:
 
 clean:
 	rm -f ./build/*.o ./src/level_solver ./src/tests/tests ./src/tests/*.a ./src/tests/*.o
+
+debug: DEBUG = -DDEBUG
+debug: run
+
+

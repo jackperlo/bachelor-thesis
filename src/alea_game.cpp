@@ -746,11 +746,11 @@ Action AleaGame::move_forward_stats(vector<pair<int, int>> &excluding_heuristic_
 */  
 Action AleaGame::white_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<int, int> &white_heuristic_stats, int movement_type){
   white_heuristic_stats.second++;
-  /* int distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
+  int distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
   if(distance_from_closer_terminal_after_move > dice.second->get_n_moves() && !check_dice_could_be_pushed(dice.first, dice.second->get_n_moves())){
     white_heuristic_stats.first++; //heuristic activates
     return Action::null_action;
-  } */
+  }
   
   if(movement_type == SIMPLE_MOVE)
     return Action(from_pos, dir, SIMPLE_MOVE_FORWARD_WEIGHT, SIMPLE_MOVE);
@@ -805,11 +805,11 @@ Action AleaGame::red_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> dic
 */  
 Action AleaGame::yellow_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<bool, int> move_results, pair<int, int> &yellow_heuristic_stats){
   yellow_heuristic_stats.second++;      
-  /*int distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
+  int distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
   if(distance_from_closer_terminal_after_move > YELLOW_DICE_EXCLUDE_MOVE_FORWARD_HEURISTICS(dice.second->get_n_moves())){
     yellow_heuristic_stats.first++; //heuristic activates
     return Action::null_action;
-  }*/
+  }
 
   if(move_results.second == 1)
     return Action(from_pos, dir, SIMPLE_MOVE_FORWARD_WEIGHT, SIMPLE_MOVE);
@@ -839,13 +839,13 @@ Action AleaGame::yellow_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> 
 */  
 Action AleaGame::green_dice_move_forward_stats(P2D from_pos, pair<P2D, Dice *> dice, P2D dir, pair<bool, int> move_results, pair<int, int> &green_heuristic_stats){
   green_heuristic_stats.second++;
-  /* int distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
+  int distance_from_closer_terminal_after_move = calculate_distance_from_closer_terminal(dice.first);
   if(distance_from_closer_terminal_after_move > dice.second->get_n_moves() && !check_dice_could_be_pushed(dice.first, dice.second->get_n_moves())){
     green_heuristic_stats.first++; //heuristic activates
     return Action::null_action;
-  }else{ */
+  }else{
     return Action(from_pos, dir, (SIMPLE_MOVE_FORWARD_WEIGHT*move_results.second), SIMPLE_MOVE);       
-  //}
+  }
 }
 
 

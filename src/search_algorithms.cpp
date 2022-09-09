@@ -181,7 +181,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     }    
     it++;
   }
-  if(res.size() > 0) return res;
+  if(res.size() > 0) return res; 
   else return start_multi_threading(original_game, banal_search_results, res, upper_bound);
 }
 
@@ -213,9 +213,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   }
 
   return res;
-}
-    
-  
+} 
 
 int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, /*int depth,*/ vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
   open_set.clear();
@@ -398,7 +396,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     cout<<"\n\tsibling found and added to sibling_closed"<<endl; */
     siblings_number = get_siblings(current_node, open, open_set, evaluated_moves, /*depth,*/ excluding_heuristic_possible_moves_activation);
   
-     if(siblings_number==0){ //backtracking leaves
+    if(siblings_number==0){ //backtracking leaves
       if(current_node->parent){ 
         closed.insert(AleaGame::HashFun()(current_node->game));
 
@@ -436,6 +434,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     if(branched_nodes % 50000 == 0){
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Branched:" << branched_nodes << endl;
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Current Heuristic Treshold: "<<best_solution_found.second<<endl;
+      current_node->game.print(true, false);
     }
   }
   end = std::chrono::system_clock::now();

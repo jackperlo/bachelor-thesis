@@ -5,3 +5,5 @@
      - ``` make tests``` to compile the tests using *GoogleTest*<br/>
      - ``` make run_tests``` to run the tests<br/><br/>
      - ``` make clean``` to clean the whole project from .o, .a, and exectuables<br/>
+     - ``` make debug``` to run the application printing some useful debug stats. Need a ``` make clean``` before and after its execution <br/>
+     

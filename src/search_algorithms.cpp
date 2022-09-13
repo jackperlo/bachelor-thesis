@@ -412,10 +412,12 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
             depth++;
             cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
           #endif
+        continue;
         }
       } 
-      continue;
+      
     }
+    skipped_moves--;
 
     sequentially_skipped_nodes = 0;
     branched_nodes++;

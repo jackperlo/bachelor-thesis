@@ -203,13 +203,13 @@ void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
 }
 
 
-int AleaGame::HashFun::operator()(const AleaGame& game) const {
+long long int AleaGame::HashFun::operator()(const AleaGame& game) const {
   int type_map[] = {17, 31, 47, 97};
   int the_hash = 0;
   for (const P2D& t : game.terminals) the_hash += P2D::HashFun()(t);
   for (const auto &pair : game.dices) {
-      the_hash += P2D::HashFun()(pair.first) * type_map[pair.second->get_actual_type_int()] * (pair.second->get_n_moves()+1 * pair.second->get_position().get_x() * pair.second->get_position().get_y());
-      the_hash ^= (int) pow(type_map[pair.second->get_actual_type_int()], pair.second->get_n_moves()+1 * pair.second->get_position().get_x() * pair.second->get_position().get_y());
+      the_hash += P2D::HashFun()(pair.first) * type_map[pair.second->get_actual_type_int()] * (pair.second->get_n_moves()+1 * pair.second->get_position().get_x()+1 * pair.second->get_position().get_y()+1);
+      the_hash ^= (int) pow(type_map[pair.second->get_actual_type_int()], pair.second->get_n_moves()+1 * pair.second->get_position().get_x()+1 * pair.second->get_position().get_y()+1);
   }
   return the_hash;
 }

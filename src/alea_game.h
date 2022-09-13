@@ -66,7 +66,7 @@ class AleaGame{
     static Action revert_action(Action backward_action);
 
     struct HashFun {
-			int operator()(const AleaGame& game) const;
+			long long int operator()(const AleaGame& game) const;
 		};
 
   private:

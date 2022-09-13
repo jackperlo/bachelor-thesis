@@ -225,7 +225,11 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
 int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
   open_set.clear();
   while (!open.empty()) open.pop();
-  
+
+  #ifdef DEBUG
+    cout<<"=====SIBLINGS=====\n";
+  #endif
+
   int siblings_number = 0;
   for(pair<P2D, Dice*> pair : current_node->game.dices){
     if(pair.second->get_n_moves() > 0){
@@ -243,9 +247,17 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
         P2D new_dice_position = new_game.get_new_dice_position(pair.first, dir, movement_result.second);
         std::pair<P2D, Dice *> new_dice = make_pair(new_dice_position, pair.second);
 
+        #ifdef DEBUG
+          cout<<"Dice: "<<pair.first<<" | To: "<<dir<<" | Resulted in: "<<movement_result.first<<endl;
+        #endif
+
         if(movement_result.first){
           Action action_result = new_game.move_forward_stats(excluding_heuristic_possible_moves_activation, from_pos, new_dice, dir, movement_result, movement_type);
           if(!(action_result == Action::null_action)){
+            #ifdef DEBUG
+              cout<<"\tStats: Don't cut"<<endl;
+            #endif
+
             siblings_number++;
             shared_ptr<Node> neighbor(new Node(new_game, action_result, current_node, current_node->f, new_game.calculate_heuristic_value())); 
             if (open_set.find(neighbor) == open_set.end()) {
@@ -253,12 +265,18 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
               open_set.insert(neighbor);
             }
           }
+          #ifdef DEBUG
+            else cout<<"\tStats: Cut"<<endl;
+          #endif
         }
 
         evaluated_moves++;
       }
     }
   }
+  #ifdef DEBUG
+    cout<<"=====END SIBLINGS=====\n";
+  #endif
   return siblings_number;
 }
 
@@ -414,7 +432,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
         parent_node = current_node->parent;
         sequentially_skipped_nodes = 0;
         #ifdef DEBUG
-          depth-=1;
+          depth-=DEPTH_DECREASING_INDEX;
           cout << "BACKTRACKING FROM LEAF, NEW DEPTH="<<depth<<endl;
         #endif
         siblings_number = get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);

@@ -66,8 +66,10 @@ class AleaGame{
     static Action revert_action(Action backward_action);
 
     struct HashFun {
-			long long int operator()(const AleaGame& game) const;
+			unsigned long long operator()(const AleaGame& game) const;
 		};
+
+    bool is_a_before_last_config();
 
   private:
     void generate_map_for_backward_movements(json json_dict);

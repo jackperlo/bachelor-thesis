@@ -356,6 +356,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       i++;  
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << endl;
       current_node->game.print(true, false);
+      cout << "HashValue: " << AleaGame::HashFun()(current_node->game) << endl;
     #endif
 
     if(current_node->game.is_valid_ending_configuration_forward_search() && current_node->f <= upper_bound){
@@ -415,7 +416,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       } 
       continue;
     }
-    
+
     sequentially_skipped_nodes = 0;
     branched_nodes++;
     siblings_closed.insert(AleaGame::HashFun()(current_node->game));
@@ -474,7 +475,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     if(branched_nodes % 50000 == 0){
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Branched:" << branched_nodes << endl;
       cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Current Heuristic Treshold: "<<best_solution_found.second<<endl;
-      current_node->game.print(true, false);
+      //current_node->game.print(true, false);
     }
   }
   end = std::chrono::system_clock::now();
@@ -506,7 +507,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   
   if(res.size() == 0){
     cout << FGMAGENTASTART << "\nTHREAD " << thread_name << "~:" << FGRESET << "Deeper solution found (value="<<best_solution_found.second<<"):\n";
-    best_solution_found.first.print(true, false);
+    //best_solution_found.first.print(true, false);
     cout<<endl;
   }
   return res;

@@ -359,28 +359,6 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
       cout << "HashValue: " << AleaGame::HashFun()(current_node->game) << endl;
     #endif
 
-    if(current_node->game.is_valid_ending_configuration_forward_search() && current_node->f <= upper_bound){
-      pair<vector<Action>, double> solution;
-      solution.second = current_node->f;
-      while (current_node->parent != NULL) {
-        solution.first.push_back(current_node->action);
-        current_node = current_node->parent;
-      }
-      if(solution.first.size() > 0) cout<<"\n"<< FGMAGENTASTART << "THREAD " << thread_name << "~:" << FGRESET << FGGREENSTART <<"RBFS Forward: New Solution Found!\n"<< FGRESET;
-      reverse(solution.first.begin(), solution.first.end());
-      int offset = 0;
-      for(Action move : banal_search.second){
-        solution.first.insert(solution.first.begin()+offset, move);
-        offset++;
-      }
-      
-      res.push(solution);
-      closed.insert(AleaGame::HashFun()(current_node->game));
-
-      search_limit = BRANCHED_NODES_LIMIT; //to not waste too much time.. at least a solution has already been found
-      continue;
-    }
-
     if(siblings_closed.find(AleaGame::HashFun()(current_node->game)) != siblings_closed.end() || closed.find(AleaGame::HashFun()(current_node->game)) != closed.end() || current_node->f > upper_bound){
       skipped_moves++;
       sequentially_skipped_nodes++;
@@ -412,12 +390,33 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
             depth++;
             cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
           #endif
-        continue;
+        
         }
       } 
-      
+      continue;
     }
-    skipped_moves--;
+
+    if(current_node->game.is_valid_ending_configuration_forward_search() && current_node->f <= upper_bound){
+      pair<vector<Action>, double> solution;
+      solution.second = current_node->f;
+      while (current_node->parent != NULL) {
+        solution.first.push_back(current_node->action);
+        current_node = current_node->parent;
+      }
+      if(solution.first.size() > 0) cout<<"\n"<< FGMAGENTASTART << "THREAD " << thread_name << "~:" << FGRESET << FGGREENSTART <<"RBFS Forward: New Solution Found!\n"<< FGRESET;
+      reverse(solution.first.begin(), solution.first.end());
+      int offset = 0;
+      for(Action move : banal_search.second){
+        solution.first.insert(solution.first.begin()+offset, move);
+        offset++;
+      }
+      
+      res.push(solution);
+      closed.insert(AleaGame::HashFun()(current_node->game));
+
+      search_limit = BRANCHED_NODES_LIMIT; //to not waste too much time.. at least a solution has already been found
+      continue;
+    }
 
     sequentially_skipped_nodes = 0;
     branched_nodes++;

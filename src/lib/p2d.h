@@ -25,7 +25,7 @@ class P2D {
     static P2D cellToP2D(Cell c);
 
 		struct HashFun {
-			unsigned long long operator()(const P2D& p) const;
+		size_t operator()(const P2D& p) const;
 		};
 
 		struct CompareFun {

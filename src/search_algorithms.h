@@ -56,13 +56,15 @@ class Node{
       bool operator() (pair<vector<Action>, double> solution1, pair<vector<Action>, double> solution2);
     };
 
-    static pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit=numeric_limits<int>::max());
+    static pair<string, vector<Action>> astar_backward_search(AleaGame game, int limit=numeric_limits<int>::max());    
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> rbfs_forward_search(AleaGame original_game, double upper_bound=numeric_limits<int>::max(), int limit=numeric_limits<int>::max());   
     static string printLevel(AleaGame map_configuration, double difficulty);
 
   private:
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> start_multi_threading(AleaGame original_game, vector<pair<AleaGame, vector<Action>>> banal_search_results, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res, double upper_bound);
-    static int get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation);
+    static int a_star_get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation);
+    static void rbfs_get_siblings(shared_ptr<Node> start_node, shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, unordered_set<string> &closed, int &skipped_moves, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation);
+    static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> a_star_forward(pair<AleaGame, vector<Action>> banal_search, double upper_bound, int thread_name=0);
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> rbfs_forward(pair<AleaGame, vector<Action>> banal_search, double upper_bound, int thread_name=0);
     static priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> merge_priority_queues(priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> source1, priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> source2);
 };

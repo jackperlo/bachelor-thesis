@@ -59,11 +59,10 @@ ostream& operator<<(ostream& out, P2D p) {
   return out;
 }
 
-unsigned long long P2D::HashFun::operator()(const P2D& p) const {
-  /* unsigned long long rowHash = hash<unsigned long long>()(17 * p.x);
-  unsigned long long colHash = hash<unsigned long long>()(31 * p.y) << 1;
-  return rowHash ^ colHash; */
-  return (p.x)*(p.y);
+size_t P2D::HashFun::operator()(const P2D& p) const {
+  size_t rowHash = hash<size_t>()(17 * p.x);
+  size_t colHash = hash<size_t>()(31 * p.y) << 1;
+  return rowHash ^ colHash;
 }
 
 bool P2D::CompareFun::operator() (const P2D& lhs, const P2D& rhs) const {

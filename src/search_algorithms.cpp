@@ -201,7 +201,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     cout<<"Loading..."<<endl<<endl;
     for(pair<AleaGame, vector<Action>> banal_search : banal_search_results){
       search_limit = BRANCHED_NODES_LIMIT;
-      futures.push_back(async(launch::async, rbfs_forward, banal_search, upper_bound, i));
+      futures.push_back(async(launch::async, a_star_forward, banal_search, upper_bound, i));
       i++;    
     }
 
@@ -215,14 +215,14 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   if(res.size() == 0){
     search_limit = numeric_limits<int>::max();
     cout<<"\nOriginal Starting Configuration Analysis:\n";
-    tmp = rbfs_forward(make_pair(original_game, vector<Action>()), upper_bound);
+    tmp = a_star_forward(make_pair(original_game, vector<Action>()), upper_bound);
     res = merge_priority_queues(res, tmp);
   }
 
   return res;
 } 
 
-int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
+int Node::a_star_get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
   open_set.clear();
   while (!open.empty()) open.pop();
 
@@ -230,7 +230,7 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
     cout<<"=====SIBLINGS=====\n";
   #endif
 
-  int siblings_number = 0;
+  int siblings_number=0;
   for(pair<P2D, Dice*> pair : current_node->game.dices){
     if(pair.second->get_n_moves() > 0){
       for(P2D dir : {P2D::LEFT, P2D::RIGHT, P2D::DOWN, P2D::UP}){
@@ -303,12 +303,12 @@ int Node::get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<
           a vector of moves (to get from starting config->ending config(=solution)) 
           and the difficulty calculated for that solution
 */
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::rbfs_forward(pair<AleaGame, vector<Action>> banal_search, double upper_bound, int thread_name){
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::a_star_forward(pair<AleaGame, vector<Action>> banal_search, double upper_bound, int thread_name){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res;
   priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> open;
   unordered_set<shared_ptr<Node>, Node::HashFun> open_set;
-  unordered_set<int> closed;  
-  unordered_set<int> siblings_closed;
+  unordered_set<size_t> closed;  
+  unordered_set<size_t> siblings_closed;
   pair<AleaGame, double> best_solution_found;
   shared_ptr<Node> parent_node;
   int siblings_number = 1;
@@ -331,7 +331,8 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     cout<<"\nRoot DEPTH="<<depth<<"\n";
     int i=1;
   #endif
-  /*unordered_set<P2D, P2D::HashFun> terminals;
+  
+  /* unordered_set<P2D, P2D::HashFun> terminals;
   unordered_map<P2D, Dice*, P2D::HashFun> dices;
   terminals.insert(P2D(2, 1));
   terminals.insert(P2D(3, 3));
@@ -339,7 +340,8 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   WhiteDice wd2(Cell(3, 2), 1, 1);
   dices.insert(pair<P2D, Dice *>(P2D(2, 1), &wd1));
   dices.insert(pair<P2D, Dice *>(P2D(3, 2), &wd2));
-  AleaGame my_game(terminals, dices); */
+  AleaGame my_game(terminals, dices); 
+ */
 
   start = std::chrono::system_clock::now();
   while (open.size() > 0) {
@@ -385,7 +387,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
             depth-=DEPTH_DECREASING_INDEX;
             cout << "BACKTRACKING FROM INTERNAL NODE, ALL SIBLINGS EXPLORED, NEW DEPTH="<<depth<<endl;
           #endif
-          siblings_number = get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+          siblings_number = a_star_get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
           #ifdef DEBUG 
             depth++;
             cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
@@ -421,7 +423,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     sequentially_skipped_nodes = 0;
     branched_nodes++;
     siblings_closed.insert(AleaGame::HashFun()(current_node->game));
-    siblings_number = get_siblings(current_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+    siblings_number = a_star_get_siblings(current_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
     #ifdef DEBUG
       depth++;
       cout<<"\tNSiblings found:"<<siblings_number<<" at DEPTH: "<<depth<<endl<<endl;
@@ -437,7 +439,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
           depth-=DEPTH_DECREASING_INDEX;
           cout << "BACKTRACKING FROM LEAF, NEW DEPTH="<<depth<<endl;
         #endif
-        siblings_number = get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+        siblings_number = a_star_get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
         #ifdef DEBUG 
           depth++;
           cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
@@ -457,7 +459,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
           depth-=DEPTH_DECREASING_INDEX;
           cout << "BACKTRACKING FROM INTERNAL NODE, ALL SIBLINGS EXPLORED, NEW DEPTH="<<depth<<endl;
         #endif
-        siblings_number = get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+        siblings_number = a_star_get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
         #ifdef DEBUG 
           depth++;
           cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;

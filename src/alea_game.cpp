@@ -17,6 +17,7 @@
 #include <stack>
 #include <list>
 #include <limits>
+#include <functional>
 
 AleaGame::~AleaGame(){
   for(pair<P2D, Dice *> pair : dices) delete pair.second;
@@ -127,9 +128,9 @@ void AleaGame::generate_map_for_backward_movements(json json_dict){
 }
 
 void AleaGame::generate_map_for_expected_forward_movements_given_x_y(json json_dict, string type){
-  heuristic_value = calculate_heuristic_value();
   last_action_performed = Action::null_action;
-
+  heuristic_value = calculate_heuristic_value();
+  
   for (auto& e : json_dict["terminals"].items()) {
     json terminal_j = e.value();
     terminals.insert(P2D((int)terminal_j["x"], (int)terminal_j["y"]));
@@ -162,9 +163,8 @@ void AleaGame::generate_map_for_expected_forward_movements_given_x_y(json json_d
 }
 
 void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
-  heuristic_value = calculate_heuristic_value();
   last_action_performed = Action::null_action;
-
+  heuristic_value = calculate_heuristic_value();
   int rows = 0;
   int cols = json_dict["columns"];
   
@@ -203,16 +203,39 @@ void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
 }
 
 
-unsigned long long AleaGame::HashFun::operator()(const AleaGame& game) const {
-  int type_map[] = {17, 31, 47, 97};
-  unsigned long long the_hash = 0;
-  for (const auto &pair : game.dices) {
-      the_hash += type_map[pair.second->get_actual_type_int()] * (pair.second->get_n_moves()+1 * P2D::HashFun()(pair.first));
-      the_hash ^= (unsigned long long) pow(type_map[pair.second->get_actual_type_int()], pair.second->get_n_moves()+1 * P2D::HashFun()(pair.first));
+size_t AleaGame::HashFun::operator()(const AleaGame& game) const {
+  hash<string> hasher;
+  string hash_string = "";
+  for(int x=0; x<MAP_WIDTH; x++){
+    for(int y=0; y<MAP_HEIGHT; y++){
+      if(game.dices.find(P2D(x, y)) != game.dices.end()){
+        switch(game.dices.at(P2D(x, y))->get_actual_type_int()){
+          case 0:
+            hash_string.append("W").append((to_string(game.dices.at(P2D(x, y))->get_n_moves())));
+            break;
+          case 1:
+            hash_string.append("R").append((to_string(game.dices.at(P2D(x, y))->get_n_moves())));
+            break;
+          case 2:
+            hash_string.append("Y").append((to_string(game.dices.at(P2D(x, y))->get_n_moves())));
+            break;
+          case 3:
+            hash_string.append("G").append((to_string(game.dices.at(P2D(x, y))->get_n_moves())));
+            break;
+        }
+      }else
+        hash_string.append("00");
+    }
   }
-  return the_hash;
+  return hasher(hash_string);
+  /* int type_map[] = {17, 31, 47, 97};
+  size_t the_hash = 0;
+  for (const auto &pair : game.dices) {
+      the_hash += P2D::HashFun()(pair.first) * type_map[pair.second->get_actual_type_int()] * (pair.second->get_n_moves()+1 * pair.second->get_position().get_x() * pair.second->get_position().get_y());
+      the_hash ^= (size_t) pow(type_map[pair.second->get_actual_type_int()], pair.second->get_n_moves()+1 * pair.second->get_position().get_x() * pair.second->get_position().get_y());
+  }
+  return the_hash; */
 }
-//pair.second->get_position().get_x() * pair.second->get_position().get_y()
 
 bool AleaGame::operator==(const AleaGame& other) const {
   for (auto& elem: other.terminals) {
@@ -1272,19 +1295,6 @@ bool AleaGame::is_valid_ending_configuration_forward_search() {
       return false;
   }
   return true;
-}
-
-bool AleaGame::is_a_before_last_config(){
-  int n_dice = 0;
-  int n_dices_set_up = terminals.size()-1;
-  bool corner_salvation = false;
-  for(auto pair: dices) {
-    if (pair.second->get_n_moves() == 0 && is_terminal(pair.first))
-      n_dice++;
-    else if(pair.second->get_n_moves() == 1)
-      corner_salvation = true;
-  }
-  return n_dice == n_dices_set_up && corner_salvation;
 }
 
 bool AleaGame::is_terminal(const P2D& pos) const {

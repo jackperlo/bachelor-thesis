@@ -87,7 +87,7 @@ pair<string, vector<Action>> Node::astar_backward_search(AleaGame game, int limi
   pair<string, vector<Action>> res;
   priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunBackward> open;
   unordered_set<shared_ptr<Node>, Node::HashFun> open_set;
-  unordered_set<AleaGame, AleaGame::HashFun> closed;
+  unordered_set<size_t> closed;
   shared_ptr<Node> start_node(new Node(game, 0));
   open.push(start_node);
   open_set.insert(start_node);
@@ -99,15 +99,17 @@ pair<string, vector<Action>> Node::astar_backward_search(AleaGame game, int limi
     shared_ptr<Node> current_node = open.top();
     open.pop();
     open_set.erase(current_node);
-    closed.insert(current_node->game);
+    closed.insert(AleaGame::HashFun()(current_node->game));
     if (current_node->game.is_valid_starting_configuration_backward_search()) {
       cout<<"Configuration Found (user start): "<<endl;
       current_node->game.print(true, true);
       res.first = printLevel(current_node->game, current_node->f);
       while (current_node->parent != NULL) {
+        current_node->game.print(true, false);
         res.second.push_back(AleaGame::revert_action(current_node->action));
         current_node = current_node->parent;
       }      
+      current_node->game.print(true, false);
       break;
     }
     vector<Action> actions = current_node->game.possible_moves_backward();
@@ -118,10 +120,10 @@ pair<string, vector<Action>> Node::astar_backward_search(AleaGame game, int limi
         exit(1);
       }
       new_game.last_action_performed = action;
-      if (closed.find(new_game) != closed.end()) {
+      /* if (closed.find(AleaGame::HashFun()(new_game)) != closed.end()) {
         ++skipped_moves;
         continue;
-      }
+      } */
       ++evaluated_moves;
       shared_ptr<Node> neighbor(new Node(new_game, action, current_node, current_node->f, action.heuristic_value));
       if (open_set.find(neighbor) == open_set.end()) {

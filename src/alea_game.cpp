@@ -228,13 +228,6 @@ size_t AleaGame::HashFun::operator()(const AleaGame& game) const {
     }
   }
   return hasher(hash_string);
-  /* int type_map[] = {17, 31, 47, 97};
-  size_t the_hash = 0;
-  for (const auto &pair : game.dices) {
-      the_hash += P2D::HashFun()(pair.first) * type_map[pair.second->get_actual_type_int()] * (pair.second->get_n_moves()+1 * pair.second->get_position().get_x() * pair.second->get_position().get_y());
-      the_hash ^= (size_t) pow(type_map[pair.second->get_actual_type_int()], pair.second->get_n_moves()+1 * pair.second->get_position().get_x() * pair.second->get_position().get_y());
-  }
-  return the_hash; */
 }
 
 bool AleaGame::operator==(const AleaGame& other) const {
@@ -607,13 +600,14 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            moves.push_back(Action(P2D(x, y), P2D(i, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x+i, y)));
+            if(dices.find(P2D(x, y)+P2D(i, 1)) != dices.end() || dices.find(P2D(x, y)+P2D(i, -1)) != dices.end())
+              moves.push_back(Action(P2D(x, y), P2D(i, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x+i, y)));
             i++;
           }
         }
       }else{
         res = dice->reverse_move("left", dices, __func__, true, SIMPLE_MOVE);
-        if(res.first)
+        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D(-(res.second+1), 0)) != dices.end()))
           moves.push_back(Action(P2D(x, y), P2D(-res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x-res.second, y)));
       }
     }
@@ -623,13 +617,14 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            moves.push_back(Action(P2D(x, y), P2D((-1*i), 0), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x-i, y)));
+            if(dices.find(P2D(x, y)+P2D((-1*i), 1)) != dices.end() || dices.find(P2D(x, y)+P2D((-1*i), -1)) != dices.end())
+              moves.push_back(Action(P2D(x, y), P2D((-1*i), 0), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x-i, y)));
             i++;
           }
         }
       }else{
         res = dice->reverse_move("right", dices, __func__, true, SIMPLE_MOVE);
-        if(res.first)
+        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D((res.second+1), 0)) != dices.end()))
           moves.push_back(Action(P2D(x, y), P2D(res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x+res.second, y)));
       }
     }
@@ -639,13 +634,14 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            moves.push_back(Action(P2D(x, y), P2D(0, (-1*i)), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x, y-i)));
+            if(dices.find(P2D(x, y)+P2D(1, (-1*i))) != dices.end() || dices.find(P2D(x, y)+P2D(-1, (-1*i))) != dices.end())
+              moves.push_back(Action(P2D(x, y), P2D(0, (-1*i)), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x, y-i)));
             i++;
           }
         }
       }else{
         res = dice->reverse_move("down", dices, __func__, true, SIMPLE_MOVE);
-        if(res.first)
+        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D(0, -(res.second+1))) != dices.end()))
           moves.push_back(Action(P2D(x, y), P2D(0, res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y+res.second)));
       }
     }
@@ -655,13 +651,14 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            moves.push_back(Action(P2D(x, y), P2D(0, i), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x, y+i)));
+            if(dices.find(P2D(x, y)+P2D(1, i)) != dices.end() || dices.find(P2D(x, y)+P2D(-1, i)) != dices.end())
+              moves.push_back(Action(P2D(x, y), P2D(0, i), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x, y+i)));
             i++;
           }
         }
       }else{
         res = dice->reverse_move("up", dices, __func__, true, SIMPLE_MOVE);
-        if(res.first)
+        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D(0, (res.second+1))) != dices.end()))
           moves.push_back(Action(P2D(x, y), P2D(0, -res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y-res.second)));
       }
     }

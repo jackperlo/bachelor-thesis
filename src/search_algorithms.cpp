@@ -105,11 +105,9 @@ pair<string, vector<Action>> Node::astar_backward_search(AleaGame game, int limi
       current_node->game.print(true, true);
       res.first = printLevel(current_node->game, current_node->f);
       while (current_node->parent != NULL) {
-        current_node->game.print(true, false);
         res.second.push_back(AleaGame::revert_action(current_node->action));
         current_node = current_node->parent;
       }      
-      current_node->game.print(true, false);
       break;
     }
     vector<Action> actions = current_node->game.possible_moves_backward();
@@ -525,7 +523,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   @return a string containing the path to reach the level just generated (so that can be used
           by level_solver.cpp to do forward search)
 */
-string Node::printLevel(AleaGame map_configuration, double difficulty){
+string Node::printLevel(AleaGame map_configuration, double difficulty){  
   json level, dice, terminal;
   level["columns"] = MAP_WIDTH;
   level["rows"] = MAP_HEIGHT;
@@ -552,11 +550,14 @@ string Node::printLevel(AleaGame map_configuration, double difficulty){
     level["dice"].push_back(dice);
   }
   level["difficulty"] = difficulty;
+  
+
   char to_print[30];
   sprintf(to_print, "%4.2f", difficulty);
   ofstream o("generated_levels/level_" + string(to_print) + "_" + to_string(time(nullptr)) + ".json");
-	o << setw(4) << level << endl;
+  o << setw(4) << level << endl;
   return "generated_levels/level_" + string(to_print) + "_" + to_string(time(nullptr)) + ".json";
+
 }
 
 /**

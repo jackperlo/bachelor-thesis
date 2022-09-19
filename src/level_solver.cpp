@@ -9,6 +9,7 @@
 
 void print_menu();
 pair<string, vector<Action>> start_backward_analysis(string ending_config_file_name);
+pair<string, vector<Action>> start_backward_auto_level_generation();
 void start_forward_analysis(string starting_config_file_name, bool calculate_x_y);
 void print_expected_forward_solution(pair<string, vector<Action>> solution);
 void playGamePrinter(AleaGame game, vector<Action> actions);
@@ -66,6 +67,14 @@ int main(){
           print_expected_forward_solution(res);  
         }
         break;
+      case 4:
+        res = start_backward_auto_level_generation();
+        if(res.first.compare("") != 0){
+          cout<<endl<<res.first<<endl;
+          start_forward_analysis(res.first, false);
+          print_expected_forward_solution(res);  
+        }
+        break;
       default:
         cout<<endl<<"Selection not valid. Try Again."<<endl;
         break;
@@ -76,11 +85,14 @@ int main(){
 }
 
 void print_menu(){
-  cout<<FGCYANSTART<<"================Menu================"<<endl;
+  cout<<FGCYANSTART<<"\t\t================Menu================"<<endl;
+  cout<<"\tManually Submitted Levels"<<endl;
+  cout<<"\t\t1. GENERATE a Level from an Ending Configuration"<<endl;
+  cout<<"\t\t2. SOLVE a Level from a Starting Configuration"<<endl;
+  cout<<"\t\t3. GENERATE & SOLVE a Level from an Ending Configuration"<<endl;
+  cout<<"\tAuto Generated Levels"<<endl;
+  cout<<"\t\t4. AUTO GENERATE & SOLVE a Level"<<endl;
   cout<<"\t0. Exit"<<endl;
-  cout<<"\t1. GENERATE a Level from an Ending Configuration"<<endl;
-  cout<<"\t2. SOLVE a Level from a Starting Configuration"<<endl;
-  cout<<"\t3. GENERATE & SOLVE a Level"<<endl;
   cout<<"\tMake your choice: "<<FGRESET;
 }
 
@@ -96,6 +108,13 @@ pair<string, vector<Action>> start_backward_analysis(string ending_config_file_n
   cout<<"Starting Configuration (user end)"<<endl;
 	backward_game.print(true);
   return Node::astar_backward_search(backward_game, BRANCHED_NODES_LIMIT);
+}
+
+pair<string, vector<Action>> start_backward_auto_level_generation(){
+  AleaGame auto_backward_game(true);
+  cout<<"Starting Configuration (user end)"<<endl;
+  auto_backward_game.print(true);
+  return Node::astar_backward_search(auto_backward_game, BRANCHED_NODES_LIMIT);
 }
 
 /**

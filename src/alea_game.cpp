@@ -81,6 +81,11 @@ AleaGame::AleaGame(json json_dict, bool is_backward, string type, bool calculate
     
 }
 
+AleaGame::AleaGame(bool auto_generated_levels_constructor){
+  if(auto_generated_levels_constructor)
+    generate_random_map_for_backward_movements();
+}
+
 void AleaGame::generate_map_for_backward_movements(json json_dict){
   heuristic_value = 0.00;
   int max_row = 0;
@@ -198,6 +203,58 @@ void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
 	cout << "================================================" << FGRESET << endl;
 }
 
+void AleaGame::generate_random_map_for_backward_movements(){
+  srand (time(NULL));
+  int n_terminals = rand() % ((MAX_RANDOM_COLS*MAX_RANDOM_ROWS)/2) + (MAX_RANDOM_COLS-1);
+
+  heuristic_value = 0.00;
+  int max_row = 0;
+  int max_col = 0;
+  int x = 0;
+  int y = 0;
+  int n_moves = 0;
+  int type = 0;
+
+  for (int i=0; i<n_terminals; i++) {
+    x = rand() % MAX_RANDOM_COLS;
+    y = rand() % MAX_RANDOM_ROWS;
+    terminals.insert(P2D(x+1, y+1));
+    max_row = MAX(y+1, max_row);
+    max_col = MAX(x+1, max_col);
+  }
+
+  for (P2D pos : terminals) {
+    x = pos.x-1;
+    y = pos.y-1;
+    n_moves = rand() % MAX_RANDOM_MOVES_PER_DIE;
+    type = rand() % 4;
+    Dice *dice;
+    Cell c(x+1, y+1);
+    switch (type){
+      case 0: dice = new WhiteDice(c, n_moves, n_moves, P2D::neutral_p2d); break;
+      case 1: dice = new RedDice(c, n_moves, n_moves, P2D::neutral_p2d); break;
+      case 2: dice = new YellowDice(c, n_moves, n_moves, P2D::neutral_p2d); break;
+      case 3: dice = new GreenDice(c, n_moves, n_moves, P2D::neutral_p2d); break;
+    }
+    dices.insert(pair<P2D, Dice *>(P2D(x + 1, y + 1), dice));
+  }
+
+  MAP_WIDTH = max_col + 2;
+  MAP_HEIGHT = max_row + 2;
+  TOTAL_MOVES = remaining_moves();
+
+  if(!is_valid_ending_configuration_backward_search()){
+    cout << "\n\nNot a valid Final Configuration of the Map was created.\nMismatches between Dices and Terminals positions.\n\n\n";
+    exit(1);
+  }
+  
+  cout << "\n"<< FGREDSTART <<"======= Alea Level Solver Backward =======" << endl;
+	cout << "             MAP_WIDTH : " << MAP_WIDTH << endl;
+	cout << "             MAP_HEIGHT: " << MAP_HEIGHT << endl;
+	cout << "             #dice : " << terminals.size() << endl;
+	cout << "==========================================="<< FGRESET << endl;
+	cout << endl;
+}
 
 size_t AleaGame::HashFun::operator()(const AleaGame& game) const {
   hash<string> hasher;

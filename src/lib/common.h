@@ -43,6 +43,10 @@
 #define MOVE_BY_1 {true, 1}
 #define JUMP_BY_1 {true, 2}
 
+#define MAX_RANDOM_COLS 5
+#define MAX_RANDOM_ROWS 5
+#define MAX_RANDOM_MOVES_PER_DIE 5
+
 using namespace std;
 
 using json = nlohmann::json;

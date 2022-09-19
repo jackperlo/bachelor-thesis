@@ -9,10 +9,11 @@ int CENTROID_Y;
 
 Dice::~Dice(){}
 
-Dice::Dice(Cell position, int nMoves, int initial_moves){
+Dice::Dice(Cell position, int nMoves, int initial_moves, P2D last_action_performed_direction){
   this->position = position;
   this->nMoves = nMoves;
   this->initial_moves = initial_moves;
+  this->last_action_performed_direction = last_action_performed_direction;
 }
 
 Dice::Dice(){}
@@ -40,6 +41,15 @@ void Dice::set_n_moves(int n_moves){
 
 int Dice::get_initial_moves(){
   return initial_moves;
+}
+
+void Dice::set_last_action_performed_direction(P2D last_action_performed_direction){
+  this->last_action_performed_direction.x = last_action_performed_direction.x;
+  this->last_action_performed_direction.y = last_action_performed_direction.y;
+}
+    
+P2D Dice::get_last_action_performed_direction(){
+  return P2D(last_action_performed_direction.x, last_action_performed_direction.y);
 }
 
 void Dice::print_dice(){

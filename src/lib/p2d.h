@@ -24,8 +24,8 @@ class P2D {
 		friend ostream& operator<<(ostream& out, P2D p);
     static P2D cellToP2D(Cell c);
 
-		struct HashFun {
-		size_t operator()(const P2D& p) const;
+    struct HashFun {
+			size_t operator()(const P2D& p) const;
 		};
 
 		struct CompareFun {
@@ -41,6 +41,7 @@ class P2D {
 		static const P2D JUMPING_DOWN;
 		static const P2D JUMPING_LEFT;
     static const P2D null_p2d;
+	  static const P2D neutral_p2d;
 };
 
 struct Action {
@@ -55,5 +56,4 @@ struct Action {
 
   static const Action null_action;
 };
-
 #endif

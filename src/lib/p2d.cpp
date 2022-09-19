@@ -13,6 +13,7 @@ const P2D P2D::JUMPING_RIGHT(2, 0);
 const P2D P2D::JUMPING_DOWN(0, 2);
 const P2D P2D::JUMPING_LEFT(-2, 0);
 const P2D P2D::null_p2d(-1, -1);
+const P2D P2D::neutral_p2d(0, 0);
 const Action Action::null_action(P2D::null_p2d, P2D::null_p2d, -1, -1, P2D::null_p2d);
 
 P2D::P2D(){}

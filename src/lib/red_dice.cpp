@@ -9,7 +9,7 @@
 
 RedDice::~RedDice(){}
 
-RedDice::RedDice(Cell position, int nMoves, int initial_moves) : Dice(position, nMoves, initial_moves){}
+RedDice::RedDice(Cell position, int nMoves, int initial_moves, P2D last_action_performed_direction) : Dice(position, nMoves, initial_moves, last_action_performed_direction){}
 
 RedDice::RedDice() : Dice(){}
 

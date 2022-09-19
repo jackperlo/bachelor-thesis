@@ -9,7 +9,7 @@
 
 WhiteDice::~WhiteDice(){}
 
-WhiteDice::WhiteDice(Cell position, int nMoves, int initial_moves) : Dice(position, nMoves, initial_moves){}
+WhiteDice::WhiteDice(Cell position, int nMoves, int initial_moves, P2D last_action_performed_direction) : Dice(position, nMoves, initial_moves, last_action_performed_direction){}
 
 WhiteDice::WhiteDice() : Dice(){}
 

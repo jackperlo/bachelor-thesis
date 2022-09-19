@@ -8,7 +8,7 @@
 class RedDice : public Dice{
   public:
     ~RedDice();
-    RedDice(Cell position, int nMoves, int initial_moves);
+    RedDice(Cell position, int nMoves, int initial_moves, P2D last_action_performed_direction);
     RedDice();
     RedDice(const RedDice &rd1); //copying constructor, invoked in situation as: RedDice rd1 = rd2.
     string print_dice_to_string (bool print_with_initial_moves) override;

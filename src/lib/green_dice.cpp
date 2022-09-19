@@ -11,7 +11,7 @@
 
 GreenDice::~GreenDice(){}
 
-GreenDice::GreenDice(Cell position, int nMoves, int initial_moves) : Dice(position, nMoves, initial_moves){}
+GreenDice::GreenDice(Cell position, int nMoves, int initial_moves, P2D last_action_performed_direction) : Dice(position, nMoves, initial_moves, last_action_performed_direction){}
 
 GreenDice::GreenDice() : Dice(){}
 
@@ -73,7 +73,6 @@ pair<bool, int> GreenDice::reverse_move(string direction, unordered_map<P2D, Dic
         if(dices.at(P2D::cellToP2D(Cell(x-1, y)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x-1, y)))->get_actual_type().compare("RedDice") == 0){
           res = dices.at(P2D::cellToP2D(Cell(x-1, y)))->reverse_move("left", dices, __func__, is_a_simulation, movement_type);
           if(res.first){
-            res.second = 1;
             if(!is_a_simulation)
               this->make_move(x-1, y, 0, dices);
           } 
@@ -85,7 +84,6 @@ pair<bool, int> GreenDice::reverse_move(string direction, unordered_map<P2D, Dic
         if(dices.at(P2D::cellToP2D(Cell(x+1, y)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x+1, y)))->get_actual_type().compare("RedDice") == 0){
           res = dices.at(P2D::cellToP2D(Cell(x+1, y)))->reverse_move("right", dices, __func__, is_a_simulation, movement_type);
           if(res.first){
-            res.second = 1;
             if(!is_a_simulation)
               this->make_move(x+1, y, 0, dices);
           } 
@@ -97,7 +95,6 @@ pair<bool, int> GreenDice::reverse_move(string direction, unordered_map<P2D, Dic
         if(dices.at(P2D::cellToP2D(Cell(x, y-1)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y-1)))->get_actual_type().compare("RedDice") == 0){
           res = dices.at(P2D::cellToP2D(Cell(x, y-1)))->reverse_move("up", dices, __func__, is_a_simulation, movement_type);
           if(res.first){
-            res.second = 1;
             if(!is_a_simulation)
               this->make_move(x, y-1, 0, dices);
           } 
@@ -109,7 +106,6 @@ pair<bool, int> GreenDice::reverse_move(string direction, unordered_map<P2D, Dic
         if(dices.at(P2D::cellToP2D(Cell(x, y+1)))->get_actual_type().compare("WhiteDice") == 0 || dices.at(P2D::cellToP2D(Cell(x, y+1)))->get_actual_type().compare("RedDice") == 0){
           res = dices.at(P2D::cellToP2D(Cell(x, y+1)))->reverse_move("down", dices, __func__, is_a_simulation, movement_type);
           if(res.first){
-            res.second = 1;
             if(!is_a_simulation)
               this->make_move(x, y+1, 0, dices);
           } 

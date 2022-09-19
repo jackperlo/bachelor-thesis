@@ -9,7 +9,7 @@
 
 YellowDice::~YellowDice(){}
 
-YellowDice::YellowDice(Cell position, int nMoves, int initial_moves) : Dice(position, nMoves, initial_moves){}
+YellowDice::YellowDice(Cell position, int nMoves, int initial_moves, P2D last_action_performed_direction) : Dice(position, nMoves, initial_moves, last_action_performed_direction){}
 
 YellowDice::YellowDice() : Dice(){}
 

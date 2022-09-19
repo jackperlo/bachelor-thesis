@@ -19,7 +19,6 @@ class AleaGame{
   public:
     unordered_set<P2D, P2D::HashFun> terminals;
     unordered_map<P2D, Dice*, P2D::HashFun> dices;
-    Action last_action_performed;
     double heuristic_value = 0.00;
 
     ~AleaGame();

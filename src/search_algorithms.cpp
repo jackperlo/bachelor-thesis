@@ -119,11 +119,10 @@ pair<string, vector<Action>> Node::astar_backward_search(AleaGame game, int limi
         cout<<"\nastar.cpp:astar_backward_search: Error while moving from: "<<action.from<<", dir: "<<action.dir<<", type:"<<action.movement_type<<", head:"<<action.head<<"\nExiting.\n"; 
         exit(1);
       }
-      new_game.last_action_performed = action;
-      /* if (closed.find(AleaGame::HashFun()(new_game)) != closed.end()) {
+      if (closed.find(AleaGame::HashFun()(new_game)) != closed.end()) {
         ++skipped_moves;
         continue;
-      } */
+      }
       ++evaluated_moves;
       shared_ptr<Node> neighbor(new Node(new_game, action, current_node, current_node->f, action.heuristic_value));
       if (open_set.find(neighbor) == open_set.end()) {
@@ -540,7 +539,8 @@ string Node::printLevel(AleaGame map_configuration, double difficulty){
     terminal["x"] = t.x;
     terminal["y"] = t.y;
     terminal["pos"] = (t.y*MAP_WIDTH)+t.x;
-    level["terminals"].push_back(terminal);
+    level["terminals_array"].push_back(terminal);
+    level["terminals"].push_back((t.y*MAP_WIDTH)+t.x);
   }
 
   for(pair<P2D, Dice *> d : map_configuration.dices){

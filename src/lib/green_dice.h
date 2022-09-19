@@ -8,7 +8,7 @@
 class GreenDice : public Dice{
   public:
     ~GreenDice();
-    GreenDice(Cell position, int nMoves, int initial_moves);
+    GreenDice(Cell position, int nMoves, int initial_moves, P2D last_action_performed_direction);
     GreenDice();
     string print_dice_to_string (bool print_with_initial_moves) override;
     GreenDice(const GreenDice &gd1); //copying constructor, invoked in situation as: GreenDice gd1 = gd2.

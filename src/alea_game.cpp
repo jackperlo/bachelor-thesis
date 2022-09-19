@@ -34,10 +34,10 @@ AleaGame::AleaGame(unordered_set<P2D, P2D::HashFun> terminals, unordered_map<P2D
     Dice *dice;
     Cell c(elem.second->get_position().get_x(), elem.second->get_position().get_y());
     switch (elem.second->get_actual_type_int()){
-      case 0: dice = new WhiteDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
-      case 1: dice = new RedDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
-      case 2: dice = new YellowDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
-      case 3: dice = new GreenDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
+      case 0: dice = new WhiteDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
+      case 1: dice = new RedDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
+      case 2: dice = new YellowDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
+      case 3: dice = new GreenDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
     }
     this->dices.insert(pair<P2D, Dice *>(P2D(elem.first), dice));
   }
@@ -47,7 +47,6 @@ AleaGame::AleaGame(unordered_set<P2D, P2D::HashFun> terminals, unordered_map<P2D
 //copying constructor
 AleaGame::AleaGame(const AleaGame& game) {
   heuristic_value = game.heuristic_value;
-  last_action_performed = game.last_action_performed;
   for (const auto& elem: game.terminals) {
     terminals.insert(P2D(elem));
   }
@@ -55,10 +54,10 @@ AleaGame::AleaGame(const AleaGame& game) {
     Dice *dice;
     Cell c(elem.second->get_position().get_x(), elem.second->get_position().get_y());
     switch (elem.second->get_actual_type_int()){
-      case 0: dice = new WhiteDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
-      case 1: dice = new RedDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
-      case 2: dice = new YellowDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
-      case 3: dice = new GreenDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
+      case 0: dice = new WhiteDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
+      case 1: dice = new RedDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
+      case 2: dice = new YellowDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
+      case 3: dice = new GreenDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
     }
     dices.insert(pair<P2D, Dice *>(P2D(elem.first), dice));
   }
@@ -84,7 +83,6 @@ AleaGame::AleaGame(json json_dict, bool is_backward, string type, bool calculate
 
 void AleaGame::generate_map_for_backward_movements(json json_dict){
   heuristic_value = 0.00;
-  last_action_performed = Action::null_action;
   int max_row = 0;
   int max_col = 0;
 
@@ -102,10 +100,10 @@ void AleaGame::generate_map_for_backward_movements(json json_dict){
     Dice *dice;
     Cell c(x+1, y+1);
     switch ((int)dice_j["type"]){
-      case 0: dice = new WhiteDice(c, dice_j["num"], dice_j["num"]); break;
-      case 1: dice = new RedDice(c, dice_j["num"], dice_j["num"]); break;
-      case 2: dice = new YellowDice(c, dice_j["num"], dice_j["num"]); break;
-      case 3: dice = new GreenDice(c, dice_j["num"], dice_j["num"]); break;
+      case 0: dice = new WhiteDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
+      case 1: dice = new RedDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
+      case 2: dice = new YellowDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
+      case 3: dice = new GreenDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
     }
     dices.insert(pair<P2D, Dice *>(P2D(x + 1, y + 1), dice));
   }
@@ -128,10 +126,9 @@ void AleaGame::generate_map_for_backward_movements(json json_dict){
 }
 
 void AleaGame::generate_map_for_expected_forward_movements_given_x_y(json json_dict, string type){
-  last_action_performed = Action::null_action;
   heuristic_value = calculate_heuristic_value();
   
-  for (auto& e : json_dict["terminals"].items()) {
+  for (auto& e : json_dict["terminals_array"].items()) {
     json terminal_j = e.value();
     terminals.insert(P2D((int)terminal_j["x"], (int)terminal_j["y"]));
   }
@@ -143,10 +140,10 @@ void AleaGame::generate_map_for_expected_forward_movements_given_x_y(json json_d
     Dice *dice;
     Cell c(x, y);
     switch ((int)dice_j["type"]){
-      case 0: dice = new WhiteDice(c, dice_j["num"], dice_j["num"]); break;
-      case 1: dice = new RedDice(c, dice_j["num"], dice_j["num"]); break;
-      case 2: dice = new YellowDice(c, dice_j["num"], dice_j["num"]); break;
-      case 3: dice = new GreenDice(c, dice_j["num"], dice_j["num"]); break;
+      case 0: dice = new WhiteDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
+      case 1: dice = new RedDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
+      case 2: dice = new YellowDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
+      case 3: dice = new GreenDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
     }
     dices.insert(pair<P2D, Dice *>(P2D(x, y), dice));
   }
@@ -163,7 +160,6 @@ void AleaGame::generate_map_for_expected_forward_movements_given_x_y(json json_d
 }
 
 void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
-  last_action_performed = Action::null_action;
   heuristic_value = calculate_heuristic_value();
   int rows = 0;
   int cols = json_dict["columns"];
@@ -183,10 +179,10 @@ void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
     Dice *dice;
     Cell c(x+1, y+1);
     switch ((int)dice_j["type"]){
-      case 0: dice = new WhiteDice(c, dice_j["num"], dice_j["num"]); break;
-      case 1: dice = new RedDice(c, dice_j["num"], dice_j["num"]); break;
-      case 2: dice = new YellowDice(c, dice_j["num"], dice_j["num"]); break;
-      case 3: dice = new GreenDice(c, dice_j["num"], dice_j["num"]); break;
+      case 0: dice = new WhiteDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
+      case 1: dice = new RedDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
+      case 2: dice = new YellowDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
+      case 3: dice = new GreenDice(c, dice_j["num"], dice_j["num"], P2D::neutral_p2d); break;
     }
     dices.insert(pair<P2D, Dice *>(P2D(x+1, y+1), dice));
   }
@@ -246,7 +242,6 @@ AleaGame& AleaGame::operator=(const AleaGame& game){
 
   this->dices.clear();
 
-  this->last_action_performed = game.last_action_performed;
   for (const auto& elem: game.terminals) {
     this->terminals.insert(P2D(elem));
   }
@@ -254,10 +249,10 @@ AleaGame& AleaGame::operator=(const AleaGame& game){
     Dice *dice;
     Cell c(elem.second->get_position().get_x(), elem.second->get_position().get_y());
     switch (elem.second->get_actual_type_int()){
-      case 0: dice = new WhiteDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
-      case 1: dice = new RedDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
-      case 2: dice = new YellowDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
-      case 3: dice = new GreenDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves()); break;
+      case 0: dice = new WhiteDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
+      case 1: dice = new RedDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
+      case 2: dice = new YellowDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
+      case 3: dice = new GreenDice(c, elem.second->get_n_moves(), elem.second->get_initial_moves(), elem.second->get_last_action_performed_direction()); break;
     }
     this->dices.insert(pair<P2D, Dice *>(P2D(elem.first), dice));
   }
@@ -395,7 +390,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
   if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
-    if(c.get_x() == x-1 && last_action_performed.dir.x > 0){
+    if(c.get_x() == x-1 && dice->get_last_action_performed_direction().x <= 0){
       res = dice->reverse_move("left", dices, __func__, true, PUSHED_MOVE);
       if(res.first)
         moves.push_back(Action(P2D(x, y), P2D::LEFT, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x-(res.second+1), y)));
@@ -409,7 +404,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
         }
       }
     }
-    if(c.get_x() == x+1 && last_action_performed.dir.x < 0){
+    if(c.get_x() == x+1 && dice->get_last_action_performed_direction().x >= 0){
       res = dice->reverse_move("right", dices, __func__, true, PUSHED_MOVE);
       if(res.first){
         moves.push_back(Action(P2D(x, y), P2D::RIGHT, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x+(res.second+1), y)));
@@ -424,7 +419,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
         }    
       } 
     }
-    if(c.get_y() == y-1  && last_action_performed.dir.y > 0){
+    if(c.get_y() == y-1  && dice->get_last_action_performed_direction().y <= 0){
       res = dice->reverse_move("up", dices, __func__, true, PUSHED_MOVE);
       if(res.first)
         moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x, y-(res.second+1))));
@@ -438,7 +433,7 @@ void AleaGame::yellow_dice_possible_moves_backward(Dice *dice, vector<Action> &m
         } 
       }
     }
-    if(c.get_y() == y+1  && last_action_performed.dir.y < 0){
+    if(c.get_y() == y+1  && dice->get_last_action_performed_direction().y >= 0){
       res = dice->reverse_move("down", dices, __func__, true, PUSHED_MOVE);
       if(res.first)
         moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x, (y+res.second+1))));
@@ -479,19 +474,19 @@ void AleaGame::red_dice_possible_moves_backward(Dice *dice, vector<Action> &move
   if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
-    if(c.get_x() == x-1  && last_action_performed.dir != P2D::RIGHT){
+    if(c.get_x() == x-1  && dice->get_last_action_performed_direction() != P2D::RIGHT){
       res = dice->reverse_move("left", dices, __func__, true);
       if(res.first) moves.push_back(Action(P2D(x, y), P2D::LEFT, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::LEFT));      
     }
-    if(c.get_x() == x+1 && last_action_performed.dir != P2D::LEFT){
+    if(c.get_x() == x+1 && dice->get_last_action_performed_direction() != P2D::LEFT){
       res = dice->reverse_move("right", dices, __func__, true);
       if(res.first) moves.push_back(Action(P2D(x, y), P2D::RIGHT, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::RIGHT));      
     }
-    if(c.get_y() == y-1 && last_action_performed.dir != P2D::DOWN){
+    if(c.get_y() == y-1 && dice->get_last_action_performed_direction() != P2D::DOWN){
       res = dice->reverse_move("up", dices, __func__, true);
       if(res.first) moves.push_back(Action(P2D(x, y), P2D::UP, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::UP));      
     }
-    if(c.get_y() == y+1 && last_action_performed.dir != P2D::UP){
+    if(c.get_y() == y+1 && dice->get_last_action_performed_direction() != P2D::UP){
       res = dice->reverse_move("down", dices, __func__, true);
       if(res.first) moves.push_back(Action(P2D(x, y), P2D::DOWN, SIMPLE_MOVE_BACKWARD_WEIGHT, SIMPLE_MOVE, P2D(x, y)+P2D::DOWN));      
     }
@@ -522,7 +517,7 @@ void AleaGame::white_dice_possible_moves_backward(Dice *dice, vector<Action> &mo
   if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
-    if(c.get_x() == x-1 && last_action_performed.dir != P2D::RIGHT){
+    if(c.get_x() == x-1 && dice->get_last_action_performed_direction() != P2D::RIGHT){
       res = dice->reverse_move("left", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
@@ -531,7 +526,7 @@ void AleaGame::white_dice_possible_moves_backward(Dice *dice, vector<Action> &mo
           moves.push_back(Action(P2D(x, y), P2D::LEFT, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x-res.second, y)));       
       }
     }
-    if(c.get_x() == x+1 && last_action_performed.dir != P2D::LEFT){
+    if(c.get_x() == x+1 && dice->get_last_action_performed_direction() != P2D::LEFT){
       res = dice->reverse_move("right", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
@@ -540,7 +535,7 @@ void AleaGame::white_dice_possible_moves_backward(Dice *dice, vector<Action> &mo
           moves.push_back(Action(P2D(x, y), P2D::RIGHT, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x+res.second, y)));           
       }
     }
-    if(c.get_y() == y-1 && last_action_performed.dir != P2D::DOWN){
+    if(c.get_y() == y-1 && dice->get_last_action_performed_direction() != P2D::DOWN){
       res = dice->reverse_move("up", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
@@ -549,7 +544,7 @@ void AleaGame::white_dice_possible_moves_backward(Dice *dice, vector<Action> &mo
           moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD_WEIGHT, PUSHED_MOVE, P2D(x, y-res.second)));         
       }
     }
-    if(c.get_y() == y+1 && last_action_performed.dir != P2D::UP){
+    if(c.get_y() == y+1 && dice->get_last_action_performed_direction() != P2D::UP){
       res = dice->reverse_move("down", dices, __func__, true);
       if(res.first){
         if(dices.find(P2D::cellToP2D(c)) == dices.end())
@@ -594,72 +589,96 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
   if(y<MAP_HEIGHT-1) cells.push_back(Cell(x, y+1));
   for(Cell c : cells){
     pair<bool, int> res = NO_MOVE;
-    if((c.get_x() == x-1 || x == 0) && last_action_performed.dir != P2D::LEFT){ // left one occupied/boundary, then could move right
+    if((c.get_x() == x-1 || x == 0) && dice->get_last_action_performed_direction().x >= 0){ // left one occupied/boundary, then could move right
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
         res = dice->reverse_move("right", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            if(dices.find(P2D(x, y)+P2D(i, 1)) != dices.end() || dices.find(P2D(x, y)+P2D(i, -1)) != dices.end())
+            if((dices.find(P2D(x, y)+P2D(i, 1)) != dices.end() || dices.find(P2D(x, y)+P2D(i, -1)) != dices.end()) && dices.find(P2D(x, y)+P2D((i+1), 0)) != dices.end())
               moves.push_back(Action(P2D(x, y), P2D(i, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x+i, y)));
             i++;
           }
         }
       }else{
         res = dice->reverse_move("left", dices, __func__, true, SIMPLE_MOVE);
-        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D(-(res.second+1), 0)) != dices.end()))
-          moves.push_back(Action(P2D(x, y), P2D(-res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x-res.second, y)));
+        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D(-(res.second+1), 0)) != dices.end())){
+          if(dice->get_n_moves()-res.second == 0){ 
+            if(dices.find(P2D(x, y)+P2D(1, 0)) != dices.end())
+              moves.push_back(Action(P2D(x, y), P2D(-res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x-res.second, y)));
+          }
+          else
+            moves.push_back(Action(P2D(x, y), P2D(-res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x-res.second, y)));
+        }
       }
     }
-    if((c.get_x() == x+1 || x == MAP_WIDTH-1) && last_action_performed.dir != P2D::RIGHT){ //right one occupied/boundary, then could move left 
+    if((c.get_x() == x+1 || x == MAP_WIDTH-1) && dice->get_last_action_performed_direction().x <= 0){ //right one occupied/boundary, then could move left 
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
         res = dice->reverse_move("left", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            if(dices.find(P2D(x, y)+P2D((-1*i), 1)) != dices.end() || dices.find(P2D(x, y)+P2D((-1*i), -1)) != dices.end())
+            if((dices.find(P2D(x, y)+P2D((-1*i), 1)) != dices.end() || dices.find(P2D(x, y)+P2D((-1*i), -1)) != dices.end()) && dices.find(P2D(x, y)+P2D(-1*(i+1), 0)) != dices.end())
               moves.push_back(Action(P2D(x, y), P2D((-1*i), 0), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x-i, y)));
             i++;
           }
         }
       }else{
         res = dice->reverse_move("right", dices, __func__, true, SIMPLE_MOVE);
-        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D((res.second+1), 0)) != dices.end()))
-          moves.push_back(Action(P2D(x, y), P2D(res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x+res.second, y)));
+        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D((res.second+1), 0)) != dices.end())){
+          if(dice->get_n_moves()-res.second == 0){
+            if(dices.find(P2D(x, y)+P2D(-1, 0)) != dices.end())
+              moves.push_back(Action(P2D(x, y), P2D(res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x+res.second, y)));
+          } 
+          else
+            moves.push_back(Action(P2D(x, y), P2D(res.second, 0), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x+res.second, y)));
+        }
       }
     }
-    if((c.get_y() == y+1 || y == MAP_HEIGHT-1) && last_action_performed.dir != P2D::DOWN){ //down one occupied/boundary, then could move up 
+    if((c.get_y() == y+1 || y == MAP_HEIGHT-1) && dice->get_last_action_performed_direction().y <= 0){ //down one occupied/boundary, then could move up 
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
         res = dice->reverse_move("up", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            if(dices.find(P2D(x, y)+P2D(1, (-1*i))) != dices.end() || dices.find(P2D(x, y)+P2D(-1, (-1*i))) != dices.end())
+            if((dices.find(P2D(x, y)+P2D(1, (-1*i))) != dices.end() || dices.find(P2D(x, y)+P2D(-1, (-1*i))) != dices.end()) && dices.find(P2D(x, y)+P2D(0, -1*(i+1))) != dices.end())
               moves.push_back(Action(P2D(x, y), P2D(0, (-1*i)), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x, y-i)));
             i++;
           }
         }
       }else{
         res = dice->reverse_move("down", dices, __func__, true, SIMPLE_MOVE);
-        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D(0, -(res.second+1))) != dices.end()))
-          moves.push_back(Action(P2D(x, y), P2D(0, res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y+res.second)));
+        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D(0, -(res.second+1))) != dices.end())){
+          if(dice->get_n_moves()-res.second == 0){
+            if(dices.find(P2D(x, y)+P2D(0, -1)) != dices.end())
+              moves.push_back(Action(P2D(x, y), P2D(0, res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y+res.second)));
+          }else    
+            moves.push_back(Action(P2D(x, y), P2D(0, res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y+res.second)));
+        }
       }
     }
-    if((c.get_y() == y-1 || y == 0) && last_action_performed.dir != P2D::UP){ //up one occupied, then could move down 
+    if((c.get_y() == y-1 || y == 0) && dice->get_last_action_performed_direction().y >= 0){ //up one occupied, then could move down 
       if(dices.find(P2D::cellToP2D(c)) != dices.end()){ //busy cell or boundary cell which acts like a shore
         res = dice->reverse_move("down", dices, __func__, true, SIMPLE_MOVE);
         if(res.first){
           int i = 1;
           while(i <= res.second){
-            if(dices.find(P2D(x, y)+P2D(1, i)) != dices.end() || dices.find(P2D(x, y)+P2D(-1, i)) != dices.end())
+            if((dices.find(P2D(x, y)+P2D(1, i)) != dices.end() || dices.find(P2D(x, y)+P2D(-1, i)) != dices.end()) && dices.find(P2D(x, y)+P2D(0, i+1)) != dices.end())
               moves.push_back(Action(P2D(x, y), P2D(0, i), SIMPLE_MOVE_BACKWARD_WEIGHT*i, SIMPLE_MOVE, P2D(x, y+i)));
             i++;
           }
         }
       }else{
         res = dice->reverse_move("up", dices, __func__, true, SIMPLE_MOVE);
-        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D(0, (res.second+1))) != dices.end()))
-          moves.push_back(Action(P2D(x, y), P2D(0, -res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y-res.second)));
+        if(res.first && (dice->get_n_moves()-res.second == 0 || dices.find(P2D(x, y)+P2D(0, (res.second+1))) != dices.end())){
+          if(dice->get_n_moves()-res.second == 0){
+            if(dices.find(P2D(x, y)+P2D(0, 1)) != dices.end())
+              moves.push_back(Action(P2D(x, y), P2D(0, -res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y-res.second)));
+          }
+          else
+            moves.push_back(Action(P2D(x, y), P2D(0, -res.second), SIMPLE_MOVE_BACKWARD_WEIGHT*res.second, SIMPLE_MOVE, P2D(x, y-res.second)));
+        }
+          
       }
     }
   }
@@ -683,22 +702,22 @@ void AleaGame::green_dice_possible_moves_nMoves_gt_zero_backward(Dice *dice, vec
 void AleaGame::green_dice_possible_moves_being_pushed_backward(Dice *dice, vector<Action> &moves){
   int x = dice->get_position().get_x(), y = dice->get_position().get_y();
 
-  if(x>0 && last_action_performed.dir != P2D::RIGHT){ //check if can have been pushed from left
+  if(x>0 && dice->get_last_action_performed_direction().x <= 0){ //check if can have been pushed from left
     pair<bool, int> res = dices.at(P2D(x,y))->reverse_move("left", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
       moves.push_back(Action(P2D(x, y), P2D::LEFT, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x-(res.second+1), y)));
   }
-  if(x+2<MAP_WIDTH && last_action_performed.dir != P2D::LEFT){ //check if can have been pushed from right
+  if(x+2<MAP_WIDTH && dice->get_last_action_performed_direction().x >= 0){ //check if can have been pushed from right
     pair<bool, int> res = dices.at(P2D(x,y))->reverse_move("right", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
       moves.push_back(Action(P2D(x, y), P2D::RIGHT, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x+(res.second+1), y))); 
   }
-  if(y>0 && last_action_performed.dir != P2D::DOWN){ //check if can have been pushed from up
+  if(y>0 && dice->get_last_action_performed_direction().y <= 0){ //check if can have been pushed from up
     pair<bool, int> res = dices.at(P2D(x,y))->reverse_move("up", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
       moves.push_back(Action(P2D(x, y), P2D::UP, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x, y-(res.second+1))));
   }
-  if(y+2<MAP_HEIGHT && last_action_performed.dir != P2D::UP){ //check if can have been pushed from down
+  if(y+2<MAP_HEIGHT && dice->get_last_action_performed_direction().y >= 0){ //check if can have been pushed from down
     pair<bool, int> res = dices.at(P2D(x,y))->reverse_move("down", dices, __func__, true, PUSHED_MOVE);
     if(res.first)
       moves.push_back(Action(P2D(x, y), P2D::DOWN, PUSHED_MOVE_BACKWARD_WEIGHT*res.second, PUSHED_MOVE, P2D(x, y+(res.second+1))));
@@ -894,24 +913,49 @@ bool AleaGame::move(const Action& action, bool is_moving_backward) {
 pair<bool, int> AleaGame::move(const P2D pos, const P2D dir, const int movement_type, bool is_moving_backward) {
   if(dices.find(pos) != dices.end()){
     Dice *dice = dices[pos];
+    pair<bool, int> res;
     if(is_moving_backward){
-      if(dir.x<0)
-        return dice->reverse_move("left", dices, __func__, false, movement_type);
-      else if(dir.x>0)
-        return dice->reverse_move("right", dices, __func__, false, movement_type);
-      else if(dir.y>0)
-        return dice->reverse_move("down", dices, __func__, false, movement_type);
-      else if(dir.y<0)
-        return dice->reverse_move("up", dices, __func__, false, movement_type);
+      if(dir.x<0){
+        res = dice->reverse_move("left", dices, __func__, false, movement_type);
+        if(res.first) dice->set_last_action_performed_direction(dir);
+        return res;
+      }
+      else if(dir.x>0){
+        res = dice->reverse_move("right", dices, __func__, false, movement_type);
+        if(res.first) dice->set_last_action_performed_direction(dir);
+        return res;
+      }
+      else if(dir.y>0){
+        res = dice->reverse_move("down", dices, __func__, false, movement_type);
+        if(res.first) dice->set_last_action_performed_direction(dir);
+        return res;
+      }
+      else if(dir.y<0){
+        res = dice->reverse_move("up", dices, __func__, false, movement_type);
+        if(res.first) dice->set_last_action_performed_direction(dir);
+        return res;
+      }
     }else{
-      if(dir.x<0)
-        return dice->move("left", dices, __func__, false, movement_type);
-      else if(dir.x>0)
-        return dice->move("right", dices, __func__, false, movement_type);
-      else if(dir.y>0)
-        return dice->move("down", dices, __func__, false, movement_type);
-      else if(dir.y<0)
-        return dice->move("up", dices, __func__, false, movement_type);
+      if(dir.x<0){
+        res = dice->move("left", dices, __func__, false, movement_type);
+        if(res.first) dice->set_last_action_performed_direction(dir);
+        return res;
+      }
+      else if(dir.x>0){
+        res = dice->move("right", dices, __func__, false, movement_type);
+        if(res.first) dice->set_last_action_performed_direction(dir);
+        return res;
+      }
+      else if(dir.y>0){
+        res = dice->move("down", dices, __func__, false, movement_type);
+        if(res.first) dice->set_last_action_performed_direction(dir);
+        return res;
+      }
+      else if(dir.y<0){
+        res = dice->move("up", dices, __func__, false, movement_type);
+        if(res.first) dice->set_last_action_performed_direction(dir);
+        return res;
+      }
     }
   }
   return NO_MOVE;
@@ -1281,7 +1325,7 @@ bool AleaGame::is_valid_starting_configuration_backward_search() {
 
 bool AleaGame::is_valid_ending_configuration_backward_search() {
   for(auto const& dice: dices) {
-    if (!is_terminal(dice.first) || dice.second->get_n_moves() <= 0) return false;
+    if (!is_terminal(dice.first) || dice.second->get_n_moves() < 0) return false;
   }
   return true;
 }

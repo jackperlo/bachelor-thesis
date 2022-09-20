@@ -43,7 +43,7 @@ TEST(oneWhiteDice, move_left0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice wd(c, 0, 0);
+      WhiteDice wd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &wd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("LEFT", dices, __func__, 0).first);
       dices.clear();
@@ -60,8 +60,8 @@ TEST(twoWhiteDices_PushingEachOther0Moves, move_left){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      WhiteDice wd1(c1, 0, 0);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 0, 0, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -79,7 +79,7 @@ TEST(oneWhiteDice, move_left){
     for (int i = 1; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice wd(c, 1, 1);
+      WhiteDice wd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &wd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("LEFT", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i-1, j))->get_position().get_x(), i-1);
@@ -97,8 +97,8 @@ TEST(twoWhiteDices_PushingEachOther, move_left){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -116,7 +116,7 @@ TEST(oneWhiteDice, move_right0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice wd(c, 0, 0);
+      WhiteDice wd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &wd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
       dices.clear();
@@ -133,8 +133,8 @@ TEST(twoWhiteDices_PushingEachOther0Moves, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 0, 0);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -152,7 +152,7 @@ TEST(oneWhiteDice, move_right){
     for (int i = 0; i < MAP_WIDTH-1; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice wd(c, 1, 1);
+      WhiteDice wd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &wd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
@@ -170,8 +170,8 @@ TEST(twoWhiteDices_PushingEachOther, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -189,7 +189,7 @@ TEST(oneWhiteDice0Moves, move_up){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice wd(c, 0, 0);
+      WhiteDice wd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &wd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       dices.clear();
@@ -206,8 +206,8 @@ TEST(twoWhiteDices_PushingEachOther0Moves, move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      WhiteDice wd1(c1, 0, 0);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 0, 0, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
@@ -225,7 +225,7 @@ TEST(oneWhiteDice, move_up){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice wd(c, 1, 1);
+      WhiteDice wd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &wd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j-1))->get_position().get_y(), j-1);
@@ -243,8 +243,8 @@ TEST(twoWhiteDices_PushingEachOther, move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
@@ -262,7 +262,7 @@ TEST(oneWhiteDice0Moves, move_down){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice wd(c, 0, 0);
+      WhiteDice wd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &wd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
@@ -279,8 +279,8 @@ TEST(twoWhiteDices_PushingEachOther0Moves, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 0, 0);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -298,7 +298,7 @@ TEST(oneWhiteDice, move_down){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      WhiteDice wd(c, 1, 1);
+      WhiteDice wd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &wd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
@@ -316,8 +316,8 @@ TEST(twoWhiteDices_PushingEachOther, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -335,7 +335,7 @@ TEST(oneRedDice, move_left0Moves){
     for (int i = 1; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice rd(c, 0, 0);
+      RedDice rd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("LEFT", dices, __func__, 0).first);
       dices.clear();
@@ -352,8 +352,8 @@ TEST(twoRedDices_PushingEachOther0Moves, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd1(c1, 0, 0);
-      RedDice rd2(c2, 1, 1);
+      RedDice rd1(c1, 0, 0, P2D::neutral_p2d);
+      RedDice rd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       EXPECT_FALSE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
@@ -371,7 +371,7 @@ TEST(oneRedDice, move_left){
     for (int i = 1; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice rd(c, 1, 1);
+      RedDice rd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("LEFT", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i-1, j))->get_position().get_x(), i-1);
@@ -389,8 +389,8 @@ TEST(twoRedDices_PushingEachOther, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd1(c1, 1, 1);
-      RedDice rd2(c2, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       EXPECT_FALSE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
@@ -410,8 +410,8 @@ TEST(WhiteDicePushingRedDice, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
@@ -431,8 +431,8 @@ TEST(RedDicePushingWhiteDice, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -454,8 +454,8 @@ TEST(RedDicePushingWhiteDice0Moves, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 0, 0);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -473,7 +473,7 @@ TEST(oneRedDice, move_right0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice rd(c, 0, 0);
+      RedDice rd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
       dices.clear();
@@ -488,7 +488,7 @@ TEST(oneRedDice, move_right){
     for (int i = 0; i < MAP_WIDTH-1; i++){
       c.setX(i);
       c.setY(j);
-      RedDice rd(c, 1, 1);
+      RedDice rd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
@@ -506,8 +506,8 @@ TEST(twoRedDices_PushingEachOther, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd1(c1, 1, 1);
-      RedDice rd2(c2, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -527,8 +527,8 @@ TEST(WhiteDicePushingRedDice, move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -548,8 +548,8 @@ TEST(RedDicePushingWhiteDice, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -569,8 +569,8 @@ TEST(RedDicePushingWhiteDice0Moves, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 0, 0);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -588,7 +588,7 @@ TEST(oneRedDice, move_up0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice rd(c, 0, 0);
+      RedDice rd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
@@ -603,7 +603,7 @@ TEST(oneRedDice, move_up){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice rd(c, 1, 1);
+      RedDice rd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j-1))->get_position().get_y(), j-1);
@@ -622,8 +622,8 @@ TEST(twoRedDices_PushingEachOther, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice rd1(c1, 1, 1);
-      RedDice rd2(c2, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -643,8 +643,8 @@ TEST(WhiteDicePushingRedDice, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -664,8 +664,8 @@ TEST(RedDicePushingWhiteDice, move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      RedDice rd(c2, 1, 1);
-      WhiteDice wd(c1, 1, 1);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
@@ -685,8 +685,8 @@ TEST(RedDicePushingWhiteDice0Moves, move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      RedDice rd(c2, 1, 1);
-      WhiteDice wd(c1, 0, 0);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c1, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
@@ -704,7 +704,7 @@ TEST(oneRedDice, move_down0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice rd(c, 0, 0);
+      RedDice rd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
@@ -719,7 +719,7 @@ TEST(oneRedDice, move_down){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      RedDice rd(c, 1, 1);
+      RedDice rd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
@@ -737,8 +737,8 @@ TEST(twoRedDices_PushingEachOther, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice rd1(c1, 1, 1);
-      RedDice rd2(c2, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -758,8 +758,8 @@ TEST(WhiteDicePushingRedDice, move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -779,8 +779,8 @@ TEST(RedDicePushingWhiteDice, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -802,8 +802,8 @@ TEST(RedDicePushingWhiteDice0Moves, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice rd(c1, 1, 1);
-      WhiteDice wd(c2, 0, 0);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -821,7 +821,7 @@ TEST(oneYellowDice, move_left0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice yd(c, 0, 0);
+      YellowDice yd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &yd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("LEFT", dices, __func__, 0).first);
       dices.clear();
@@ -836,7 +836,7 @@ TEST(oneYellowDice, move_left){
     for (int i = 1; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice yd(c, 1, 1);
+      YellowDice yd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("LEFT", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i-1, j))->get_position().get_x(), i-1);
@@ -854,8 +854,8 @@ TEST(twoYellowDices_JumpingEachOther, move_left){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      YellowDice yd1(c1, 1, 1);
-      YellowDice yd2(c2, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -875,8 +875,8 @@ TEST(WhiteDicePushingYellowDice, move_left){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -896,8 +896,8 @@ TEST(YellowDiceJumpingWhiteDice, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -917,8 +917,8 @@ TEST(RedDicePushingYellowDice, move_left){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -938,8 +938,8 @@ TEST(YellowDiceJumpingRedDice, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -957,7 +957,7 @@ TEST(oneYellowDice, move_right0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice yd(c, 0, 0);
+      YellowDice yd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &yd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
       dices.clear();
@@ -972,7 +972,7 @@ TEST(oneYellowDice, move_right){
     for (int i = 0; i < MAP_WIDTH-1; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice yd(c, 1, 1);
+      YellowDice yd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i+1, j))->get_position().get_x(), i+1);
@@ -990,8 +990,8 @@ TEST(twoYellowDices_JumpingEachOther, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice yd1(c1, 1, 1);
-      YellowDice yd2(c2, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1011,8 +1011,8 @@ TEST(WhiteDicePushingYellowDice, move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1032,8 +1032,8 @@ TEST(YellowDiceJumpingWhiteDice, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1053,8 +1053,8 @@ TEST(RedDicePushingYellowDice, move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1074,8 +1074,8 @@ TEST(YellowDiceJumpingRedDice, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1093,7 +1093,7 @@ TEST(oneYellowDice, move_down0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice yd(c, 0, 0);
+      YellowDice yd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &yd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
@@ -1108,7 +1108,7 @@ TEST(oneYellowDice, move_down){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice yd(c, 1, 1);
+      YellowDice yd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j+1))->get_position().get_y(), j+1);
@@ -1126,8 +1126,8 @@ TEST(twoYellowDices_JumpingEachOther, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice yd1(c1, 1, 1);
-      YellowDice yd2(c2, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1147,8 +1147,8 @@ TEST(WhiteDicePushingYellowDice, move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1168,8 +1168,8 @@ TEST(YellowDiceJumpingWhiteDice, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice yd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1189,8 +1189,8 @@ TEST(RedDicePushingYellowDice, move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1210,8 +1210,8 @@ TEST(YellowDiceJumpingRedDice, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice yd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1229,7 +1229,7 @@ TEST(oneYellowDice, move_up0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice yd(c, 0, 0);
+      YellowDice yd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &yd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       dices.clear();
@@ -1244,7 +1244,7 @@ TEST(oneYellowDice, move_up){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      YellowDice yd(c, 1, 1);
+      YellowDice yd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       ASSERT_EQ(dices.at(P2D(i, j-1))->get_position().get_y(), j-1);
@@ -1262,8 +1262,8 @@ TEST(twoYellowDices_JumpingEachOther, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice yd1(c1, 1, 1);
-      YellowDice yd2(c2, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -1283,8 +1283,8 @@ TEST(WhiteDicePushingYellowDice, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice yd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -1304,8 +1304,8 @@ TEST(YellowDiceJumpingWhiteDice, move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      YellowDice yd(c2, 1, 1);
-      WhiteDice wd(c1, 1, 1);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
@@ -1325,8 +1325,8 @@ TEST(RedDicePushingYellowDice, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice yd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -1346,8 +1346,8 @@ TEST(YellowDiceJumpingRedDice, move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      YellowDice yd(c2, 1, 1);
-      RedDice rd(c1, 1, 1);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j+2))->move("up", dices, __func__, 0).first);
@@ -1365,7 +1365,7 @@ TEST(oneGreenDice, move_left0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice gd(c, 0, 0);
+      GreenDice gd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &gd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("LEFT", dices, __func__, 0).first);
       dices.clear();
@@ -1380,7 +1380,7 @@ TEST(oneGreenDice, move_left){
     for (int i = 3; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice gd(c, 3, 3);
+      GreenDice gd(c, 3, 3, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &gd));
       int nMoves = dices.at(P2D(i, j))->get_n_moves();
       EXPECT_TRUE(dices.at(P2D(i, j))->move("LEFT", dices, __func__, 0).first);
@@ -1399,8 +1399,8 @@ TEST(twoGreenDices_PushingEachOther, move_left){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      GreenDice gd1(c1, 3, 3);
-      GreenDice gd2(c2, 3, 3);
+      GreenDice gd1(c1, 3, 3, P2D::neutral_p2d);
+      GreenDice gd2(c2, 3, 3, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       EXPECT_TRUE(dices.at(P2D(i+2, j))->move("LEFT", dices, __func__, 0).first);
@@ -1420,8 +1420,8 @@ TEST(WhiteDicePushingGreenDice, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd(c1, 2, 2);
-      WhiteDice wd(c2, 1, 1);
+      GreenDice gd(c1, 2, 2, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, false).first);
@@ -1442,8 +1442,8 @@ TEST(GreenDicePushingWhiteDice, move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_FALSE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
@@ -1463,8 +1463,8 @@ TEST(RedDicePushingGreenDice, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd(c1, 2, 2);  
-      RedDice rd(c2, 1, 1);
+      GreenDice gd(c1, 2, 2, P2D::neutral_p2d);  
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
@@ -1485,8 +1485,8 @@ TEST(GreenDicePushingRedDice, move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
@@ -1506,8 +1506,8 @@ TEST(YellowDiceJumpingGreenDice, move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd(c1, 2, 2);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 2, 2, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
@@ -1527,8 +1527,8 @@ TEST(GreenDicePushingYellowDice, move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       EXPECT_FALSE(dices.at(P2D(i+1, j))->move("LEFT", dices, __func__, 0).first);
@@ -1546,7 +1546,7 @@ TEST(oneGreenDice, move_right0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice gd(c, 0, 0);
+      GreenDice gd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &gd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
       dices.clear();
@@ -1561,7 +1561,7 @@ TEST(oneGreenDice, move_right){
     for (int i = 0; i < MAP_WIDTH-3; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice gd(c, 3, 3);
+      GreenDice gd(c, 3, 3, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &gd));
       int nMoves = dices.at(P2D(i, j))->get_n_moves();
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1580,8 +1580,8 @@ TEST(twoGreenwDices_PushingEachOther, move_right){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      GreenDice gd1(c1, 3, 3);
-      GreenDice gd2(c2, 1, 1);
+      GreenDice gd1(c1, 3, 3, P2D::neutral_p2d);
+      GreenDice gd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1601,8 +1601,8 @@ TEST(WhiteDicePushingGreenDice, move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd(c1, 2, 2);
-      WhiteDice wd(c2, 1, 1);
+      GreenDice gd(c1, 2, 2, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1623,8 +1623,8 @@ TEST(GreenDicePushingWhiteDice, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1644,8 +1644,8 @@ TEST(RedDicePushingGreenDice, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      GreenDice gd(c2, 2, 2);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 2, 2, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1666,8 +1666,8 @@ TEST(GreenDicePushingRedDice, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1687,8 +1687,8 @@ TEST(YellowDiceJumpingGreenDice, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice yd(c1, 1, 1);
-      GreenDice gd(c2, 2, 2);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 2, 2, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1708,8 +1708,8 @@ TEST(GreenDicePushingYellowDice, move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("RIGHT", dices, __func__, 0).first);
@@ -1727,7 +1727,7 @@ TEST(oneGreenDice, move_down0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice gd(c, 0, 0);
+      GreenDice gd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &gd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
       dices.clear();
@@ -1742,7 +1742,7 @@ TEST(oneGreenDice, move_down){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice gd(c, 1, 1);
+      GreenDice gd(c, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &gd));
       int nMoves = dices.at(P2D(i, j))->get_n_moves();
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1761,8 +1761,8 @@ TEST(twoGreenDices_PushingEachOther, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+3);
-      GreenDice gd1(c1, 3, 3);
-      GreenDice gd2(c2, 3, 3);
+      GreenDice gd1(c1, 3, 3, P2D::neutral_p2d);
+      GreenDice gd2(c2, 3, 3, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1782,8 +1782,8 @@ TEST(WhiteDicePushingGreenDice, move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd(c1, 2, 2);
-      WhiteDice wd(c2, 1, 1);
+      GreenDice gd(c1, 2, 2, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1804,8 +1804,8 @@ TEST(GreenDicePushingWhiteDice, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c1, 1, 1);
-      WhiteDice wd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1825,8 +1825,8 @@ TEST(RedDicePushingGreenDice, move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd(c1, 2, 2);
-      RedDice rd(c2, 1, 1);
+      GreenDice gd(c1, 2, 2, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1847,8 +1847,8 @@ TEST(GreenDicePushingRedDice, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1868,8 +1868,8 @@ TEST(YellowDiceJumpingGreenDice, move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd(c1, 2, 2);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 2, 2, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       EXPECT_TRUE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1889,8 +1889,8 @@ TEST(GreenDicePushingYellowDice, move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("down", dices, __func__, 0).first);
@@ -1908,7 +1908,7 @@ TEST(oneGreenDice, move_up0Moves){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice gd(c, 0, 0);
+      GreenDice gd(c, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &gd));
       EXPECT_FALSE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
       dices.clear();
@@ -1923,7 +1923,7 @@ TEST(oneGreenDice, move_up){
     for (int i = 0; i < MAP_WIDTH; i++){
       c.setX(i);
       c.setY(j);
-      GreenDice gd(c, 3, 3);
+      GreenDice gd(c, 3, 3, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c.get_x(), c.get_y()), &gd));
       int nMoves = dices.at(P2D(i, j))->get_n_moves();
       EXPECT_TRUE(dices.at(P2D(i, j))->move("up", dices, __func__, 0).first);
@@ -1942,8 +1942,8 @@ TEST(twoGreenDices_PushingEachOther, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+3);
-      GreenDice gd1(c1, 3, 3);
-      GreenDice gd2(c2, 3, 3);
+      GreenDice gd1(c1, 3, 3, P2D::neutral_p2d);
+      GreenDice gd2(c2, 3, 3, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       EXPECT_TRUE(dices.at(P2D(i, j+3))->move("up", dices, __func__, 0).first);
@@ -1963,8 +1963,8 @@ TEST(WhiteDicePushingGreenDice, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c1, 2, 2);
-      WhiteDice wd(c2, 1, 1);
+      GreenDice gd(c1, 2, 2, P2D::neutral_p2d);
+      WhiteDice wd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -1985,8 +1985,8 @@ TEST(GreenDicePushingWhiteDice, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c2, 1, 1);
-      WhiteDice wd(c1, 1, 1);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -2006,8 +2006,8 @@ TEST(RedDicePushingGreenDice, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c1, 2, 2);
-      RedDice rd(c2, 1, 1);
+      GreenDice gd(c1, 2, 2, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -2028,8 +2028,8 @@ TEST(GreenDicePushingRedDice, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c2, 1, 1);
-      RedDice rd(c1, 1, 1);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -2049,8 +2049,8 @@ TEST(YellowDiceJumpingGreenDice, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       EXPECT_TRUE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -2070,8 +2070,8 @@ TEST(GreenDicePushingYellowDice, move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c2, 1, 1);
-      YellowDice yd(c1, 1, 1);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd));
       EXPECT_FALSE(dices.at(P2D(i, j+1))->move("up", dices, __func__, 0).first);
@@ -2091,8 +2091,8 @@ TEST(RedDicePushingWhiteDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, 0);
@@ -2116,8 +2116,8 @@ TEST(RedDicePushingWhiteDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, 0);
@@ -2141,8 +2141,8 @@ TEST(RedDicePushingWhiteDice, reverse_move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, 0);
@@ -2166,8 +2166,8 @@ TEST(RedDicePushingWhiteDice, reverse_move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, 0);
@@ -2191,8 +2191,8 @@ TEST(WhiteDicePushingRedDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -2216,8 +2216,8 @@ TEST(WhiteDicePushingRedDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -2241,8 +2241,8 @@ TEST(WhiteDicePushingRedDice, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -2266,8 +2266,8 @@ TEST(WhiteDicePushingRedDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd(c1, 1, 1);
-      RedDice rd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
@@ -2293,9 +2293,9 @@ TEST(YellowDicePushingWhiteDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      WhiteDice wd0(c0, 1, 1);
-      WhiteDice wd1(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      WhiteDice wd0(c0, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &wd0));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
@@ -2324,9 +2324,9 @@ TEST(YellowDicePushingWhiteDice0Moves, reverse_move_left){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      WhiteDice wd0(c0, 0, 1);
-      WhiteDice wd1(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      WhiteDice wd0(c0, 0, 1, P2D::neutral_p2d);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &wd0));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
@@ -2355,9 +2355,9 @@ TEST(YellowDicePushingWhiteDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd0(c0, 1, 1);
-      WhiteDice wd1(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      WhiteDice wd0(c0, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &wd0));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
@@ -2386,9 +2386,9 @@ TEST(YellowDicePushingWhiteDice, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      WhiteDice wd0(c0, 1, 1);
-      WhiteDice wd1(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      WhiteDice wd0(c0, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &wd0));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
@@ -2417,9 +2417,9 @@ TEST(YellowDicePushingWhiteDice, reverse_move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd0(c0, 1, 1);
-      WhiteDice wd1(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      WhiteDice wd0(c0, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &wd0));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
@@ -2446,8 +2446,8 @@ TEST(YellowDiceJumpingWhiteDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -2471,8 +2471,8 @@ TEST(YellowDiceJumpingWhiteDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -2496,8 +2496,8 @@ TEST(YellowDiceJumpingWhiteDice, reverse_move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -2521,8 +2521,8 @@ TEST(YellowDiceJumpingWhiteDice, reverse_move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
@@ -2546,8 +2546,8 @@ TEST(WhiteDicePushingGreenDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -2571,8 +2571,8 @@ TEST(WhiteDicePushingGreenDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -2596,8 +2596,8 @@ TEST(WhiteDicePushingGreenDice, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      WhiteDice wd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -2621,8 +2621,8 @@ TEST(WhiteDicePushingGreenDice, reverse_move_down){
       c1.setY(j+2);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       pair<bool, int> res = dices.at(P2D(i, j+2))->reverse_move("up", dices, __func__, false);
@@ -2648,9 +2648,9 @@ TEST(YellowDicePushingRedDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+2);
       c2.setY(j);
-      RedDice rd(c0, 1, 1);
-      WhiteDice wd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      RedDice rd(c0, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
@@ -2679,9 +2679,9 @@ TEST(YellowDicePushingRedDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      RedDice rd(c0, 1, 1);
-      WhiteDice wd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      RedDice rd(c0, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
@@ -2710,9 +2710,9 @@ TEST(YellowDicePushingRedDice, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j+2);
-      RedDice rd(c0, 1, 1);
-      WhiteDice wd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      RedDice rd(c0, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
@@ -2741,9 +2741,9 @@ TEST(YellowDicePushingRedDice, reverse_move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      RedDice rd(c0, 1, 1);
-      WhiteDice wd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      RedDice rd(c0, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
@@ -2770,8 +2770,8 @@ TEST(YellowDiceJumpingRedDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -2795,8 +2795,8 @@ TEST(YellowDiceJumpingRedDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -2820,8 +2820,8 @@ TEST(YellowDiceJumpingRedDice, reverse_move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice rd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -2845,8 +2845,8 @@ TEST(YellowDiceJumpingRedDice, reverse_move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
@@ -2870,8 +2870,8 @@ TEST(RedDicePushingGreenDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -2895,8 +2895,8 @@ TEST(RedDicePushingGreenDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -2920,8 +2920,8 @@ TEST(RedDicePushingGreenDice, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      RedDice rd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -2945,8 +2945,8 @@ TEST(RedDicePushingGreenDice, reverse_move_down){
       c1.setY(j+2);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice rd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      RedDice rd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
       pair<bool, int> res = dices.at(P2D(i, j+2))->reverse_move("up", dices, __func__, false);
@@ -2972,9 +2972,9 @@ TEST(YellowDicePushingGreenDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd(c0, 1, 1);
-      YellowDice rd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      WhiteDice wd(c0, 1, 1, P2D::neutral_p2d);
+      YellowDice rd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
@@ -3003,9 +3003,9 @@ TEST(YellowDicePushingGreenDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd(c0, 1, 1);
-      YellowDice rd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      WhiteDice wd(c0, 1, 1, P2D::neutral_p2d);
+      YellowDice rd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
@@ -3034,9 +3034,9 @@ TEST(YellowDicePushingGreenDice, reverse_move_up){
       c1.setY(j+2);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd(c0, 1, 1);
-      YellowDice rd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      WhiteDice wd(c0, 1, 1, P2D::neutral_p2d);
+      YellowDice rd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
@@ -3065,9 +3065,9 @@ TEST(YellowDicePushingGreenDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd(c0, 1, 1);
-      YellowDice rd(c1, 1, 1);
-      GreenDice gd(c2, 1, 1);
+      WhiteDice wd(c0, 1, 1, P2D::neutral_p2d);
+      YellowDice rd(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c0.get_x(), c0.get_y()), &wd));
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd));
@@ -3094,8 +3094,8 @@ TEST(YellowDiceJumpingGreenDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -3119,8 +3119,8 @@ TEST(YellowDiceJumpingGreenDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -3144,8 +3144,8 @@ TEST(YellowDiceJumpingGreenDice, reverse_move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -3169,8 +3169,8 @@ TEST(YellowDiceJumpingGreenDice, reverse_move_down){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd(c1, 1, 1);
-      YellowDice yd(c2, 1, 1);
+      GreenDice gd(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
@@ -3196,9 +3196,9 @@ TEST(YellowDiceJumpingTwoDices, reverse_move_left){
       c2.setY(j);
       c3.setX(i+3);
       c3.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      GreenDice gd2(c2, 1, 1);
-      YellowDice yd(c3, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd2(c2, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c3, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       dices.insert(pair<P2D, Dice *>(P2D(c3.get_x(), c3.get_y()), &yd));
@@ -3227,9 +3227,9 @@ TEST(YellowDiceJumpingTwoDices, reverse_move_right){
       c2.setY(j);
       c3.setX(i);
       c3.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      GreenDice gd2(c2, 1, 1);
-      YellowDice yd(c3, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd2(c2, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c3, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       dices.insert(pair<P2D, Dice *>(P2D(c3.get_x(), c3.get_y()), &yd));
@@ -3258,9 +3258,9 @@ TEST(YellowDiceJumpingTwoDices, reverse_move_up){
       c2.setY(j+2);
       c3.setX(i);
       c3.setY(j+3);
-      GreenDice gd1(c1, 1, 1);
-      GreenDice gd2(c2, 1, 1);
-      YellowDice yd(c3, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd2(c2, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c3, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       dices.insert(pair<P2D, Dice *>(P2D(c3.get_x(), c3.get_y()), &yd));
@@ -3289,9 +3289,9 @@ TEST(YellowDiceJumpingTwoDices, reverse_move_down){
       c2.setY(j+2);
       c3.setX(i);
       c3.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      GreenDice gd2(c2, 1, 1);
-      YellowDice yd(c3, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd2(c2, 1, 1, P2D::neutral_p2d);
+      YellowDice yd(c3, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       dices.insert(pair<P2D, Dice *>(P2D(c3.get_x(), c3.get_y()), &yd));
@@ -3318,8 +3318,8 @@ TEST(GreenDicePushingGreenDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      GreenDice gd2(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -3343,8 +3343,8 @@ TEST(GreenDicePushingGreenDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      GreenDice gd2(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -3368,8 +3368,8 @@ TEST(GreenDicePushingGreenDice, reverse_move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd1(c1, 1, 1);
-      GreenDice gd2(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -3393,8 +3393,8 @@ TEST(GreenDicePushingGreenDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd1(c1, 1, 1);
-      GreenDice gd2(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      GreenDice gd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &gd2));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
@@ -3418,8 +3418,8 @@ TEST(RedDicePushingRedDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd1(c1, 1, 1);
-      RedDice rd2(c2, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd2));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -3443,8 +3443,8 @@ TEST(RedDicePushingRedDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      RedDice rd1(c1, 1, 1);
-      RedDice rd2(c2, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd2));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -3468,8 +3468,8 @@ TEST(RedDicePushingRedDice, reverse_move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice rd1(c1, 1, 1);
-      RedDice rd2(c2, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd2));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -3493,8 +3493,8 @@ TEST(RedDicePushingRedDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      RedDice rd1(c1, 1, 1);
-      RedDice rd2(c2, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd2));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
@@ -3518,8 +3518,8 @@ TEST(WhiteDicePushingWhiteDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -3543,8 +3543,8 @@ TEST(WhiteDicePushingWhiteDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -3568,8 +3568,8 @@ TEST(WhiteDicePushingWhiteDice, reverse_move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -3593,8 +3593,8 @@ TEST(WhiteDicePushingWhiteDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      WhiteDice wd1(c1, 1, 1);
-      WhiteDice wd2(c2, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd2));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
@@ -3618,8 +3618,8 @@ TEST(YellowDiceJumpingYellowDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice yd1(c1, 1, 1);
-      YellowDice yd2(c2, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd2));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false);
@@ -3643,8 +3643,8 @@ TEST(YellowDiceJumpingYellowDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      YellowDice yd1(c1, 1, 1);
-      YellowDice yd2(c2, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd2));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
@@ -3668,8 +3668,8 @@ TEST(YellowDiceJumpingYellowDice, reverse_move_up){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice yd1(c1, 1, 1);
-      YellowDice yd2(c2, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd2));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false);
@@ -3693,8 +3693,8 @@ TEST(YellowDiceJumpingYellowDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      YellowDice yd1(c1, 1, 1);
-      YellowDice yd2(c2, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
+      YellowDice yd2(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &yd2));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
@@ -3716,7 +3716,7 @@ TEST(oneYellowDice, reverse_move_left){
     for (int i = 1; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      YellowDice yd1(c1, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("LEFT", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3738,7 +3738,7 @@ TEST(oneYellowDice, reverse_move_right){
     for (int i = 0; i < MAP_WIDTH-1; i++){
       c1.setX(i);
       c1.setY(j);
-      YellowDice yd1(c1, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3760,7 +3760,7 @@ TEST(oneYellowDice, reverse_move_up){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      YellowDice yd1(c1, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("up", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3782,7 +3782,7 @@ TEST(oneYellowDice, reverse_move_down){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      YellowDice yd1(c1, 1, 1);
+      YellowDice yd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &yd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3804,7 +3804,7 @@ TEST(oneWhiteDice, reverse_move_left){
     for (int i = 1; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      WhiteDice wd1(c1, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("LEFT", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3827,7 +3827,7 @@ TEST(oneWhiteDice, reverse_move_right){
     for (int i = 0; i < MAP_WIDTH-1; i++){
       c1.setX(i);
       c1.setY(j);
-      WhiteDice wd1(c1, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3849,7 +3849,7 @@ TEST(oneWhiteDice, reverse_move_up){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      WhiteDice wd1(c1, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("up", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3871,7 +3871,7 @@ TEST(oneWhiteDice, reverse_move_down){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      WhiteDice wd1(c1, 1, 1);
+      WhiteDice wd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3893,7 +3893,7 @@ TEST(oneRedDice, reverse_move_left){
     for (int i = 1; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      RedDice rd1(c1, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("LEFT", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3915,7 +3915,7 @@ TEST(oneRedDice, reverse_move_right){
     for (int i = 0; i < MAP_WIDTH-1; i++){
       c1.setX(i);
       c1.setY(j);
-      RedDice rd1(c1, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3937,7 +3937,7 @@ TEST(oneRedDice, reverse_move_up){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      RedDice rd1(c1, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("up", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3959,7 +3959,7 @@ TEST(oneRedDice, reverse_move_down){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      RedDice rd1(c1, 1, 1);
+      RedDice rd1(c1, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &rd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -3981,7 +3981,7 @@ TEST(oneGreenDice, reverse_move_left){
     for (int i = 2; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      GreenDice gd1(c1, 2, 2);
+      GreenDice gd1(c1, 2, 2, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("LEFT", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -4003,7 +4003,7 @@ TEST(oneGreenDice, reverse_move_right){
     for (int i = 0; i < MAP_WIDTH-2; i++){
       c1.setX(i);
       c1.setY(j);
-      GreenDice gd1(c1, 2, 2);
+      GreenDice gd1(c1, 2, 2, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -4025,7 +4025,7 @@ TEST(oneGreenDice, reverse_move_up){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      GreenDice gd1(c1, 2, 2);
+      GreenDice gd1(c1, 2, 2, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("up", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -4047,7 +4047,7 @@ TEST(oneGreenDice, reverse_move_down){
     for (int i = 0; i < MAP_WIDTH; i++){
       c1.setX(i);
       c1.setY(j);
-      GreenDice gd1(c1, 2, 2);
+      GreenDice gd1(c1, 2, 2, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false);
       EXPECT_TRUE(res.first);
@@ -4071,8 +4071,8 @@ TEST(GreenDicePushingWhiteDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      WhiteDice wd1(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd1(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false, PUSHED_MOVE);
@@ -4105,8 +4105,8 @@ TEST(GreenDicePushingWhiteDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      WhiteDice wd1(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd1(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false, PUSHED_MOVE);
@@ -4139,8 +4139,8 @@ TEST(GreenDicePushingWhiteDice, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      WhiteDice wd1(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd1(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false, PUSHED_MOVE);
@@ -4173,8 +4173,8 @@ TEST(GreenDicePushingWhiteDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd1(c1, 1, 1);
-      WhiteDice wd1(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      WhiteDice wd1(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false, PUSHED_MOVE);
@@ -4207,8 +4207,8 @@ TEST(GreenDicePushingRedDice, reverse_move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      RedDice rd1(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd1(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd1));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false, PUSHED_MOVE);
@@ -4241,8 +4241,8 @@ TEST(GreenDicePushingRedDice, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      RedDice rd1(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd1(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false, PUSHED_MOVE);
@@ -4275,8 +4275,8 @@ TEST(GreenDicePushingRedDice, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 1, 1);
-      RedDice rd1(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd1(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd1));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false, PUSHED_MOVE);
@@ -4309,8 +4309,8 @@ TEST(GreenDicePushingRedDice, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd1(c1, 1, 1);
-      RedDice rd1(c2, 1, 1);
+      GreenDice gd1(c1, 1, 1, P2D::neutral_p2d);
+      RedDice rd1(c2, 1, 1, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &rd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false, PUSHED_MOVE);
@@ -4343,8 +4343,8 @@ TEST(GreenDicePushingWhiteDice0Moves, reverse_move_left){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 0, 0);
-      WhiteDice wd1(c2, 0, 0);
+      GreenDice gd1(c1, 0, 0, P2D::neutral_p2d);
+      WhiteDice wd1(c2, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i+1, j))->reverse_move("LEFT", dices, __func__, false, true);
@@ -4368,8 +4368,8 @@ TEST(GreenDicePushingWhiteDice0Moves, reverse_move_right){
       c1.setY(j);
       c2.setX(i+1);
       c2.setY(j);
-      GreenDice gd1(c1, 0, 0);
-      WhiteDice wd1(c2, 0, 0);
+      GreenDice gd1(c1, 0, 0, P2D::neutral_p2d);
+      WhiteDice wd1(c2, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("RIGHT", dices, __func__, false, true);
@@ -4393,8 +4393,8 @@ TEST(GreenDicePushingWhiteDice0Moves, reverse_move_up){
       c1.setY(j+1);
       c2.setX(i);
       c2.setY(j);
-      GreenDice gd1(c1, 0, 0);
-      WhiteDice wd1(c2, 0, 0);
+      GreenDice gd1(c1, 0, 0, P2D::neutral_p2d);
+      WhiteDice wd1(c2, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j+1))->reverse_move("up", dices, __func__, false, true);
@@ -4418,8 +4418,8 @@ TEST(GreenDicePushingWhiteDice0Moves, reverse_move_down){
       c1.setY(j);
       c2.setX(i);
       c2.setY(j+1);
-      GreenDice gd1(c1, 0, 0);
-      WhiteDice wd1(c2, 0, 0);
+      GreenDice gd1(c1, 0, 0, P2D::neutral_p2d);
+      WhiteDice wd1(c2, 0, 0, P2D::neutral_p2d);
       dices.insert(pair<P2D, Dice *>(P2D(c1.get_x(), c1.get_y()), &gd1));
       dices.insert(pair<P2D, Dice *>(P2D(c2.get_x(), c2.get_y()), &wd1));
       pair<bool, int> res = dices.at(P2D(i, j))->reverse_move("down", dices, __func__, false, true);

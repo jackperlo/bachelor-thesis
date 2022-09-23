@@ -122,11 +122,10 @@ void AleaGame::generate_map_for_backward_movements(json json_dict){
     exit(1);
   }
   
-  cout << "\n"<< FGREDSTART <<"======= Alea Level Solver Backward =======" << endl;
-	cout << "             MAP_WIDTH : " << MAP_WIDTH << endl;
-	cout << "             MAP_HEIGHT: " << MAP_HEIGHT << endl;
-	cout << "             #dice : " << terminals.size() << endl;
-	cout << "==========================================="<< FGRESET << endl;
+  cout << "\n"<< FGREDSTART <<"======= Alea Level A* Backward Level Generation =======" << endl;
+	cout << "MAP_WIDTH : " << MAP_WIDTH << endl;
+	cout << "MAP_HEIGHT: " << MAP_HEIGHT << endl;
+	cout << "#dice : " << terminals.size() << FGRESET << endl;
 	cout << endl;
 }
 
@@ -156,12 +155,14 @@ void AleaGame::generate_map_for_expected_forward_movements_given_x_y(json json_d
   MAP_HEIGHT = json_dict["rows"];
   TOTAL_MOVES = remaining_moves();
   
-  cout << "\n" << FGREDSTART << "===== Alea Level Solver "<<type<<" Forward =====" << endl;
-	cout << "                MAP_WIDTH : " << MAP_WIDTH << endl;
-	cout << "                MAP_HEIGHT: " << MAP_HEIGHT << endl;
-	cout << "                #dice : " << terminals.size() << endl;
-  cout << "                #total_moves : " << TOTAL_MOVES << endl;
-	cout << "================================================" << FGRESET << endl;
+  if(type.compare("EXPECTED") == 0)
+    cout << "\n" << FGREDSTART << "===== Alea Level Solver - A* Reverted =====" << endl;
+  else
+    cout << "\n" << FGREDSTART << "===== Alea Level Solver - BFS Forward =====" << endl;
+	cout << "MAP_WIDTH : " << MAP_WIDTH << endl;
+	cout << "MAP_HEIGHT: " << MAP_HEIGHT << endl;
+	cout << "#dice : " << terminals.size() << endl;
+  cout << "#total_moves : " << TOTAL_MOVES << FGRESET << endl;
 }
 
 void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
@@ -195,17 +196,16 @@ void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
   MAP_HEIGHT = rows+2;
   TOTAL_MOVES = remaining_moves();
   
-  cout << "\n" << FGREDSTART << "===== Alea Level Solver Analyzed Forward =====" << endl;
-	cout << "                MAP_WIDTH : " << MAP_WIDTH << endl;
-	cout << "                MAP_HEIGHT: " << MAP_HEIGHT << endl;
-	cout << "                #dice : " << terminals.size() << endl;
-  cout << "                #total_moves : " << TOTAL_MOVES << endl;
-	cout << "================================================" << FGRESET << endl;
+  cout << "\n" << FGREDSTART << "===== Alea Level Solver - BFS Forward =====" << endl;
+	cout << "MAP_WIDTH : " << MAP_WIDTH << endl;
+	cout << "MAP_HEIGHT: " << MAP_HEIGHT << endl;
+	cout << "#dice : " << terminals.size() << endl;
+  cout << "#total_moves : " << TOTAL_MOVES << FGRESET << endl;
 }
 
 void AleaGame::generate_random_map_for_backward_movements(){
   srand (time(NULL));
-  int n_terminals = rand() % ((MAX_RANDOM_COLS*MAX_RANDOM_ROWS)/2) + (MAX_RANDOM_COLS-1);
+  int n_terminals = rand() % ((MAX_RANDOM_COLS*MAX_RANDOM_ROWS)-MAX_RANDOM_COLS) + (MAX_RANDOM_COLS-1);
 
   heuristic_value = 0.00;
   int max_row = 0;
@@ -226,7 +226,7 @@ void AleaGame::generate_random_map_for_backward_movements(){
   for (P2D pos : terminals) {
     x = pos.x-1;
     y = pos.y-1;
-    n_moves = rand() % MAX_RANDOM_MOVES_PER_DIE;
+    n_moves = rand() % MAX_RANDOM_MOVES_PER_DIE + 1;
     type = rand() % 4;
     Dice *dice;
     Cell c(x+1, y+1);

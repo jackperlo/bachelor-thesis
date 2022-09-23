@@ -22,7 +22,7 @@ int main(){
   string level_name = "";
   string level_path = "";
 
-  cout<<FGCYANSTART<<"\nWelcome to Alea Game Level Generator & Solver.\n"<<FGRESET;
+  cout<<FGCYANSTART<<"\nWelcome to Alea Game Level Generator & Solver.\n\n"<<FGRESET;
   #ifdef DEBUG
   cout<<FGCYANSTART<<"\nDEBUG MODE\n"<<FGRESET;
   #endif
@@ -85,15 +85,16 @@ int main(){
 }
 
 void print_menu(){
-  cout<<FGCYANSTART<<"\t\t================Menu================"<<endl;
-  cout<<"\tManually Submitted Levels"<<endl;
-  cout<<"\t\t1. GENERATE a Level from an Ending Configuration"<<endl;
-  cout<<"\t\t2. SOLVE a Level from a Starting Configuration"<<endl;
-  cout<<"\t\t3. GENERATE & SOLVE a Level from an Ending Configuration"<<endl;
-  cout<<"\tAuto Generated Levels"<<endl;
-  cout<<"\t\t4. AUTO GENERATE & SOLVE a Level"<<endl;
-  cout<<"\t0. Exit"<<endl;
-  cout<<"\tMake your choice: "<<FGRESET;
+  cout<<FGCYANSTART<<"==============================Menu================================="<<endl;
+  cout<<"|| Manually Submitted Levels\t\t\t\t\t ||"<<endl;
+  cout<<"||\t1. GENERATE a Level from an Ending Configuration\t ||"<<endl;
+  cout<<"||\t2. SOLVE a Level from a Starting Configuration\t\t ||"<<endl;
+  cout<<"||\t3. GENERATE & SOLVE a Level from an Ending Configuration ||"<<endl;
+  cout<<"|| Auto Generated Levels    \t\t\t\t\t ||"<<endl;
+  cout<<"||\t4. AUTO GENERATE & SOLVE a Level\t\t\t ||"<<endl;
+  cout<<"|| 0. Exit\t\t\t\t\t\t\t ||"<<endl;
+  cout<<"=================================================================="<<endl;
+  cout<<"Make your choice: "<<FGRESET;
 }
 
 /**

@@ -158,7 +158,7 @@ void AleaGame::generate_map_for_expected_forward_movements_given_x_y(json json_d
   if(type.compare("EXPECTED") == 0)
     cout << "\n" << FGREDSTART << "===== Alea Level Solver - A* Reverted =====" << endl;
   else
-    cout << "\n" << FGREDSTART << "===== Alea Level Solver - BFS Forward =====" << endl;
+    cout << "\n" << FGREDSTART << "===== Alea Level Solver - A* Variant Forward =====" << endl;
 	cout << "MAP_WIDTH : " << MAP_WIDTH << endl;
 	cout << "MAP_HEIGHT: " << MAP_HEIGHT << endl;
 	cout << "#dice : " << terminals.size() << endl;
@@ -196,7 +196,7 @@ void AleaGame::generate_map_for_expected_forward_movements(json json_dict){
   MAP_HEIGHT = rows+2;
   TOTAL_MOVES = remaining_moves();
   
-  cout << "\n" << FGREDSTART << "===== Alea Level Solver - BFS Forward =====" << endl;
+  cout << "\n" << FGREDSTART << "===== Alea Level Solver - A* Variant Forward =====" << endl;
 	cout << "MAP_WIDTH : " << MAP_WIDTH << endl;
 	cout << "MAP_HEIGHT: " << MAP_HEIGHT << endl;
 	cout << "#dice : " << terminals.size() << endl;

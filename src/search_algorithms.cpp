@@ -1,5 +1,5 @@
 /**
-  This contains the A* Backward algorithm and the RBFS Forward algorithm
+  This contains the A* Backward algorithm and the A* Variant Forward algorithm
   @file search_algorithms.h search_algorithms.cpp
   @authors Mirko Polato, Giacomo Perlo
 */
@@ -140,29 +140,18 @@ pair<string, vector<Action>> Node::astar_backward_search(AleaGame game, int limi
 }
 
 /**
-  This is a wrapper for the RBFS forward algorithm which obtains the banal starting configurations 
+  This is a wrapper for the A* Variant forward algorithm which obtains the banal starting configurations 
   (these are derivied by sequences of "banal" moves: dices which has manhattan distance from 
   a terminal equal to the number of their available moves).
 
-  Once obtained all the banal configurations possible, it calls the RBFS forward algorithm starting 
+  Once obtained all the banal configurations possible, it calls the A* Varian forward algorithm starting 
   from each one of them. After that, if no solution has been found (starting from banal
-  configurations) it calls RBFS forward starting from @original_game.
-  Note that it's looking for the easier solutions, so if it find one (or more) solution starting 
-  from a banal configuration then it will be way easier than a solution starting from @original_game; 
-  so it can consider to avoid RBFS forward starting from @original_game in this case, saving time and 
-  resources.
-
-  Since more than a solution can be found, every time RBFS forward is called and returns one (or more) 
-  solutions, the old priorty queue (which contains the solutions found so far) must be merged with 
-  the one returned by A* (containing the new solution(s)).
-  @param original_game AleaGame instance based on starting configuration specified in its .json file 
-          previously found by A* backward search
-  @param limit maximum number of branched nodes astar can explore.
+  configurations) it calls RBt
   @return a priority queue containing pairs (each pair corresponds to a solution found) composed by:
           a vector of moves (to get from starting config->ending config(=solution)) 
           and the difficulty calculated for that solution
 */
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::rbfs_forward_search(AleaGame original_game, double upper_bound, int limit) {
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::a_star_variant_forward_search(AleaGame original_game, double upper_bound, int limit) {
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res;
   search_limit = limit;
   vector<pair<AleaGame, vector<Action>>> banal_search_results = original_game.find_banal_starts_forward_search_wrapper();
@@ -200,7 +189,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     cout<<"Loading..."<<endl<<endl;
     for(pair<AleaGame, vector<Action>> banal_search : banal_search_results){
       search_limit = BRANCHED_NODES_LIMIT;
-      futures.push_back(async(launch::async, a_star_forward, banal_search, upper_bound, i));
+      futures.push_back(async(launch::async, a_star_variant_forward, banal_search, upper_bound, i));
       i++;    
     }
 
@@ -214,14 +203,14 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
   if(res.size() == 0){
     search_limit = numeric_limits<int>::max();
     cout<<"\nOriginal Starting Configuration Analysis:\n";
-    tmp = a_star_forward(make_pair(original_game, vector<Action>()), upper_bound);
+    tmp = a_star_variant_forward(make_pair(original_game, vector<Action>()), upper_bound);
     res = merge_priority_queues(res, tmp);
   }
 
   return res;
 } 
 
-int Node::a_star_get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
+int Node::a_star_variant_get_siblings(shared_ptr<Node> current_node, priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> &open, unordered_set<shared_ptr<Node>, Node::HashFun> &open_set, int &evaluated_moves, vector<pair<int, int>> &excluding_heuristic_possible_moves_activation){
   open_set.clear();
   while (!open.empty()) open.pop();
 
@@ -292,7 +281,7 @@ int Node::a_star_get_siblings(shared_ptr<Node> current_node, priority_queue<shar
     - f(n) = next move weight (from the "possible moves backwards" bundle)
 
   If the node considered is a valid ending configuration it mixes in a proper way the banal moves 
-  computed before (if presents) and the moves computed by RBFS forward to reach the ending configuration
+  computed before (if presents) and the moves computed by A* Variant forward to reach the ending configuration
   @param game AleaGame instance prepared and passed by the wrapper (astar_forward_search)
   @param limit maximum number of branched nodes astar can explore.
   @param difficulty number which rapresents level difficulty. Initialized (=0) by the wrapper 
@@ -302,7 +291,7 @@ int Node::a_star_get_siblings(shared_ptr<Node> current_node, priority_queue<shar
           a vector of moves (to get from starting config->ending config(=solution)) 
           and the difficulty calculated for that solution
 */
-priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::a_star_forward(pair<AleaGame, vector<Action>> banal_search, double upper_bound, int thread_name){
+priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> Node::a_star_variant_forward(pair<AleaGame, vector<Action>> banal_search, double upper_bound, int thread_name){
   priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> res;
   priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareFunForward> open;
   unordered_set<shared_ptr<Node>, Node::HashFun> open_set;
@@ -330,17 +319,6 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     cout<<"\nRoot DEPTH="<<depth<<"\n";
     int i=1;
   #endif
-  
-  /* unordered_set<P2D, P2D::HashFun> terminals;
-  unordered_map<P2D, Dice*, P2D::HashFun> dices;
-  terminals.insert(P2D(2, 1));
-  terminals.insert(P2D(3, 3));
-  WhiteDice wd1(Cell(2, 1), 0, 2);
-  WhiteDice wd2(Cell(3, 2), 1, 1);
-  dices.insert(pair<P2D, Dice *>(P2D(2, 1), &wd1));
-  dices.insert(pair<P2D, Dice *>(P2D(3, 2), &wd2));
-  AleaGame my_game(terminals, dices); 
- */
 
   start = std::chrono::system_clock::now();
   while (open.size() > 0) {
@@ -386,7 +364,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
             depth-=DEPTH_DECREASING_INDEX;
             cout << "BACKTRACKING FROM INTERNAL NODE, ALL SIBLINGS EXPLORED, NEW DEPTH="<<depth<<endl;
           #endif
-          siblings_number = a_star_get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+          siblings_number = a_star_variant_get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
           #ifdef DEBUG 
             depth++;
             cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
@@ -404,7 +382,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
         solution.first.push_back(current_node->action);
         current_node = current_node->parent;
       }
-      if(solution.first.size() > 0) cout<<"\n"<< FGMAGENTASTART << "THREAD " << thread_name << "~:" << FGRESET << FGGREENSTART <<"RBFS Forward: New Solution Found!\n"<< FGRESET;
+      if(solution.first.size() > 0) cout<<"\n"<< FGMAGENTASTART << "THREAD " << thread_name << "~:" << FGRESET << FGGREENSTART <<"A* Variant Forward: New Solution Found!\n"<< FGRESET;
       reverse(solution.first.begin(), solution.first.end());
       int offset = 0;
       for(Action move : banal_search.second){
@@ -422,7 +400,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
     sequentially_skipped_nodes = 0;
     branched_nodes++;
     siblings_closed.insert(AleaGame::HashFun()(current_node->game));
-    siblings_number = a_star_get_siblings(current_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+    siblings_number = a_star_variant_get_siblings(current_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
     #ifdef DEBUG
       depth++;
       cout<<"\tNSiblings found:"<<siblings_number<<" at DEPTH: "<<depth<<endl<<endl;
@@ -438,7 +416,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
           depth-=DEPTH_DECREASING_INDEX;
           cout << "BACKTRACKING FROM LEAF, NEW DEPTH="<<depth<<endl;
         #endif
-        siblings_number = a_star_get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+        siblings_number = a_star_variant_get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
         #ifdef DEBUG 
           depth++;
           cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;
@@ -458,7 +436,7 @@ priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>
           depth-=DEPTH_DECREASING_INDEX;
           cout << "BACKTRACKING FROM INTERNAL NODE, ALL SIBLINGS EXPLORED, NEW DEPTH="<<depth<<endl;
         #endif
-        siblings_number = a_star_get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
+        siblings_number = a_star_variant_get_siblings(parent_node, open, open_set, evaluated_moves, excluding_heuristic_possible_moves_activation);
         #ifdef DEBUG 
           depth++;
           cout<<"NSiblings found:"<<siblings_number<<" at depth: "<<depth<<endl;

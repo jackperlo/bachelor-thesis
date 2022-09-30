@@ -1,5 +1,5 @@
 /**
-  Generates a starting level config using A* Backward. Tries to resolve the level using RBFS forward
+  Generates a starting level config using A* Backward. Tries to resolve the level using A* Variant forward
   @file level_solver.cpp
   @author Giacomo Perlo
 */
@@ -119,7 +119,7 @@ pair<string, vector<Action>> start_backward_auto_level_generation(){
 }
 
 /**
-  Prints the number of solution found using RBFS forward(starting config->ending config, user pov) and show the moves of the easiest one(first position, being a priority queue)
+  Prints the number of solution found using A* Variant forward(starting config->ending config, user pov) and show the moves of the easiest one(first position, being a priority queue)
   @param starting_config_file_name .json file name which contains the starting configuration(user pov) which A* backwards computed
 */
 void start_forward_analysis(string starting_config_file_name, bool calculate_x_y){
@@ -127,7 +127,7 @@ void start_forward_analysis(string starting_config_file_name, bool calculate_x_y
   starting_config_analyzed_game.print(true, true);
   
   //list of the solutions (seen as list of moves to reach solution), and solution difficulty
-  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::rbfs_forward_search(starting_config_analyzed_game/*, BRANCHED_NODES_LIMIT*/);
+  priority_queue<pair<vector<Action>, double>, vector<pair<vector<Action>, double>>, Node::CompareFunSolutionsForward> solutions_queue = Node::a_star_variant_forward_search(starting_config_analyzed_game/*, BRANCHED_NODES_LIMIT*/);
   if(solutions_queue.size()>0) cout<<FGGREENSTART<<"\n=================SOLUTION=====================\n"<<FGRESET;
   cout<<"Number of Solutions Found: "<<solutions_queue.size();
   if(solutions_queue.size()>0){
